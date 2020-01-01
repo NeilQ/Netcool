@@ -1,0 +1,11 @@
+<Project>
+	<PropertyGroup>
+        <Version>0.0.1</Version>
+        <Authors>邱尘</Authors>
+        <Description>some description</Description>
+        <PackageTags></PackageTags>
+        <PackageLicenseUrl></PackageLicenseUrl>
+        <PackageProjectUrl></PackageProjectUrl>
+        <RepositoryUrl></RepositoryUrl>
+	</PropertyGroup>
+</Project>
