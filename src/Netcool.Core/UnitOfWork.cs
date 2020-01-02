@@ -2,9 +2,9 @@
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Netcool.Api.Core.EfCore;
+using Netcool.Core.EfCore;
 
-namespace Netcool.Api.Core
+namespace Netcool.Core
 {
     /**
      * 理论上Ef core的DbContext已经具备Uow + Repository模式的功能，但考虑到可能更换ORM的情况，

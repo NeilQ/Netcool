@@ -2,7 +2,7 @@
 using System.Transactions;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Netcool.Api.Core
+namespace Netcool.Core
 {
     public interface IUnitOfWork
     {

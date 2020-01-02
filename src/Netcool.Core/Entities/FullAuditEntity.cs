@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Netcool.Api.Core.Entities
+namespace Netcool.Core.Entities
 {
     public abstract class FullAuditEntity : FullAuditEntity<int>
     {

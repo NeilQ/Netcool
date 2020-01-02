@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Netcool.Api.Core.Extentions
+namespace Netcool.Core.Extentions
 {
     public static class CollectionExtentions
     {

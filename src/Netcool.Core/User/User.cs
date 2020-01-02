@@ -1,6 +1,6 @@
-﻿using Netcool.Api.Core.Entities;
+﻿using Netcool.Core.Entities;
 
-namespace Netcool.Api.Core.User
+namespace Netcool.Core.User
 {
     public class User : FullAuditEntity
     {

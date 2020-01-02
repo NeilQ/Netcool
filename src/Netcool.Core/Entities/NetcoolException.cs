@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
-namespace Netcool.Api.Core.Entities
+namespace Netcool.Core.Entities
 {
     public class NetcoolException : Exception
     {

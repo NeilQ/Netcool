@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Netcool.Api.Core.Entities
+namespace Netcool.Core.Entities
 {
     public abstract class CreateAuditEntity : CreateAuditEntity<int>
     {

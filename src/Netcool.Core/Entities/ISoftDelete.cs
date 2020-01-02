@@ -1,4 +1,4 @@
-﻿namespace Netcool.Api.Core.Entities
+﻿namespace Netcool.Core.Entities
 {
     public interface ISoftDelete
     {

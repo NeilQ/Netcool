@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Netcool.Api.Core.Migrations
+namespace Netcool.Core.Migrations
 {
     public partial class InitialCreate1 : Migration
     {

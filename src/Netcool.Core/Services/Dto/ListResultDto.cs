@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Netcool.Api.Core.Services.Dto
+namespace Netcool.Core.Services.Dto
 {
     /// <summary>
     /// Implements <see cref="IListResult{T}" />.
@@ -14,7 +14,7 @@ namespace Netcool.Api.Core.Services.Dto
         /// </summary>
         public IReadOnlyList<T> Items
         {
-            get => _items ?? (_items = new List<T>());
+            get => _items ??= new List<T>();
             set => _items = value;
         }
         private IReadOnlyList<T> _items;

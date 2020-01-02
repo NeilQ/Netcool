@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Netcool.Api.Core.EfCore
+namespace Netcool.Core.EfCore
 {
     public static class EntityEntryExtensions
     {

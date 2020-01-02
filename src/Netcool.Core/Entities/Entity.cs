@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Netcool.Api.Core.Entities
+namespace Netcool.Core.Entities
 {
     public abstract class Entity : Entity<int>
     {

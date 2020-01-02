@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Netcool.Api.Core.Entities;
-using Netcool.Api.Core.Sessions;
+using Netcool.Core.Entities;
+using Netcool.Core.Sessions;
 
-namespace Netcool.Api.Core.EfCore
+namespace Netcool.Core.EfCore
 {
     public class NetcoolDbContext : DbContext
     {
         public NetcoolDbContext(DbContextOptions<NetcoolDbContext> options) : base(options) { }
 
-        private static MethodInfo ConfigureGlobalFiltersMethodInfo = typeof(NetcoolDbContext).GetMethod(nameof(ConfigureGlobalFilters), BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo = typeof(NetcoolDbContext).GetMethod(nameof(ConfigureGlobalFilters), BindingFlags.Instance | BindingFlags.NonPublic);
 
         public DbSet<User.User> User { get; set; }
 
@@ -127,8 +127,7 @@ namespace Netcool.Api.Core.EfCore
 
         protected virtual void ApplyDeletedEntity(EntityEntry entry, int userId)
         {
-            // Advice: 如有需要，此处可以检查一下实体是否是ISoftDelete类型，如果是，则自动适配软删除操作
-            // 由于暂时没有此需求，不做过度封装
+            // Check if the entity is ISoftDelete, if true, then change to soft delete operation
             if (!(entry.Entity is ISoftDelete sd)) return;
             entry.Reload();
             entry.State = EntityState.Modified;

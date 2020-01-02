@@ -1,4 +1,4 @@
-﻿namespace Netcool.Api.Core.Sessions
+﻿namespace Netcool.Core.Sessions
 {
     public class NullNetcoolSession:INetcoolSession
     {

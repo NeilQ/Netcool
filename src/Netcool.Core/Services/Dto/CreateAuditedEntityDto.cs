@@ -1,7 +1,7 @@
 ﻿using System;
-using Netcool.Api.Core.Entities;
+using Netcool.Core.Entities;
 
-namespace Netcool.Api.Core.Services.Dto
+namespace Netcool.Core.Services.Dto
 {
     /// <summary>
     ///  A shortcut of <see cref="CreateAuditedEntityDto"/> for most used primary key type (<see cref="int"/>).

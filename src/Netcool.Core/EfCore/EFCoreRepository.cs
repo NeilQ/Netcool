@@ -7,11 +7,11 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Netcool.Api.Core.Entities;
-using Netcool.Api.Core.Extentions;
-using Netcool.Api.Core.Repositories;
+using Netcool.Core.Entities;
+using Netcool.Core.Extentions;
+using Netcool.Core.Repositories;
 
-namespace Netcool.Api.Core.EfCore
+namespace Netcool.Core.EfCore
 {
     public class EfCoreRepositoryBase<TEntity> : EfCoreRepositoryBase<TEntity, int>
         where TEntity : class, IEntity<int>
@@ -222,16 +222,11 @@ namespace Netcool.Api.Core.EfCore
             Table.Attach(entity);
         }
 
-        public DbContext GetDbContext()
-        {
-            return Context;
-        }
-
         public Task EnsureCollectionLoadedAsync<TProperty>(
-            TEntity entity,
-            Expression<Func<TEntity, IEnumerable<TProperty>>> collectionExpression,
-            CancellationToken cancellationToken)
-            where TProperty : class
+       TEntity entity,
+       Expression<Func<TEntity, IEnumerable<TProperty>>> collectionExpression,
+       CancellationToken cancellationToken)
+       where TProperty : class
         {
             return Context.Entry(entity).Collection(collectionExpression).LoadAsync(cancellationToken);
         }

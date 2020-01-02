@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Netcool.Api.Core.Entities;
+using Netcool.Core.Entities;
 
-namespace Netcool.Api.Core.Repositories
+namespace Netcool.Core.Repositories
 {
     public abstract class RepositoryBase<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey>
     where TEntity : class, IEntity<TPrimaryKey>

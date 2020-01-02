@@ -1,4 +1,4 @@
-﻿namespace Netcool.Api.Core.User
+﻿namespace Netcool.Core.User
 {
     public enum Gender
     {

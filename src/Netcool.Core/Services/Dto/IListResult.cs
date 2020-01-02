@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Netcool.Api.Core.Services.Dto
+namespace Netcool.Core.Services.Dto
 {
     public interface IListResult<T>
     {

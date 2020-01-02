@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Netcool.Api.Core.Entities;
+using Netcool.Core.Entities;
 
-namespace Netcool.Api.Core.Repositories
+namespace Netcool.Core.Repositories
 {
     /// <summary>
     /// This interface is implemented by all repositories to ensure implementation of fixed methods.
