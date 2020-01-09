@@ -19,7 +19,7 @@ namespace Netcool.Core
         /// <summary>
         /// Creates a new <see cref="UnitOfWork"/>.
         /// </summary>
-        public UnitOfWork(NetcoolDbContext dbContext)
+        public UnitOfWork(DbContext dbContext)
         {
             DbContext = dbContext;
         }

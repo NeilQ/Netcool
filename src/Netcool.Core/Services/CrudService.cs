@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using AutoMapper;
 using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services.Dto;
@@ -11,8 +12,9 @@ namespace Netcool.Core.Services
         where TEntity : class, IEntity<int>
         where TEntityDto : IEntityDto<int>
     {
-        protected CrudAppService(IRepository<TEntity, int> repository, IUnitOfWork unitOfWork, INetcoolSession session)
-            : base(repository, unitOfWork, session)
+        protected CrudAppService(IRepository<TEntity, int> repository, IUnitOfWork unitOfWork, INetcoolSession session,
+            IMapper mapper)
+            : base(repository, unitOfWork, session, mapper)
         {
         }
     }
@@ -23,8 +25,8 @@ namespace Netcool.Core.Services
         where TEntityDto : IEntityDto<TPrimaryKey>
     {
         protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IUnitOfWork unitOfWork,
-            INetcoolSession session)
-            : base(repository, unitOfWork, session)
+            INetcoolSession session, IMapper mapper)
+            : base(repository, unitOfWork, session, mapper)
         {
         }
     }
@@ -35,8 +37,8 @@ namespace Netcool.Core.Services
         where TEntityDto : IEntityDto<TPrimaryKey>
     {
         protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IUnitOfWork unitOfWork,
-            INetcoolSession session)
-            : base(repository, unitOfWork, session)
+            INetcoolSession session, IMapper mapper)
+            : base(repository, unitOfWork, session, mapper)
         {
         }
     }
@@ -48,8 +50,8 @@ namespace Netcool.Core.Services
         where TCreateInput : IEntityDto<TPrimaryKey>
     {
         protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IUnitOfWork unitOfWork,
-            INetcoolSession session)
-            : base(repository, unitOfWork, session)
+            INetcoolSession session, IMapper mapper)
+            : base(repository, unitOfWork, session, mapper)
         {
         }
     }
@@ -62,8 +64,8 @@ namespace Netcool.Core.Services
         where TUpdateInput : IEntityDto<TPrimaryKey>
     {
         protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IUnitOfWork unitOfWork,
-            INetcoolSession session)
-            : base(repository, unitOfWork, session)
+            INetcoolSession session, IMapper mapper)
+            : base(repository, unitOfWork, session, mapper)
         {
         }
     }
@@ -78,8 +80,8 @@ namespace Netcool.Core.Services
         where TGetInput : IEntityDto<TPrimaryKey>
     {
         protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IUnitOfWork unitOfWork,
-            INetcoolSession session)
-            : base(repository, unitOfWork, session)
+            INetcoolSession session, IMapper mapper)
+            : base(repository, unitOfWork, session, mapper)
         {
         }
     }
@@ -95,8 +97,8 @@ namespace Netcool.Core.Services
         where TDeleteInput : IEntityDto<TPrimaryKey>
     {
         protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IUnitOfWork unitOfWork,
-            INetcoolSession session)
-            : base(repository, unitOfWork, session)
+            INetcoolSession session, IMapper mapper)
+            : base(repository, unitOfWork, session, mapper)
         {
         }
 

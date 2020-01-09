@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using AutoMapper;
 using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services.Dto;
@@ -14,7 +15,7 @@ namespace Netcool.Core.Services
     /// </summary>
     public abstract class
         CrudAppServiceBase<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput,
-            TUpdateInput> 
+            TUpdateInput>
         where TEntity : class, IEntity<TPrimaryKey>
         where TEntityDto : IEntityDto<TPrimaryKey>
         where TUpdateInput : IEntityDto<TPrimaryKey>
@@ -22,6 +23,7 @@ namespace Netcool.Core.Services
         protected readonly IRepository<TEntity, TPrimaryKey> Repository;
         protected readonly IUnitOfWork UnitOfWork;
         protected readonly INetcoolSession Session;
+        protected readonly IMapper Mapper;
 
         protected virtual string GetPermissionName { get; set; }
 
@@ -34,11 +36,12 @@ namespace Netcool.Core.Services
         protected virtual string DeletePermissionName { get; set; }
 
         protected CrudAppServiceBase(IRepository<TEntity, TPrimaryKey> repository, IUnitOfWork unitOfWork,
-            INetcoolSession session)
+            INetcoolSession session, IMapper mapper)
         {
             Repository = repository;
             UnitOfWork = unitOfWork;
             Session = session;
+            Mapper = mapper;
         }
 
         /// <summary>
@@ -52,12 +55,12 @@ namespace Netcool.Core.Services
 
             if (request.Page > 0 && request.Size > 0)
             {
-                query = query.Skip(request.Page * request.Size).Take(request.Size);
+                query = query.Skip((request.Page - 1) * request.Size).Take(request.Size);
             }
 
             if (!string.IsNullOrEmpty(request.Sort))
             {
-               query =  query.OrderBy("");
+                query = query.OrderBy("");
             }
             else
             {
@@ -81,38 +84,26 @@ namespace Netcool.Core.Services
 
         /// <summary>
         /// Maps <see cref="TEntity"/> to <see cref="TEntityDto"/>.
-        /// It uses <see cref="IObjectMapper"/> by default.
-        /// It can be overrided for custom mapping.
         /// </summary>
         protected virtual TEntityDto MapToEntityDto(TEntity entity)
         {
-            //return ObjectMapper.Map<TEntityDto>(entity);
-            throw new NotImplementedException();
-            // TODO: mapper implement
+            return Mapper.Map<TEntityDto>(entity);
         }
 
         /// <summary>
         /// Maps <see cref="TEntityDto"/> to <see cref="TEntity"/> to create a new entity.
-        /// It uses <see cref="IObjectMapper"/> by default.
-        /// It can be overrided for custom mapping.
         /// </summary>
         protected virtual TEntity MapToEntity(TCreateInput createInput)
         {
-            // return ObjectMapper.Map<TEntity>(createInput);
-            throw new NotImplementedException();
-            // TODO: mapper implement
+            return Mapper.Map<TEntity>(createInput);
         }
 
         /// <summary>
         /// Maps <see cref="TUpdateInput"/> to <see cref="TEntity"/> to update the entity.
-        /// It uses <see cref="IObjectMapper"/> by default.
-        /// It can be overrided for custom mapping.
         /// </summary>
         protected virtual void MapToEntity(TUpdateInput updateInput, TEntity entity)
         {
-            //ObjectMapper.Map(updateInput, entity);
-            throw new NotImplementedException();
-            // TODO: mapper implement
+            Mapper.Map(updateInput, entity);
         }
 
         protected virtual void CheckPermission(string permissionName)

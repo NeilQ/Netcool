@@ -18,8 +18,6 @@ namespace Netcool.Core.EfCore
 
         private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo = typeof(NetcoolDbContext).GetMethod(nameof(ConfigureGlobalFilters), BindingFlags.Instance | BindingFlags.NonPublic);
 
-        public DbSet<User.User> User { get; set; }
-
         public INetcoolSession NetcoolSession { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
