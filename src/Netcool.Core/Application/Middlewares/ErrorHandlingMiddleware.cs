@@ -51,7 +51,7 @@ namespace Netcool.Core.Application.Middlewares
 
             logger.LogError(exception, exception.Message);
 
-            var result = JsonSerializer.Serialize(new {Code = errorCode, exception.Message});
+            var result = JsonSerializer.Serialize(new ErrorResult(errorCode, exception.Message));
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int) statusCode;
             return context.Response.WriteAsync(result, Encoding.UTF8);
