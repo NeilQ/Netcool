@@ -13,7 +13,7 @@
         public ErrorResult(int code, string message)
         {
             Code = code;
-            message = message;
+            Message = message;
         }
     }
 }
