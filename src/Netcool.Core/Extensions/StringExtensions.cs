@@ -1,8 +1,8 @@
 ﻿using System.Text;
 
-namespace Netcool.Core.Extentions
+namespace Netcool.Core.Extensions
 {
-    public static class StringExtentions
+    public static class StringExtensions
     {
         public static string ToSnakeCase(this string s)
         {

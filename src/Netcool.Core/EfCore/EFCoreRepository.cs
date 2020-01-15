@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Netcool.Core.Entities;
-using Netcool.Core.Extentions;
+using Netcool.Core.Extensions;
 using Netcool.Core.Repositories;
 
 namespace Netcool.Core.EfCore

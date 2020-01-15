@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Netcool.Core.Extentions
+namespace Netcool.Core.Extensions
 {
-    public static class CollectionExtentions
+    public static class CollectionExtensions
     {
         /// <summary>
         /// Checks whatever given collection object is null or has no item.

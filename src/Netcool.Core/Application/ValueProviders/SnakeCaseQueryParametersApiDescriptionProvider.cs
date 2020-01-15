@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Netcool.Core.Extentions;
+using Netcool.Core.Extensions;
 
 namespace Acartons.Parking.Core.Api.ValueProviders
 {
