@@ -12,9 +12,8 @@ namespace Netcool.Core.Services
         where TEntity : class, IEntity<int>
         where TEntityDto : IEntityDto<int>
     {
-        protected CrudAppService(IRepository<TEntity, int> repository, IUnitOfWork unitOfWork, INetcoolSession session,
-            IMapper mapper)
-            : base(repository, unitOfWork, session, mapper)
+        protected CrudAppService(IRepository<TEntity, int> repository, IServiceAggregator serviceAggregator)
+            : base(repository, serviceAggregator)
         {
         }
     }
@@ -24,9 +23,8 @@ namespace Netcool.Core.Services
         where TEntity : class, IEntity<TPrimaryKey>
         where TEntityDto : IEntityDto<TPrimaryKey>
     {
-        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IUnitOfWork unitOfWork,
-            INetcoolSession session, IMapper mapper)
-            : base(repository, unitOfWork, session, mapper)
+        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
+            : base(repository, serviceAggregator)
         {
         }
     }
@@ -36,9 +34,8 @@ namespace Netcool.Core.Services
         where TEntity : class, IEntity<TPrimaryKey>
         where TEntityDto : IEntityDto<TPrimaryKey>
     {
-        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IUnitOfWork unitOfWork,
-            INetcoolSession session, IMapper mapper)
-            : base(repository, unitOfWork, session, mapper)
+        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
+            : base(repository, serviceAggregator)
         {
         }
     }
@@ -49,9 +46,8 @@ namespace Netcool.Core.Services
         where TEntityDto : IEntityDto<TPrimaryKey>
         where TCreateInput : IEntityDto<TPrimaryKey>
     {
-        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IUnitOfWork unitOfWork,
-            INetcoolSession session, IMapper mapper)
-            : base(repository, unitOfWork, session, mapper)
+        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
+            : base(repository, serviceAggregator)
         {
         }
     }
@@ -63,9 +59,8 @@ namespace Netcool.Core.Services
         where TEntityDto : IEntityDto<TPrimaryKey>
         where TUpdateInput : IEntityDto<TPrimaryKey>
     {
-        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IUnitOfWork unitOfWork,
-            INetcoolSession session, IMapper mapper)
-            : base(repository, unitOfWork, session, mapper)
+        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
+            : base(repository, serviceAggregator)
         {
         }
     }
@@ -79,9 +74,8 @@ namespace Netcool.Core.Services
         where TUpdateInput : IEntityDto<TPrimaryKey>
         where TGetInput : IEntityDto<TPrimaryKey>
     {
-        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IUnitOfWork unitOfWork,
-            INetcoolSession session, IMapper mapper)
-            : base(repository, unitOfWork, session, mapper)
+        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
+            : base(repository, serviceAggregator)
         {
         }
     }
@@ -96,9 +90,8 @@ namespace Netcool.Core.Services
         where TGetInput : IEntityDto<TPrimaryKey>
         where TDeleteInput : IEntityDto<TPrimaryKey>
     {
-        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IUnitOfWork unitOfWork,
-            INetcoolSession session, IMapper mapper)
-            : base(repository, unitOfWork, session, mapper)
+        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
+            : base(repository, serviceAggregator)
         {
         }
 

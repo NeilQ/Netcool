@@ -35,13 +35,12 @@ namespace Netcool.Core.Services
 
         protected virtual string DeletePermissionName { get; set; }
 
-        protected CrudAppServiceBase(IRepository<TEntity, TPrimaryKey> repository, IUnitOfWork unitOfWork,
-            INetcoolSession session, IMapper mapper)
+        protected CrudAppServiceBase(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
         {
             Repository = repository;
-            UnitOfWork = unitOfWork;
-            Session = session;
-            Mapper = mapper;
+            UnitOfWork = serviceAggregator.UnitOfWork;
+            Session = serviceAggregator.Session;
+            Mapper = serviceAggregator.Mapper;
         }
 
         /// <summary>
