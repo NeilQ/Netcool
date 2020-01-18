@@ -22,7 +22,7 @@ namespace Netcool.Core.Services
     {
         protected readonly IRepository<TEntity, TPrimaryKey> Repository;
         protected readonly IUnitOfWork UnitOfWork;
-        protected readonly INetcoolSession Session;
+        protected readonly IUserSession Session;
         protected readonly IMapper Mapper;
 
         protected virtual string GetPermissionName { get; set; }

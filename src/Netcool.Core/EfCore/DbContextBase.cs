@@ -8,17 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Netcool.Core.Entities;
+using Netcool.Core.Helpers;
 using Netcool.Core.Sessions;
 
 namespace Netcool.Core.EfCore
 {
-    public class NetcoolDbContext : DbContext
+    public class DbContextBase : DbContext
     {
-        public NetcoolDbContext(DbContextOptions<NetcoolDbContext> options) : base(options) { }
+        public DbContextBase(DbContextOptions<DbContextBase> options) : base(options)
+        {
+        }
 
-        private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo = typeof(NetcoolDbContext).GetMethod(nameof(ConfigureGlobalFilters), BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo =
+            typeof(DbContextBase).GetMethod(nameof(ConfigureGlobalFilters),
+                BindingFlags.Instance | BindingFlags.NonPublic);
 
-        public INetcoolSession NetcoolSession { get; set; }
+        public IUserSession UserSession { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,7 +33,7 @@ namespace Netcool.Core.EfCore
             {
                 ConfigureGlobalFiltersMethodInfo
                     .MakeGenericMethod(entityType.ClrType)
-                    .Invoke(this, new object[] { modelBuilder, entityType });
+                    .Invoke(this, new object[] {modelBuilder, entityType});
             }
         }
 
@@ -52,9 +57,19 @@ namespace Netcool.Core.EfCore
 
             if (typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
             {
-                Expression<Func<TEntity, bool>> softDeleteFilter = e => !((ISoftDelete)e).IsDeleted;
+                Expression<Func<TEntity, bool>> softDeleteFilter = e => !((ISoftDelete) e).IsDeleted;
                 expression = softDeleteFilter;
             }
+
+            if (typeof(ITenant).IsAssignableFrom(typeof(TEntity)))
+            {
+                Expression<Func<TEntity, bool>> mustHaveTenantFilter =
+                    e => ((ITenant) e).TenantId == UserSession.TenantId;
+                expression = expression == null
+                    ? mustHaveTenantFilter
+                    : CombineExpressions(expression, mustHaveTenantFilter);
+            }
+
 
             return expression;
         }
@@ -73,7 +88,7 @@ namespace Netcool.Core.EfCore
 
         protected virtual void SaveChangesBefore()
         {
-            var userId = NetcoolSession?.UserId ?? 0;
+            var userId = UserSession?.UserId ?? 0;
             foreach (var entry in ChangeTracker.Entries().ToList())
             {
                 if (entry.State != EntityState.Modified && entry.CheckOwnedEntityChange())
@@ -92,7 +107,7 @@ namespace Netcool.Core.EfCore
                     ApplyAddedEntity(entry, userId);
                     break;
                 case EntityState.Modified:
-                    ApplModifiedEntity(entry, userId);
+                    ApplyModifiedEntity(entry, userId);
                     break;
                 case EntityState.Deleted:
                     ApplyDeletedEntity(entry, userId);
@@ -103,22 +118,19 @@ namespace Netcool.Core.EfCore
         protected virtual void ApplyAddedEntity(EntityEntry entry, int userId)
         {
             CheckAndSetId(entry);
-
-            if (!(entry.Entity is ICreateAudit audit)) return;
-            audit.CreateUserId = userId;
-            audit.CreateTime = DateTime.Now;
+            SetCreateAuditProperties(entry, userId);
+            SetTenantProperties(entry, UserSession.TenantId);
         }
 
-        protected virtual void ApplModifiedEntity(EntityEntry entry, int userId)
+        protected virtual void ApplyModifiedEntity(EntityEntry entry, int userId)
         {
             switch (entry.Entity)
             {
                 case ISoftDelete sdAudit when sdAudit.IsDeleted:
                     SetSoftDeleteProperties(entry, userId);
                     break;
-                case IUpdateAudit audit:
-                    audit.UpdateTime = DateTime.Now;
-                    audit.UpdateUserId = userId;
+                case IUpdateAudit _:
+                    SetUpdateAuditProperties(entry, userId);
                     break;
             }
         }
@@ -137,8 +149,7 @@ namespace Netcool.Core.EfCore
         protected virtual void CheckAndSetId(EntityEntry entry)
         {
             //Set GUID Ids
-            var entity = entry.Entity as IEntity<Guid>;
-            if (entity != null && entity.Id == Guid.Empty)
+            if (entry.Entity is IEntity<Guid> entity && entity.Id == Guid.Empty)
             {
                 var idPropertyEntry = entry.Property("Id");
 
@@ -149,12 +160,61 @@ namespace Netcool.Core.EfCore
             }
         }
 
+        private void SetTenantProperties(EntityEntry entry, int tenantId)
+        {
+            if (!(entry.Entity is ITenant tenant)) return;
+            if (tenant.TenantId > 0)
+            {
+                tenant.TenantId = tenantId;
+            }
+        }
+
+        private void SetCreateAuditProperties(EntityEntry entry, int userId)
+        {
+            if (!(entry.Entity is ICreateAudit audit)) return;
+            if (audit.CreateUserId == null || audit.CreateUserId <= 0)
+            {
+                audit.CreateUserId = userId;
+            }
+
+            if (audit.CreateTime != null)
+            {
+                audit.CreateTime = DateTime.Now;
+            }
+        }
+
+        private void SetUpdateAuditProperties(EntityEntry entry, int userId)
+        {
+            if (!(entry.Entity is IUpdateAudit audit)) return;
+            if (audit.UpdateUserId == null || audit.UpdateUserId <= 0)
+            {
+                audit.UpdateUserId = userId;
+            }
+
+            if (audit.UpdateTime == null)
+            {
+                audit.UpdateTime = DateTime.Now;
+            }
+        }
+
         private void SetSoftDeleteProperties(EntityEntry entry, int userId)
         {
             if (!(entry.Entity is IDeleteAudit dAudit)) return;
-            dAudit.DeleteTime = DateTime.Now;
-            dAudit.DeleteUserId = userId;
+            if (dAudit.DeleteUserId == null || dAudit.DeleteUserId <= 0)
+            {
+                dAudit.DeleteUserId = userId;
+            }
+
+            if (dAudit.DeleteTime == null)
+            {
+                dAudit.DeleteTime = DateTime.Now;
+            }
         }
 
+        private Expression<Func<T, bool>> CombineExpressions<T>(Expression<Func<T, bool>> expression1,
+            Expression<Func<T, bool>> expression2)
+        {
+            return ExpressionCombiner.Combine(expression1, expression2);
+        }
     }
 }

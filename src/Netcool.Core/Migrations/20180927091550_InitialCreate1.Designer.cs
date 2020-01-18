@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Netcool.Core.Migrations
 {
-    [DbContext(typeof(NetcoolDbContext))]
+    [DbContext(typeof(DbContextBase))]
     [Migration("20180927091550_InitialCreate1")]
     partial class InitialCreate1
     {

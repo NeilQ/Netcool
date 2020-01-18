@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Netcool.Core.Migrations
 {
-    [DbContext(typeof(NetcoolDbContext))]
+    [DbContext(typeof(DbContextBase))]
     partial class NetcoolDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

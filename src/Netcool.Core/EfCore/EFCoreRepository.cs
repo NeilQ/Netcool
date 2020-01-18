@@ -16,8 +16,8 @@ namespace Netcool.Core.EfCore
     public class EfCoreRepositoryBase<TEntity> : EfCoreRepositoryBase<TEntity, int>
         where TEntity : class, IEntity<int>
     {
-        public EfCoreRepositoryBase(NetcoolDbContext dbContext)
-            : base(dbContext)
+        public EfCoreRepositoryBase(DbContextBase dbContextBase)
+            : base(dbContextBase)
         {
         }
     }
@@ -29,18 +29,18 @@ namespace Netcool.Core.EfCore
         /// <summary>
         /// Gets EF DbContext object.
         /// </summary>
-        public virtual NetcoolDbContext Context { get; private set; }
+        public virtual DbContextBase ContextBase { get; private set; }
 
         /// <summary>
         /// Gets DbSet for given entity.
         /// </summary>
-        public virtual DbSet<TEntity> Table => Context.Set<TEntity>();
+        public virtual DbSet<TEntity> Table => ContextBase.Set<TEntity>();
 
         public virtual DbConnection Connection
         {
             get
             {
-                var connection = Context.Database.GetDbConnection();
+                var connection = ContextBase.Database.GetDbConnection();
 
                 if (connection.State != ConnectionState.Open)
                 {
@@ -51,9 +51,9 @@ namespace Netcool.Core.EfCore
             }
         }
 
-        public EfCoreRepositoryBase(NetcoolDbContext dbContext)
+        public EfCoreRepositoryBase(DbContextBase dbContextBase)
         {
-            Context = dbContext;
+            ContextBase = dbContextBase;
         }
 
         public override IQueryable<TEntity> GetAll()
@@ -116,7 +116,7 @@ namespace Netcool.Core.EfCore
 
             if (entity.IsNewEntity())
             {
-                Context.SaveChanges();
+                ContextBase.SaveChanges();
             }
 
             return entity.Id;
@@ -128,7 +128,7 @@ namespace Netcool.Core.EfCore
 
             if (entity.IsNewEntity())
             {
-                await Context.SaveChangesAsync();
+                await ContextBase.SaveChangesAsync();
             }
 
             return entity.Id;
@@ -140,7 +140,7 @@ namespace Netcool.Core.EfCore
 
             if (entity.IsNewEntity())
             {
-                Context.SaveChanges();
+                ContextBase.SaveChanges();
             }
 
             return entity.Id;
@@ -152,7 +152,7 @@ namespace Netcool.Core.EfCore
 
             if (entity.IsNewEntity())
             {
-                await Context.SaveChangesAsync();
+                await ContextBase.SaveChangesAsync();
             }
 
             return entity.Id;
@@ -161,7 +161,7 @@ namespace Netcool.Core.EfCore
         public override TEntity Update(TEntity entity)
         {
             AttachIfNot(entity);
-            Context.Entry(entity).State = EntityState.Modified;
+            ContextBase.Entry(entity).State = EntityState.Modified;
             return entity;
         }
 
@@ -213,7 +213,7 @@ namespace Netcool.Core.EfCore
 
         protected virtual void AttachIfNot(TEntity entity)
         {
-            var entry = Context.ChangeTracker.Entries().FirstOrDefault(ent => ent.Entity == entity);
+            var entry = ContextBase.ChangeTracker.Entries().FirstOrDefault(ent => ent.Entity == entity);
             if (entry != null)
             {
                 return;
@@ -228,7 +228,7 @@ namespace Netcool.Core.EfCore
        CancellationToken cancellationToken)
        where TProperty : class
         {
-            return Context.Entry(entity).Collection(collectionExpression).LoadAsync(cancellationToken);
+            return ContextBase.Entry(entity).Collection(collectionExpression).LoadAsync(cancellationToken);
         }
 
         public Task EnsurePropertyLoadedAsync<TProperty>(
@@ -237,12 +237,12 @@ namespace Netcool.Core.EfCore
             CancellationToken cancellationToken)
             where TProperty : class
         {
-            return Context.Entry(entity).Reference(propertyExpression).LoadAsync(cancellationToken);
+            return ContextBase.Entry(entity).Reference(propertyExpression).LoadAsync(cancellationToken);
         }
 
         private TEntity GetFromChangeTrackerOrNull(TPrimaryKey id)
         {
-            var entry = Context.ChangeTracker.Entries()
+            var entry = ContextBase.ChangeTracker.Entries()
                 .FirstOrDefault(
                     ent =>
                         ent.Entity is TEntity entity &&
