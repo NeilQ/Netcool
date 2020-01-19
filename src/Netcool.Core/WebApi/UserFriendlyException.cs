@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Netcool.Core.Application
+namespace Netcool.Core.WebApi
 {
     public class UserFriendlyException : Exception
     {

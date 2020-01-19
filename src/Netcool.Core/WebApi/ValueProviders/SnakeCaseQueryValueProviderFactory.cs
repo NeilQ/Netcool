@@ -1,9 +1,9 @@
-﻿﻿using System;
+﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Acartons.Parking.Core.Api.ValueProviders
+namespace Netcool.Core.WebApi.ValueProviders
 {
     public class SnakeCaseQueryValueProviderFactory : IValueProviderFactory
     {

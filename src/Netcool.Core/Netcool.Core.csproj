@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Controllers" />
+    <Folder Include="WebApi\Controllers" />
   </ItemGroup>
 
 </Project>

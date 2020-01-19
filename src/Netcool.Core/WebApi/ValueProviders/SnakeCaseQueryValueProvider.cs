@@ -1,9 +1,9 @@
-﻿﻿using System.Globalization;
- using Microsoft.AspNetCore.Http;
- using Microsoft.AspNetCore.Mvc.ModelBinding;
- using Netcool.Core.Extensions;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Netcool.Core.Extensions;
 
- namespace Acartons.Parking.Core.Api.ValueProviders
+namespace Netcool.Core.WebApi.ValueProviders
 {
     public class SnakeCaseQueryValueProvider : QueryStringValueProvider
     {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Netcool.Core.Application.Filters
+namespace Netcool.Core.WebApi.Filters
 {
     public class ValidateAttribute : ActionFilterAttribute
     {
