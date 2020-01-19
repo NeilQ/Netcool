@@ -22,15 +22,17 @@ namespace Netcool.Core.Authorization
         /// <summary>
         /// Checks if a user is granted for a permission.
         /// </summary>
-        /// <param name="userId"></param>
         /// <param name="permissionName">Name of the permission</param>
-        Task<bool> IsGrantedAsync(string userId, string permissionName);
+        /// <param name="userId"></param>
+        /// <param name="tenantId"></param>
+        Task<bool> IsGrantedAsync(string permissionName, int userId, int? tenantId = null);
 
         /// <summary>
         /// Checks if a user is granted for a permission.
         /// </summary>
-        /// <param name="user">User to check</param>
         /// <param name="permissionName">Name of the permission</param>
-        bool IsGranted(string userId, string permissionName);
+        /// <param name="userId"></param>
+        /// <param name="tenantId"></param>
+        bool IsGranted(string permissionName, int userId, int? tenantId = null);
     }
 }

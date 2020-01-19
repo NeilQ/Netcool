@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using AutoMapper;
+using Netcool.Core.Authorization;
 using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services.Dto;
@@ -24,6 +25,7 @@ namespace Netcool.Core.Services
         protected readonly IUnitOfWork UnitOfWork;
         protected readonly IUserSession Session;
         protected readonly IMapper Mapper;
+        protected readonly IPermissionChecker PermissionChecker;
 
         protected virtual string GetPermissionName { get; set; }
 
@@ -41,6 +43,7 @@ namespace Netcool.Core.Services
             UnitOfWork = serviceAggregator.UnitOfWork;
             Session = serviceAggregator.Session;
             Mapper = serviceAggregator.Mapper;
+            PermissionChecker = serviceAggregator.PermissionChecker;
         }
 
         /// <summary>
@@ -107,11 +110,9 @@ namespace Netcool.Core.Services
 
         protected virtual void CheckPermission(string permissionName)
         {
-            if (!string.IsNullOrEmpty(permissionName))
-            {
-                // PermissionChecker.Authorize(permissionName);
-                // TODO: permission checker implement
-            }
+            if (string.IsNullOrEmpty(permissionName)) return;
+            if (PermissionChecker.IsGranted(permissionName)) return;
+            throw new UnauthorizedAccessException("Permission Denied.");
         }
 
         protected virtual void CheckGetPermission()
