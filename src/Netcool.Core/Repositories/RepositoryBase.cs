@@ -8,10 +8,10 @@ using Netcool.Core.Entities;
 namespace Netcool.Core.Repositories
 {
     public abstract class RepositoryBase<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey>
-    where TEntity : class, IEntity<TPrimaryKey>
+        where TEntity : class, IEntity<TPrimaryKey>
     {
-
         #region Query
+
         public abstract IQueryable<TEntity> GetAll();
 
         public virtual IQueryable<TEntity> GetAllIncluding(params Expression<Func<TEntity, object>>[] propertySelectors)
@@ -95,14 +95,24 @@ namespace Netcool.Core.Repositories
         {
             return Task.FromResult(FirstOrDefault(predicate));
         }
+
         #endregion
 
         #region insert
+
         public abstract TEntity Insert(TEntity entity);
 
         public virtual Task<TEntity> InsertAsync(TEntity entity)
         {
             return Task.FromResult(Insert(entity));
+        }
+
+        public abstract void Insert(IEnumerable<TEntity> entities);
+
+        public virtual Task InsertAsync(IEnumerable<TEntity> entities)
+        {
+            Insert(entities);
+            return Task.FromResult(0);
         }
 
         public virtual TPrimaryKey InsertAndGetId(TEntity entity)
@@ -142,6 +152,7 @@ namespace Netcool.Core.Repositories
         #endregion
 
         #region update
+
         public abstract TEntity Update(TEntity entity);
 
         public virtual Task<TEntity> UpdateAsync(TEntity entity)
@@ -162,9 +173,11 @@ namespace Netcool.Core.Repositories
             await updateAction(entity);
             return entity;
         }
+
         #endregion
 
         #region delete
+
         public abstract void Delete(TEntity entity);
 
         public virtual Task DeleteAsync(TEntity entity)
@@ -181,12 +194,17 @@ namespace Netcool.Core.Repositories
             return Task.FromResult(0);
         }
 
+        public abstract void Delete(IList<TEntity> list);
+
+        public virtual Task DeleteAsync(IList<TEntity> list)
+        {
+            Delete(list);
+            return Task.FromResult(0);
+        }
+
         public virtual void Delete(Expression<Func<TEntity, bool>> predicate)
         {
-            foreach (var entity in GetAll().Where(predicate).ToList())
-            {
-                Delete(entity);
-            }
+            Delete(GetAll().Where(predicate).ToList());
         }
 
         public virtual Task DeleteAsync(Expression<Func<TEntity, bool>> predicate)
@@ -194,6 +212,7 @@ namespace Netcool.Core.Repositories
             Delete(predicate);
             return Task.FromResult(0);
         }
+
         #endregion
 
         public virtual int Count()
@@ -243,7 +262,7 @@ namespace Netcool.Core.Repositories
             var lambdaBody = Expression.Equal(
                 Expression.PropertyOrField(lambdaParam, "Id"),
                 Expression.Constant(id, typeof(TPrimaryKey))
-                );
+            );
 
             return Expression.Lambda<Func<TEntity, bool>>(lambdaBody, lambdaParam);
         }

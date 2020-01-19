@@ -135,6 +135,10 @@ namespace Netcool.Core.Repositories
         /// <param name="entity">Inserted entity</param>
         Task<TEntity> InsertAsync(TEntity entity);
 
+        void Insert(IEnumerable<TEntity> entities);
+
+        Task InsertAsync(IEnumerable<TEntity> entities);
+
         /// <summary>
         /// Inserts a new entity and gets it's Id.
         /// It may require to save current unit of work
@@ -244,6 +248,10 @@ namespace Netcool.Core.Repositories
         /// </summary>
         /// <param name="id">Primary key of the entity</param>
         Task DeleteAsync(TPrimaryKey id);
+
+        void Delete(IList<TEntity> list);
+
+        Task DeleteAsync(IList<TEntity> list);
 
         /// <summary>
         /// Deletes many entities by function.

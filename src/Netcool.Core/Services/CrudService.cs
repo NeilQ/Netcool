@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
@@ -150,6 +151,15 @@ namespace Netcool.Core.Services
             CheckDeletePermission();
 
             Repository.Delete(input.Id);
+            UnitOfWork.SaveChanges();
+        }
+
+        public void Delete(IEnumerable<TPrimaryKey> ids)
+        {
+            if (ids == null || !ids.Any()) return;
+            CheckDeletePermission();
+            Repository.Delete(t => ids.Contains(t.Id));
+            UnitOfWork.SaveChanges();
         }
 
         protected virtual TEntity GetEntityById(TPrimaryKey id)

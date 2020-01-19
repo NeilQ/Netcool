@@ -1,4 +1,5 @@
-﻿using Netcool.Core.Services.Dto;
+﻿using System.Collections.Generic;
+using Netcool.Core.Services.Dto;
 
 namespace Netcool.Core.Services
 {
@@ -64,5 +65,7 @@ namespace Netcool.Core.Services
         TEntityDto Update(TUpdateInput input);
 
         void Delete(TDeleteInput input);
+
+        void Delete(IEnumerable<TPrimaryKey> ids);
     }
 }

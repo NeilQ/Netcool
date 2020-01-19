@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Netcool.Core.Entities;
@@ -61,7 +60,8 @@ namespace Netcool.Core.EfCore
             return GetAllIncluding();
         }
 
-        public override IQueryable<TEntity> GetAllIncluding(params Expression<Func<TEntity, object>>[] propertySelectors)
+        public override IQueryable<TEntity> GetAllIncluding(
+            params Expression<Func<TEntity, object>>[] propertySelectors)
         {
             var query = Table.AsQueryable();
 
@@ -103,6 +103,11 @@ namespace Netcool.Core.EfCore
         public override TEntity Insert(TEntity entity)
         {
             return Table.Add(entity).Entity;
+        }
+
+        public override void Insert(IEnumerable<TEntity> entities)
+        {
+            Table.AddRange(entities);
         }
 
         public override Task<TEntity> InsertAsync(TEntity entity)
@@ -165,12 +170,6 @@ namespace Netcool.Core.EfCore
             return entity;
         }
 
-        public override Task<TEntity> UpdateAsync(TEntity entity)
-        {
-            entity = Update(entity);
-            return Task.FromResult(entity);
-        }
-
         public override void Delete(TEntity entity)
         {
             AttachIfNot(entity);
@@ -189,6 +188,24 @@ namespace Netcool.Core.EfCore
             entity = FirstOrDefault(id);
             if (entity == null) return;
             Delete(entity);
+        }
+
+        public override void Delete(IList<TEntity> list)
+        {
+            if (list == null || list.Count == 0)
+                return;
+
+            foreach (var entity in list)
+            {
+                AttachIfNot(entity);
+            }
+
+            Table.RemoveRange(list);
+        }
+
+        public override void Delete(Expression<Func<TEntity, bool>> predicate)
+        {
+            Delete(GetAll().Where(predicate).ToList());
         }
 
         public override async Task<int> CountAsync()
@@ -220,24 +237,6 @@ namespace Netcool.Core.EfCore
             }
 
             Table.Attach(entity);
-        }
-
-        public Task EnsureCollectionLoadedAsync<TProperty>(
-       TEntity entity,
-       Expression<Func<TEntity, IEnumerable<TProperty>>> collectionExpression,
-       CancellationToken cancellationToken)
-       where TProperty : class
-        {
-            return ContextBase.Entry(entity).Collection(collectionExpression).LoadAsync(cancellationToken);
-        }
-
-        public Task EnsurePropertyLoadedAsync<TProperty>(
-            TEntity entity,
-            Expression<Func<TEntity, TProperty>> propertyExpression,
-            CancellationToken cancellationToken)
-            where TProperty : class
-        {
-            return ContextBase.Entry(entity).Reference(propertyExpression).LoadAsync(cancellationToken);
         }
 
         private TEntity GetFromChangeTrackerOrNull(TPrimaryKey id)
