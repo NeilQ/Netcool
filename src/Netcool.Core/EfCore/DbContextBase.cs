@@ -61,10 +61,10 @@ namespace Netcool.Core.EfCore
                 expression = softDeleteFilter;
             }
 
-            if (typeof(ITenant).IsAssignableFrom(typeof(TEntity)))
+            if (typeof(IHasTenant).IsAssignableFrom(typeof(TEntity)))
             {
                 Expression<Func<TEntity, bool>> mustHaveTenantFilter =
-                    e => ((ITenant) e).TenantId == UserSession.TenantId;
+                    e => ((IHasTenant) e).TenantId == UserSession.TenantId;
                 expression = expression == null
                     ? mustHaveTenantFilter
                     : CombineExpressions(expression, mustHaveTenantFilter);
@@ -162,7 +162,7 @@ namespace Netcool.Core.EfCore
 
         private void SetTenantProperties(EntityEntry entry, int tenantId)
         {
-            if (!(entry.Entity is ITenant tenant)) return;
+            if (!(entry.Entity is IHasTenant tenant)) return;
             if (tenant.TenantId > 0)
             {
                 tenant.TenantId = tenantId;

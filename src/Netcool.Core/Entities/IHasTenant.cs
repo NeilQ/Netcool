@@ -1,6 +1,6 @@
 ﻿namespace Netcool.Core.Entities
 {
-    public interface ITenant
+    public interface IHasTenant
     {
         int TenantId { get; set; }
     }
