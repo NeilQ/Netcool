@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Netcool.Api.Domain\Netcool.Api.Domain.csproj" />
     <ProjectReference Include="..\Netcool.Core\Netcool.Core.csproj" />
   </ItemGroup>
 
