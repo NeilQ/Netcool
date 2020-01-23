@@ -96,6 +96,14 @@ namespace Netcool.Core.Services
         {
         }
 
+        public virtual TEntityDto Get(TPrimaryKey id)
+        {
+            CheckGetPermission();
+
+            var entity = GetEntityById(id);
+            return MapToEntityDto(entity);
+        }
+
         public virtual TEntityDto Get(TGetInput input)
         {
             CheckGetPermission();
@@ -154,7 +162,14 @@ namespace Netcool.Core.Services
             UnitOfWork.SaveChanges();
         }
 
-        public void Delete(IEnumerable<TPrimaryKey> ids)
+        public virtual void Delete(TPrimaryKey id)
+        {
+            CheckDeletePermission();
+            Repository.Delete(id);
+            UnitOfWork.SaveChanges();
+        }
+
+        public virtual void Delete(IEnumerable<TPrimaryKey> ids)
         {
             if (ids == null || !ids.Any()) return;
             CheckDeletePermission();

@@ -49,13 +49,15 @@ namespace Netcool.Core.Services
 
     }
 
-    public interface ICrudAppService<TEntityDto, TPrimaryKey, in TGetAllInput, in TCreateInput, in TUpdateInput, in TGetInput, in TDeleteInput>
+    public interface ICrudAppService<TEntityDto, in TPrimaryKey, in TGetAllInput, in TCreateInput, in TUpdateInput, in TGetInput, in TDeleteInput>
         : IService
         where TEntityDto : IEntityDto<TPrimaryKey>
         where TUpdateInput : IEntityDto<TPrimaryKey>
         where TGetInput : IEntityDto<TPrimaryKey>
         where TDeleteInput : IEntityDto<TPrimaryKey>
     {
+        TEntityDto Get(TPrimaryKey id);
+        
         TEntityDto Get(TGetInput input);
         
         PagedResultDto<TEntityDto> GetAll(TGetAllInput input);
@@ -65,6 +67,8 @@ namespace Netcool.Core.Services
         TEntityDto Update(TUpdateInput input);
 
         void Delete(TDeleteInput input);
+
+        void Delete(TPrimaryKey id);
 
         void Delete(IEnumerable<TPrimaryKey> ids);
     }
