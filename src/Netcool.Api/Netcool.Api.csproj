@@ -7,5 +7,8 @@
     <ProjectReference Include="..\Netcool.Api.Domain\Netcool.Api.Domain.csproj" />
     <ProjectReference Include="..\Netcool.Core\Netcool.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.0" />
+  </ItemGroup>
 
 </Project>
