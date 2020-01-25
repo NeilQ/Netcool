@@ -35,6 +35,7 @@ namespace Netcool.Api
                 options.UseNpgsql(Configuration.GetConnectionString("NetcoolContext"))
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
+            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,7 +52,11 @@ namespace Netcool.Api
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
+            });
         }
     }
 }
