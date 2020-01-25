@@ -34,7 +34,7 @@ namespace Netcool.Api
             services.AddControllers();
             services.AddDbContext<NetcoolDbContext>(options =>
             {
-                options.UseNpgsql(Configuration.GetConnectionString("NetcoolContext"))
+                options.UseNpgsql(Configuration.GetConnectionString("Database"))
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
             services.AddHealthChecks();
