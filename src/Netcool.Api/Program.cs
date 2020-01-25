@@ -1,9 +1,12 @@
 using System;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Netcool.Api.Domain.EfCore;
+using Serilog;
+using Serilog.Events;
 
 namespace Netcool.Api
 {
@@ -11,6 +14,15 @@ namespace Netcool.Api
     {
         public static void Main(string[] args)
         {
+            var logPath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "logs\\log.txt" : "/logs/log.txt";
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+                .WriteTo.Console()
+                .WriteTo.File(logPath, rollingInterval: RollingInterval.Day, shared: true)
+                .CreateLogger();
+
             var host = CreateHostBuilder(args).Build();
 
             CreateDbIfNotExists(host);
@@ -20,7 +32,8 @@ namespace Netcool.Api
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>().UseIISIntegration(); })
+                .UseSerilog();
 
         private static void CreateDbIfNotExists(IHost host)
         {
