@@ -7,6 +7,10 @@ using Netcool.Core.Entities;
 
 namespace Netcool.Core.Repositories
 {
+    public interface IRepository<TEntity> : IRepository<TEntity, int> where TEntity : class, IEntity<int>
+    {
+    }
+
     /// <summary>
     /// This interface is implemented by all repositories to ensure implementation of fixed methods.
     /// </summary>

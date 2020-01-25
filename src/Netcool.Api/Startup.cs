@@ -7,6 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Netcool.Api.Domain.EfCore;
+using Netcool.Core.EfCore;
+using Netcool.Core.Repositories;
+using Netcool.Core.Services;
 using Netcool.Core.WebApi.Middlewares;
 using Serilog;
 
@@ -33,6 +36,8 @@ namespace Netcool.Api
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
             services.AddHealthChecks();
+
+            services.AddTransient(typeof(IRepository<>), typeof(EfCoreRepositoryBase<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
