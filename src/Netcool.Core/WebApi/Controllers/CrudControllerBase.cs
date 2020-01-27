@@ -10,7 +10,7 @@ namespace Netcool.Core.WebApi.Controllers
     public abstract class CrudControllerBase<TEntityDto> : CrudControllerBase<TEntityDto, int, IPageRequest>
         where TEntityDto : IEntityDto<int>
     {
-        protected CrudControllerBase(ICrudAppService<TEntityDto, int, IPageRequest, TEntityDto, TEntityDto> service) :
+        protected CrudControllerBase(ICrudService<TEntityDto, int, IPageRequest, TEntityDto, TEntityDto> service) :
             base(service)
         {
         }
@@ -21,7 +21,7 @@ namespace Netcool.Core.WebApi.Controllers
         where TEntityDto : IEntityDto<TPrimaryKey>
     {
         protected CrudControllerBase(
-            ICrudAppService<TEntityDto, TPrimaryKey, IPageRequest, TEntityDto, TEntityDto> service) : base(service)
+            ICrudService<TEntityDto, TPrimaryKey, IPageRequest, TEntityDto, TEntityDto> service) : base(service)
         {
         }
     }
@@ -31,7 +31,18 @@ namespace Netcool.Core.WebApi.Controllers
         where TEntityDto : IEntityDto<TPrimaryKey>
     {
         protected CrudControllerBase(
-            ICrudAppService<TEntityDto, TPrimaryKey, TGetAllInput, TEntityDto, TEntityDto> service) : base(service)
+            ICrudService<TEntityDto, TPrimaryKey, TGetAllInput, TEntityDto, TEntityDto> service) : base(service)
+        {
+        }
+    }
+    
+    public abstract class CrudControllerBase<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput>
+        : CrudControllerBase<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TCreateInput>
+        where TEntityDto : IEntityDto<TPrimaryKey>
+        where TCreateInput : IEntityDto<TPrimaryKey>
+    {
+        protected CrudControllerBase(
+            ICrudService<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TCreateInput> service) : base(service)
         {
         }
     }
@@ -43,7 +54,7 @@ namespace Netcool.Core.WebApi.Controllers
         where TUpdateInput : IEntityDto<TPrimaryKey>
     {
         protected CrudControllerBase(
-            ICrudAppService<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput> service) : base(service)
+            ICrudService<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput> service) : base(service)
         {
         }
 

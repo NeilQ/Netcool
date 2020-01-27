@@ -9,7 +9,7 @@ namespace Netcool.Core.WebApi.Controllers
     public abstract class QueryControllerBase<TEntityDto> : QueryControllerBase<TEntityDto, int, IPageRequest>
         where TEntityDto : IEntityDto<int>
     {
-        protected QueryControllerBase(ICrudAppService<TEntityDto, int, IPageRequest, TEntityDto, TEntityDto> service) :
+        protected QueryControllerBase(ICrudService<TEntityDto, int, IPageRequest, TEntityDto, TEntityDto> service) :
             base(service)
         {
         }
@@ -20,7 +20,7 @@ namespace Netcool.Core.WebApi.Controllers
         where TEntityDto : IEntityDto<TPrimaryKey>
     {
         protected QueryControllerBase(
-            ICrudAppService<TEntityDto, TPrimaryKey, IPageRequest, TEntityDto, TEntityDto> service) : base(service)
+            ICrudService<TEntityDto, TPrimaryKey, IPageRequest, TEntityDto, TEntityDto> service) : base(service)
         {
         }
     }
@@ -30,7 +30,7 @@ namespace Netcool.Core.WebApi.Controllers
         where TEntityDto : IEntityDto<TPrimaryKey>
     {
         protected QueryControllerBase(
-            ICrudAppService<TEntityDto, TPrimaryKey, TGetAllInput, TEntityDto, TEntityDto> service) : base(service)
+            ICrudService<TEntityDto, TPrimaryKey, TGetAllInput, TEntityDto, TEntityDto> service) : base(service)
         {
         }
     }
@@ -41,10 +41,10 @@ namespace Netcool.Core.WebApi.Controllers
         where TEntityDto : IEntityDto<TPrimaryKey>
         where TUpdateInput : IEntityDto<TPrimaryKey>
     {
-        protected readonly ICrudAppService<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput> Service;
+        protected readonly ICrudService<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput> Service;
 
         protected QueryControllerBase(
-            ICrudAppService<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput> service)
+            ICrudService<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput> service)
         {
             Service = service;
         }

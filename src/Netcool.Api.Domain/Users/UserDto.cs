@@ -1,26 +1,29 @@
-﻿using System.ComponentModel;
-using Netcool.Core.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using Netcool.Core.Services.Dto;
 
 namespace Netcool.Api.Domain.Users
 {
-    public class User : FullAuditEntity
+    public class UserDto : UserSaveInput
     {
+        public bool IsRoot { get; set; }
+    }
+
+    public class UserSaveInput : EntityDto
+    {
+        [MaxLength(64)]
         public string Name { get; set; }
 
+        [MaxLength(64)]
         public string DisplayName { get; set; }
-
-        public string Password { get; set; }
 
         public Gender Gender { get; set; }
 
+        [MaxLength(64)]
         public string Email { get; set; }
 
+        [MaxLength(16)]
         public string Phone { get; set; }
 
-        [DefaultValue(true)]
         public bool IsActive { get; set; }
-
-        [DefaultValue(false)]
-        public bool IsRoot { get; set; }
     }
 }

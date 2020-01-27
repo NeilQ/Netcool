@@ -1,97 +1,95 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AutoMapper;
 using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services.Dto;
-using Netcool.Core.Sessions;
 
 namespace Netcool.Core.Services
 {
-    public abstract class CrudAppService<TEntity, TEntityDto>
-        : CrudAppService<TEntity, TEntityDto, int>
+    public abstract class CrudService<TEntity, TEntityDto>
+        : CrudService<TEntity, TEntityDto, int>
         where TEntity : class, IEntity<int>
         where TEntityDto : IEntityDto<int>
     {
-        protected CrudAppService(IRepository<TEntity, int> repository, IServiceAggregator serviceAggregator)
+        protected CrudService(IRepository<TEntity, int> repository, IServiceAggregator serviceAggregator)
             : base(repository, serviceAggregator)
         {
         }
     }
 
-    public abstract class CrudAppService<TEntity, TEntityDto, TPrimaryKey>
-        : CrudAppService<TEntity, TEntityDto, TPrimaryKey, IPageRequest>
+    public abstract class CrudService<TEntity, TEntityDto, TPrimaryKey>
+        : CrudService<TEntity, TEntityDto, TPrimaryKey, IPageRequest>
         where TEntity : class, IEntity<TPrimaryKey>
         where TEntityDto : IEntityDto<TPrimaryKey>
     {
-        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
+        protected CrudService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
             : base(repository, serviceAggregator)
         {
         }
     }
 
-    public abstract class CrudAppService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput>
-        : CrudAppService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TEntityDto, TEntityDto>
+    public abstract class CrudService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput>
+        : CrudService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TEntityDto, TEntityDto>
         where TEntity : class, IEntity<TPrimaryKey>
         where TEntityDto : IEntityDto<TPrimaryKey>
     {
-        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
+        protected CrudService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
             : base(repository, serviceAggregator)
         {
         }
     }
 
-    public abstract class CrudAppService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput>
-        : CrudAppService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TCreateInput>
+    public abstract class CrudService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput>
+        : CrudService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TCreateInput>
         where TEntity : class, IEntity<TPrimaryKey>
         where TEntityDto : IEntityDto<TPrimaryKey>
         where TCreateInput : IEntityDto<TPrimaryKey>
     {
-        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
+        protected CrudService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
             : base(repository, serviceAggregator)
         {
         }
     }
 
-    public abstract class CrudAppService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput>
-        : CrudAppService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput,
+    public abstract class CrudService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput>
+        : CrudService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput,
             EntityDto<TPrimaryKey>>
         where TEntity : class, IEntity<TPrimaryKey>
         where TEntityDto : IEntityDto<TPrimaryKey>
         where TUpdateInput : IEntityDto<TPrimaryKey>
     {
-        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
+        protected CrudService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
             : base(repository, serviceAggregator)
         {
         }
     }
 
-    public abstract class CrudAppService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput,
+    public abstract class CrudService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput,
             TGetInput>
-        : CrudAppService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput, TGetInput,
+        : CrudService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput, TGetInput,
             EntityDto<TPrimaryKey>>
         where TEntity : class, IEntity<TPrimaryKey>
         where TEntityDto : IEntityDto<TPrimaryKey>
         where TUpdateInput : IEntityDto<TPrimaryKey>
         where TGetInput : IEntityDto<TPrimaryKey>
     {
-        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
+        protected CrudService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
             : base(repository, serviceAggregator)
         {
         }
     }
 
-    public abstract class CrudAppService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput,
+    public abstract class CrudService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput,
             TGetInput, TDeleteInput>
-        : CrudAppServiceBase<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput>,
-            ICrudAppService<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput, TGetInput, TDeleteInput>
+        : CrudServiceBase<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput>,
+            ICrudService<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput, TGetInput, TDeleteInput>
         where TEntity : class, IEntity<TPrimaryKey>
         where TEntityDto : IEntityDto<TPrimaryKey>
         where TUpdateInput : IEntityDto<TPrimaryKey>
         where TGetInput : IEntityDto<TPrimaryKey>
         where TDeleteInput : IEntityDto<TPrimaryKey>
     {
-        protected CrudAppService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
+        protected CrudService(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
             : base(repository, serviceAggregator)
         {
         }
@@ -130,16 +128,25 @@ namespace Netcool.Core.Services
             );
         }
 
+        public virtual void BeforeCreate(TEntity entity)
+        {
+        }
+
         public virtual TEntityDto Create(TCreateInput input)
         {
             CheckCreatePermission();
 
             var entity = MapToEntity(input);
 
+            BeforeCreate(entity);
             Repository.Insert(entity);
             UnitOfWork.SaveChanges();
 
             return MapToEntityDto(entity);
+        }
+
+        public virtual void BeforeUpdate(TEntity entity)
+        {
         }
 
         public virtual TEntityDto Update(TUpdateInput input)
@@ -148,6 +155,7 @@ namespace Netcool.Core.Services
 
             var entity = GetEntityById(input.Id);
 
+            BeforeUpdate(entity);
             MapToEntity(input, entity);
             UnitOfWork.SaveChanges();
 

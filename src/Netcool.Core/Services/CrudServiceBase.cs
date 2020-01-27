@@ -15,7 +15,7 @@ namespace Netcool.Core.Services
     /// Inherit either from CrudAppService or AsyncCrudAppService, not from this class.
     /// </summary>
     public abstract class
-        CrudAppServiceBase<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput,
+        CrudServiceBase<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput,
             TUpdateInput>
         where TEntity : class, IEntity<TPrimaryKey>
         where TEntityDto : IEntityDto<TPrimaryKey>
@@ -37,7 +37,7 @@ namespace Netcool.Core.Services
 
         protected virtual string DeletePermissionName { get; set; }
 
-        protected CrudAppServiceBase(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
+        protected CrudServiceBase(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
         {
             Repository = repository;
             UnitOfWork = serviceAggregator.UnitOfWork;
