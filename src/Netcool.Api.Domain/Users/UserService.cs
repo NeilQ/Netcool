@@ -9,7 +9,7 @@ namespace Netcool.Api.Domain.Users
     {
         private const string DefaultPassword = "123456";
 
-        public UserService(IRepository<User, int> repository, IServiceAggregator serviceAggregator) : base(repository,
+        public UserService(IRepository<User> repository, IServiceAggregator serviceAggregator) : base(repository,
             serviceAggregator)
         {
         }

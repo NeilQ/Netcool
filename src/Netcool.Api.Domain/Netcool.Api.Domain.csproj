@@ -5,11 +5,24 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Migrations\20200128084647_InitialCreate.cs" />
+      <Compile Remove="Migrations\20200128084647_InitialCreate.Designer.cs" />
+      <Compile Remove="Migrations\20200128095335_Init.cs" />
+      <Compile Remove="Migrations\20200128095335_Init.Designer.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\Netcool.Core\Netcool.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="EFCore.NamingConventions" Version="1.1.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.0" />
     </ItemGroup>
 

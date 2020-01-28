@@ -14,7 +14,7 @@ namespace Netcool.Api
     {
         public static void Main(string[] args)
         {
-            var logPath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "logs\\log.txt" : "/logs/log.txt";
+            var logPath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "logs\\.log" : "/logs/.log";
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)

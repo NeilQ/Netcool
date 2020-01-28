@@ -1,3 +1,4 @@
+using System.Reflection;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,9 +10,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Netcool.Api.Domain.EfCore;
+using Netcool.Api.Domain.Repositories;
 using Netcool.Api.Domain.Users;
 using Netcool.Core.EfCore;
+using Netcool.Core.Entities;
+using Netcool.Core.Helpers;
 using Netcool.Core.Repositories;
+using Netcool.Core.Services;
 using Netcool.Core.Sessions;
 using Netcool.Core.WebApi.Middlewares;
 using Serilog;
@@ -36,6 +41,7 @@ namespace Netcool.Api
             services.AddDbContext<NetcoolDbContext>(options =>
             {
                 options.UseNpgsql(Configuration.GetConnectionString("Database"))
+                    .UseSnakeCaseNamingConvention()
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
             services.AddHealthChecks();
@@ -43,11 +49,13 @@ namespace Netcool.Api
             services.AddAutoMapper(typeof(Startup));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IUserSession, UserSession>();
-            
-            services.AddTransient(typeof(IRepository<>), typeof(EfCoreRepositoryBase<>));
-            
+
+            // domain
+            services.AddTransient(typeof(IRepository<>), typeof(CommonRepository<>));
+            services.AddTransient<IServiceAggregator, ServiceAggregator>();
             services.AddTransient<IUserService, UserService>();
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

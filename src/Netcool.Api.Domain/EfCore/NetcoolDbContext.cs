@@ -16,9 +16,19 @@ namespace Netcool.Api.Domain.EfCore
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<Menu> Menus { get; set; }
 
+        public NetcoolDbContext(DbContextOptions<NetcoolDbContext> options) : base(options)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSnakeCaseNamingConvention();
+            base.OnConfiguring(optionsBuilder);
         }
     }
 }

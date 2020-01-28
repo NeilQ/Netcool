@@ -15,11 +15,8 @@ namespace Netcool.Core.EfCore
 {
     public class DbContextBase : DbContext
     {
-        public DbContextBase()
-        {
-        }
 
-        public DbContextBase(DbContextOptions<DbContextBase> options) : base(options)
+        public DbContextBase(DbContextOptions options) : base(options)
         {
         }
 
