@@ -75,8 +75,6 @@ namespace Netcool.Core.Services
         /// <summary>
         /// This method should create <see cref="IQueryable{TEntity}"/> based on given input.
         /// It should filter query if needed, but should not do sorting or paging.
-        /// Sorting should be done in <see cref="ApplySorting"/> and paging should be done in <see cref="ApplyPaging"/>
-        /// methods.
         /// </summary>
         /// <param name="input">The input.</param>
         protected virtual IQueryable<TEntity> CreateFilteredQuery(TGetAllInput input)
@@ -89,6 +87,7 @@ namespace Netcool.Core.Services
         /// </summary>
         protected virtual TEntityDto MapToEntityDto(TEntity entity)
         {
+            if (entity == null) return default;
             return Mapper.Map<TEntityDto>(entity);
         }
 
@@ -97,6 +96,7 @@ namespace Netcool.Core.Services
         /// </summary>
         protected virtual TEntity MapToEntity(TCreateInput createInput)
         {
+            if (createInput == null) return default;
             return Mapper.Map<TEntity>(createInput);
         }
 

@@ -15,6 +15,8 @@ using Microsoft.OpenApi.Models;
 using Netcool.Api.Domain.EfCore;
 using Netcool.Api.Domain.Repositories;
 using Netcool.Api.Domain.Users;
+using Netcool.Core;
+using Netcool.Core.Authorization;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
 using Netcool.Core.Sessions;
@@ -45,22 +47,24 @@ namespace Netcool.Api
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
             services.AddHealthChecks();
-            
+
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Netcool API", Version = "v1" });
-                
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Netcool API", Version = "v1"});
+
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
-                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Core.xml")); 
-                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Api.Domain.xml")); 
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Core.xml"));
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Api.Domain.xml"));
             });
-            
+
             services.AddAutoMapper(typeof(Startup));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddScoped<IUserSession, UserSession>();
 
             // domain
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton<IPermissionChecker, NullPermissionChecker>();
+            services.AddScoped<IUserSession, UserSession>();
             services.AddTransient(typeof(IRepository<>), typeof(CommonRepository<>));
             services.AddTransient<IServiceAggregator, ServiceAggregator>();
             services.AddTransient<IUserService, UserService>();
@@ -93,12 +97,9 @@ namespace Netcool.Api
                 endpoints.MapControllers();
                 endpoints.MapHealthChecks("/health");
             });
-            
+
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Netcool API V1");
-            });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Netcool API V1"); });
         }
     }
 }

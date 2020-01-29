@@ -11,10 +11,6 @@ namespace Netcool.Core.Services
         public IMapper Mapper { get; set; }
         public IPermissionChecker PermissionChecker { get; set; }
 
-        public ServiceAggregator()
-        {
-        }
-
         public ServiceAggregator(IUnitOfWork unitOfWork, IUserSession session, IMapper mapper,
             IPermissionChecker permissionChecker)
         {

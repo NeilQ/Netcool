@@ -59,14 +59,14 @@ namespace Netcool.Core.WebApi.Controllers
         }
 
         [HttpGet]
-        public virtual ActionResult<IPagedResult<TEntityDto>> GetByPage(TGetAllInput input)
+        public virtual ActionResult<IPagedResult<TEntityDto>> GetByPage([FromQuery]TGetAllInput input)
         {
             var dto = Service.GetAll(input);
             return dto;
         }
 
         [HttpGet("items")]
-        public virtual ActionResult<IList<TEntityDto>> GetAllItems(TGetAllInput input)
+        public virtual ActionResult<IList<TEntityDto>> GetAllItems([FromQuery]TGetAllInput input)
         {
             var dto = Service.GetAll(input);
             return dto.Items.ToList();

@@ -5,11 +5,11 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DocumentationFile>bin\Debug\Netcool.Api.xml</DocumentationFile>
-    <NoWarn>1701;1702;1591</NoWarn>
+    <NoWarn>1701;1702;1591;1723</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DocumentationFile>bin\Release\Netcool.Api.xml</DocumentationFile>
-    <NoWarn>1701;1702;1591</NoWarn>
+    <NoWarn>1701;1702;1591;1723</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Netcool.Api.Domain\Netcool.Api.Domain.csproj" />

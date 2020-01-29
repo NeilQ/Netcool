@@ -36,6 +36,7 @@ namespace Netcool.Core.Entities
         /// <summary>
         /// Creates a new <see cref="NetcoolException"/> object.
         /// </summary>
+        /// <param name="errorCode"></param>
         /// <param name="message">Exception message</param>
         /// <param name="innerException">Inner exception</param>
         public NetcoolException(int errorCode, string message, Exception innerException)
