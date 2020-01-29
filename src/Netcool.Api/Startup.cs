@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using System.Reflection;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
@@ -9,12 +11,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Netcool.Api.Domain.EfCore;
 using Netcool.Api.Domain.Repositories;
 using Netcool.Api.Domain.Users;
-using Netcool.Core.EfCore;
-using Netcool.Core.Entities;
-using Netcool.Core.Helpers;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
 using Netcool.Core.Sessions;
@@ -45,7 +45,17 @@ namespace Netcool.Api
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
             services.AddHealthChecks();
-
+            
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Netcool API", Version = "v1" });
+                
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Core.xml")); 
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Api.Domain.xml")); 
+            });
+            
             services.AddAutoMapper(typeof(Startup));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IUserSession, UserSession>();
@@ -82,6 +92,12 @@ namespace Netcool.Api
             {
                 endpoints.MapControllers();
                 endpoints.MapHealthChecks("/health");
+            });
+            
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Netcool API V1");
             });
         }
     }

@@ -36,6 +36,7 @@ namespace Netcool.Core.WebApi.Controllers
     }
 
     [ApiController]
+    [Produces("application/json")] 
     public abstract class
         QueryControllerBase<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput> : ControllerBase
         where TEntityDto : IEntityDto<TPrimaryKey>
