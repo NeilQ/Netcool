@@ -93,7 +93,7 @@ namespace Netcool.Core.Services
             : base(repository, serviceAggregator)
         {
         }
-
+        
         public virtual TEntityDto Get(TPrimaryKey id)
         {
             CheckGetPermission();

@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Netcool.Api.Domain.EfCore;
 using Netcool.Api.Domain.Repositories;
+using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
 using Netcool.Core;
 using Netcool.Core.Authorization;
@@ -66,8 +67,10 @@ namespace Netcool.Api
             services.AddSingleton<IPermissionChecker, NullPermissionChecker>();
             services.AddScoped<IUserSession, UserSession>();
             services.AddTransient(typeof(IRepository<>), typeof(CommonRepository<>));
+            services.AddTransient<IRepository<User, int>, CommonRepository<User>>();
             services.AddTransient<IServiceAggregator, ServiceAggregator>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IRoleService, RoleService>();
         }
 
 

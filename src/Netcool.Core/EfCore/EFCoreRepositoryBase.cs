@@ -12,7 +12,7 @@ using Netcool.Core.Repositories;
 
 namespace Netcool.Core.EfCore
 {
-    public class EfCoreRepositoryBase<TEntity> : EfCoreRepositoryBase<TEntity, int>,IRepository<TEntity>
+    public class EfCoreRepositoryBase<TEntity> : EfCoreRepositoryBase<TEntity, int>, IRepository<TEntity>
         where TEntity : class, IEntity<int>
     {
         public EfCoreRepositoryBase(DbContextBase dbContextBase)
