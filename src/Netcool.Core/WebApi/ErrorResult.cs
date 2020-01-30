@@ -2,7 +2,7 @@
 {
     public class ErrorResult
     {
-        public int Code { get; set; }
+        public int ErrorCode { get; set; }
 
         public string Message { get; set; }
 
@@ -10,9 +10,9 @@
         {
         }
 
-        public ErrorResult(int code, string message)
+        public ErrorResult(int errorCode, string message)
         {
-            Code = code;
+            ErrorCode = errorCode;
             Message = message;
         }
     }

@@ -10,6 +10,7 @@ namespace Netcool.Api.Domain.Users
 
     public class UserSaveInput : EntityDto
     {
+        [Required(AllowEmptyStrings = false)]
         [MaxLength(64)]
         public string Name { get; set; }
 

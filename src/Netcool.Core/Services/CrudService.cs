@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services.Dto;
@@ -93,20 +94,12 @@ namespace Netcool.Core.Services
             : base(repository, serviceAggregator)
         {
         }
-        
+
         public virtual TEntityDto Get(TPrimaryKey id)
         {
             CheckGetPermission();
 
             var entity = GetEntityById(id);
-            return MapToEntityDto(entity);
-        }
-
-        public virtual TEntityDto Get(TGetInput input)
-        {
-            CheckGetPermission();
-
-            var entity = GetEntityById(input.Id);
             return MapToEntityDto(entity);
         }
 
@@ -120,7 +113,7 @@ namespace Netcool.Core.Services
 
             query = ApplyPaging(query, input);
 
-            var entities = query.ToList();
+            var entities = query.AsNoTracking().ToList();
 
             return new PagedResultDto<TEntityDto>(
                 totalCount,
@@ -160,14 +153,6 @@ namespace Netcool.Core.Services
             UnitOfWork.SaveChanges();
 
             return MapToEntityDto(entity);
-        }
-
-        public virtual void Delete(TDeleteInput input)
-        {
-            CheckDeletePermission();
-
-            Repository.Delete(input.Id);
-            UnitOfWork.SaveChanges();
         }
 
         public virtual void Delete(TPrimaryKey id)

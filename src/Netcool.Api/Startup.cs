@@ -14,8 +14,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Netcool.Api.Domain.EfCore;
 using Netcool.Api.Domain.Repositories;
-using Netcool.Api.Domain.Roles;
-using Netcool.Api.Domain.Users;
 using Netcool.Core;
 using Netcool.Core.Authorization;
 using Netcool.Core.Extensions;
@@ -45,8 +43,7 @@ namespace Netcool.Api
             services.AddDbContext<NetcoolDbContext>(options =>
             {
                 options.UseNpgsql(Configuration.GetConnectionString("Database"))
-                    .UseSnakeCaseNamingConvention()
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                    .UseSnakeCaseNamingConvention();
             });
             services.AddHealthChecks();
 

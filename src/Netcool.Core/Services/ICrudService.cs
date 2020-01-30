@@ -58,15 +58,11 @@ namespace Netcool.Core.Services
     {
         TEntityDto Get(TPrimaryKey id);
         
-        TEntityDto Get(TGetInput input);
-        
         PagedResultDto<TEntityDto> GetAll(TGetAllInput input);
 
         TEntityDto Create(TCreateInput input);
 
         TEntityDto Update(TUpdateInput input);
-
-        void Delete(TDeleteInput input);
 
         void Delete(TPrimaryKey id);
 

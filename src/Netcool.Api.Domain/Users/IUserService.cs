@@ -5,5 +5,9 @@ namespace Netcool.Api.Domain.Users
 {
     public interface IUserService : ICrudService<UserDto, int, PageRequest, UserSaveInput>
     {
+        public void ChangePassword(int id, ChangePasswordInput input);
+
+
+        public void ResetPassword(int id, ResetPasswordInput input);
     }
 }

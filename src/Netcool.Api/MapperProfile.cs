@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
 
 namespace Netcool.Api
@@ -9,6 +10,8 @@ namespace Netcool.Api
         {
             CreateMap<User, UserDto>();
             CreateMap<UserSaveInput, User>();
+            CreateMap<Role, RoleDto>();
+            CreateMap<RoleSaveInput, Role>();
         }
     }
 }

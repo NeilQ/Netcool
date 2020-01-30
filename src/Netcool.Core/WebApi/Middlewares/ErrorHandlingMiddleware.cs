@@ -38,7 +38,7 @@ namespace Netcool.Core.WebApi.Middlewares
             if (exception is UserFriendlyException e)
             {
                 statusCode = HttpStatusCode.BadRequest;
-                errorCode = e.Code;
+                errorCode = e.ErrorCode;
             }
             else if (exception is EntityNotFoundException)
             {
