@@ -20,7 +20,9 @@ namespace Netcool.Api
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                 .WriteTo.Console()
-                .WriteTo.File(logPath, rollingInterval: RollingInterval.Day, shared: true)
+                .WriteTo.File(logPath, rollingInterval: RollingInterval.Day,
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
+                    shared: true)
                 .CreateLogger();
 
             var host = CreateHostBuilder(args).Build();
