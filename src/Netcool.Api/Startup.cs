@@ -18,6 +18,7 @@ using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
 using Netcool.Core;
 using Netcool.Core.Authorization;
+using Netcool.Core.Extensions;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
 using Netcool.Core.Sessions;
@@ -67,10 +68,9 @@ namespace Netcool.Api
             services.AddSingleton<IPermissionChecker, NullPermissionChecker>();
             services.AddScoped<IUserSession, UserSession>();
             services.AddTransient(typeof(IRepository<>), typeof(CommonRepository<>));
-            services.AddTransient<IRepository<User, int>, CommonRepository<User>>();
+            services.AddTransient(typeof(IRepository<,>), typeof(CommonRepository<,>));
             services.AddTransient<IServiceAggregator, ServiceAggregator>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IRoleService, RoleService>();
+            services.AddDomainServiceTypes(Assembly.GetAssembly(typeof(NetcoolDbContext)));
         }
 
 

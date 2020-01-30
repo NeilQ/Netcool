@@ -11,4 +11,12 @@ namespace Netcool.Api.Domain.Repositories
         {
         }
     }
+
+    public class CommonRepository<TEntity, TPrimary> : EfCoreRepositoryBase<TEntity, TPrimary>
+        where TEntity : class, IEntity<TPrimary>
+    {
+        public CommonRepository(NetcoolDbContext dbContext) : base(dbContext)
+        {
+        }
+    }
 }
