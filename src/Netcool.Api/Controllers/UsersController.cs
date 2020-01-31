@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
 using Netcool.Core.Services.Dto;
 using Netcool.Core.WebApi.Controllers;
@@ -16,6 +18,12 @@ namespace Netcool.Api.Controllers
             _userService = userUserService;
         }
 
+        /// <summary>
+        /// Change user password.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost("{id}/password/change")]
         public IActionResult ChangePassword(int id, [FromBody] ChangePasswordInput input)
         {
@@ -24,11 +32,29 @@ namespace Netcool.Api.Controllers
         }
 
 
+        /// <summary>
+        /// Reset user password.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost("{id}/password/reset")]
         public IActionResult ResetPassword(int id, [FromBody] ResetPasswordInput input)
         {
             _userService.ResetPassword(id, input);
             return Ok();
+        }
+
+        /// <summary>
+        /// Get all user roles.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/roles")]
+        public ActionResult<IList<Role>> GetUserRoles(int id)
+        {
+            var roles = _userService.GetUserRoles(id);
+            return Ok(roles);
         }
     }
 }

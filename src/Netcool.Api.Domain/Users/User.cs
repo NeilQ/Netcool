@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using Netcool.Core.Entities;
 
 namespace Netcool.Api.Domain.Users
@@ -22,5 +23,7 @@ namespace Netcool.Api.Domain.Users
 
         [DefaultValue(false)]
         public bool IsRoot { get; set; }
+        
+        public ICollection<UserRole> UserRoles { get; set; }
     }
 }

@@ -91,6 +91,12 @@ namespace Netcool.Core.Services
             return Mapper.Map<TEntityDto>(entity);
         }
 
+        protected virtual TDestination MapToEntityDto<TSource, TDestination>(TSource entity)
+        {
+            if (entity == null) return default;
+            return Mapper.Map<TDestination>(entity);
+        }
+
         /// <summary>
         /// Maps <see cref="TEntityDto"/> to <see cref="TEntity"/> to create a new entity.
         /// </summary>

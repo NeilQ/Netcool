@@ -1,4 +1,9 @@
-﻿using Netcool.Core;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Netcool.Api.Domain.Roles;
+using Netcool.Core;
+using Netcool.Core.Entities;
 using Netcool.Core.Helpers;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
@@ -55,6 +60,16 @@ namespace Netcool.Api.Domain.Users
 
             user.Password = Encrypt.Md5By32(input.New);
             UnitOfWork.SaveChanges();
+        }
+
+        public IList<RoleDto> GetUserRoles(int id)
+        {
+            var user = Repository.GetAll().AsNoTracking()
+                .Include(t => t.UserRoles)
+                .ThenInclude(t => t.Role)
+                .FirstOrDefault(t => t.Id == id);
+            if (user == null) throw new EntityNotFoundException(typeof(User), id);
+            return user.UserRoles?.Select(t => MapToEntityDto<Role, RoleDto>(t.Role)).ToList();
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Netcool.Core.Services;
+﻿using System.Collections.Generic;
+using Netcool.Api.Domain.Roles;
+using Netcool.Core.Services;
 using Netcool.Core.Services.Dto;
 
 namespace Netcool.Api.Domain.Users
@@ -7,7 +9,8 @@ namespace Netcool.Api.Domain.Users
     {
         public void ChangePassword(int id, ChangePasswordInput input);
 
-
         public void ResetPassword(int id, ResetPasswordInput input);
+
+        IList<RoleDto> GetUserRoles(int id);
     }
 }
