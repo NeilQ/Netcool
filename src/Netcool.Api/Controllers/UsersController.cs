@@ -56,5 +56,18 @@ namespace Netcool.Api.Controllers
             var roles = _userService.GetUserRoles(id);
             return Ok(roles);
         }
+
+        /// <summary>
+        /// Set user roles.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="roleIds"></param>
+        /// <returns></returns>
+        [HttpPost("{id}/roles")]
+        public IActionResult SaveUserRoles(int id, [FromBody] IList<int> roleIds)
+        {
+            _userService.SaveUserRoles(id, roleIds);
+            return Ok();
+        }
     }
 }

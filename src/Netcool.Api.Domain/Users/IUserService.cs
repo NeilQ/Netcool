@@ -11,6 +11,8 @@ namespace Netcool.Api.Domain.Users
 
         public void ResetPassword(int id, ResetPasswordInput input);
 
-        IList<RoleDto> GetUserRoles(int id);
+        public IList<RoleDto> GetUserRoles(int id);
+
+        public void SaveUserRoles(int id, IList<int> roleIds);
     }
 }

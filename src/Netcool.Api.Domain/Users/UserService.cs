@@ -15,10 +15,15 @@ namespace Netcool.Api.Domain.Users
     {
         private const string DefaultPassword = "123456";
 
-        public UserService(IRepository<User> userRepository, IServiceAggregator serviceAggregator) : base(
+        private readonly IRepository<Role> _roleRepository;
+
+        public UserService(IRepository<User> userRepository,
+            IServiceAggregator serviceAggregator,
+            IRepository<Role> roleRepository) : base(
             userRepository,
             serviceAggregator)
         {
+            _roleRepository = roleRepository;
         }
 
         public override void BeforeCreate(User entity)
@@ -64,12 +69,47 @@ namespace Netcool.Api.Domain.Users
 
         public IList<RoleDto> GetUserRoles(int id)
         {
+            if (id <= 0) throw new EntityNotFoundException(typeof(User), id);
             var user = Repository.GetAll().AsNoTracking()
                 .Include(t => t.UserRoles)
                 .ThenInclude(t => t.Role)
                 .FirstOrDefault(t => t.Id == id);
             if (user == null) throw new EntityNotFoundException(typeof(User), id);
             return user.UserRoles?.Select(t => MapToEntityDto<Role, RoleDto>(t.Role)).ToList();
+        }
+
+        public void SaveUserRoles(int id, IList<int> roleIds)
+        {
+            // validate user
+            if (id <= 0) throw new EntityNotFoundException(typeof(User), id);
+            var user = Repository.GetAll()
+                .Include(t => t.UserRoles)
+                .FirstOrDefault(t => t.Id == id);
+            if (user == null) throw new EntityNotFoundException(typeof(User), id);
+
+            // valid roleIds
+            if (roleIds != null && roleIds.Count > 0)
+            {
+                var roles = _roleRepository.GetAll().AsNoTracking()
+                    .Where(t => roleIds.Contains(t.Id)).ToList();
+                var invalidIds = roleIds.Where(t => roles.All(r => r.Id != t)).ToList();
+                if (invalidIds.Count > 0)
+                {
+                    throw new EntityNotFoundException($"Role with ids [{string.Join(',', invalidIds)}] not found.");
+                }
+            }
+
+            // save use roles
+            user.UserRoles = new List<UserRole>();
+            if (roleIds != null && roleIds.Count > 0)
+            {
+                foreach (var roleId in roleIds)
+                {
+                    user.UserRoles.Add(new UserRole(id, roleId));
+                }
+            }
+
+            UnitOfWork.SaveChanges();
         }
     }
 }
