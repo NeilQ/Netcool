@@ -35,7 +35,7 @@ namespace Netcool.Api
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>().UseIISIntegration(); })
-                .UseSerilog();
+               .UseSerilog();
 
         private static void CreateDbIfNotExists(IHost host)
         {

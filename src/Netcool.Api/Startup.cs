@@ -1,7 +1,10 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +14,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Netcool.Api.Domain.Authorization;
 using Netcool.Api.Domain.EfCore;
 using Netcool.Api.Domain.Repositories;
 using Netcool.Core;
@@ -47,15 +52,85 @@ namespace Netcool.Api
             });
             services.AddHealthChecks();
 
+            // swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Netcool API", Version = "v1"});
-                
+
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Core.xml"));
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Api.Domain.xml"));
+
+                c.AddSecurityDefinition("Bearer",
+                    new OpenApiSecurityScheme
+                    {
+                        Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
+                        Name = "Authorization",
+                        In = ParameterLocation.Header,
+                        Type = SecuritySchemeType.ApiKey,
+                        Scheme = "Bearer"
+                    });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Id = "Bearer", //The name of the previously defined security scheme.
+                                Type = ReferenceType.SecurityScheme,
+                            },
+                            Name = "Bearer"
+                        },
+                        new string[] { }
+                    }
+                });
             });
+
+            // jwt
+            var jwtOptions = new JwtOptions();
+            var jwtSection = Configuration.GetSection("Jwt");
+            jwtSection.Bind(jwtOptions);
+            services.Configure<JwtOptions>(jwtSection);
+            services.AddAuthentication(s =>
+                {
+                    s.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    s.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    s.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtOptions.Issuer,
+                        ValidAudience = jwtOptions.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret))
+                    };
+
+                    // We have to hook the OnMessageReceived event in order to
+                    // allow the JWT authentication handler to read the access
+                    // token from the query string when a WebSocket or 
+                    // Server-Sent Events request comes in.
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+                            if (!string.IsNullOrEmpty(accessToken))
+                            {
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        },
+                    };
+                });
 
             services.AddAutoMapper(typeof(Startup));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -99,10 +174,7 @@ namespace Netcool.Api
             });
 
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Netcool API V1");
-            });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Netcool API V1"); });
         }
     }
 }
