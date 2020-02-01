@@ -78,7 +78,7 @@ namespace Netcool.Api.Domain.Users
             return user.UserRoles?.Select(t => MapToEntityDto<Role, RoleDto>(t.Role)).ToList();
         }
 
-        public void SaveUserRoles(int id, IList<int> roleIds)
+        public void SetUserRoles(int id, IList<int> roleIds)
         {
             // validate user
             if (id <= 0) throw new EntityNotFoundException(typeof(User), id);
@@ -87,11 +87,11 @@ namespace Netcool.Api.Domain.Users
                 .FirstOrDefault(t => t.Id == id);
             if (user == null) throw new EntityNotFoundException(typeof(User), id);
 
-            // valid roleIds
+            // validate roleIds
             if (roleIds != null && roleIds.Count > 0)
             {
                 var roles = _roleRepository.GetAll().AsNoTracking()
-                    .Where(t => roleIds.Contains(t.Id)).ToList();
+                    .Where(t => roleIds.Any(r => r == t.Id)).ToList();
                 var invalidIds = roleIds.Where(t => roles.All(r => r.Id != t)).ToList();
                 if (invalidIds.Count > 0)
                 {
@@ -99,7 +99,7 @@ namespace Netcool.Api.Domain.Users
                 }
             }
 
-            // save use roles
+            // save user roles
             user.UserRoles = new List<UserRole>();
             if (roleIds != null && roleIds.Count > 0)
             {

@@ -66,7 +66,7 @@ namespace Netcool.Api.Controllers
         [HttpPost("{id}/roles")]
         public IActionResult SaveUserRoles(int id, [FromBody] IList<int> roleIds)
         {
-            _userService.SaveUserRoles(id, roleIds);
+            _userService.SetUserRoles(id, roleIds);
             return Ok();
         }
     }

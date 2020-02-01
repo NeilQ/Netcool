@@ -1,4 +1,5 @@
-﻿using Netcool.Core.Entities;
+﻿using System.Collections.Generic;
+using Netcool.Core.Entities;
 
 namespace Netcool.Api.Domain.Roles
 {
@@ -7,5 +8,7 @@ namespace Netcool.Api.Domain.Roles
         public string Name { get; set; }
 
         public string Notes { get; set; }
+        
+        public ICollection<RolePermission> RolePermissions { get; set; }
     }
 }

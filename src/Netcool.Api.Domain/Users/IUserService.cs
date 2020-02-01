@@ -13,6 +13,6 @@ namespace Netcool.Api.Domain.Users
 
         public IList<RoleDto> GetUserRoles(int id);
 
-        public void SaveUserRoles(int id, IList<int> roleIds);
+        public void SetUserRoles(int id, IList<int> roleIds);
     }
 }
