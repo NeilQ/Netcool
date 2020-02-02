@@ -31,7 +31,60 @@ namespace Netcool.Api.Domain.Users
             // initialize password
             entity.Name = entity.Name.SafeString();
             entity.Phone = entity.Phone.SafeString();
+            entity.Email = entity.Email.SafeString();
             entity.Password = Encrypt.Md5By32(DefaultPassword);
+
+            // check email and phone
+            var duplicateUser = Repository.GetAll().AsNoTracking()
+                .FirstOrDefault(t =>
+                    t.Name == entity.Name ||
+                    !string.IsNullOrEmpty(t.Phone) && t.Phone == entity.Phone ||
+                    !string.IsNullOrEmpty(t.Email) && t.Email == entity.Email);
+            if (duplicateUser == null) return;
+            if (duplicateUser.Name == entity.Name)
+            {
+                throw new UserFriendlyException("用户名已存在");
+            }
+
+            if (!string.IsNullOrEmpty(duplicateUser.Phone) && duplicateUser.Phone == entity.Phone)
+            {
+                throw new UserFriendlyException("手机号已存在");
+            }
+
+            if (!string.IsNullOrEmpty(duplicateUser.Email) && duplicateUser.Email == entity.Email)
+            {
+                throw new UserFriendlyException("邮箱已存在");
+            }
+        }
+
+        public override void BeforeUpdate(UserSaveInput dto, User originEntity)
+        {
+            dto.Name = dto.Name.SafeString();
+            dto.Phone = dto.Phone.SafeString();
+            dto.Email = dto.Email.SafeString();
+
+            // check email and phone
+            var duplicateUser = Repository.GetAll().AsNoTracking()
+                .FirstOrDefault(t =>
+                    t.Id != originEntity.Id &&
+                    (t.Name == dto.Name ||
+                     !string.IsNullOrEmpty(t.Phone) && t.Phone == dto.Phone ||
+                     !string.IsNullOrEmpty(t.Email) && t.Email == dto.Email));
+            if (duplicateUser == null) return;
+            if (duplicateUser.Name == dto.Name)
+            {
+                throw new UserFriendlyException("用户名已存在");
+            }
+
+            if (!string.IsNullOrEmpty(duplicateUser.Phone) && duplicateUser.Phone == dto.Phone)
+            {
+                throw new UserFriendlyException("手机号已存在");
+            }
+
+            if (!string.IsNullOrEmpty(duplicateUser.Email) && duplicateUser.Email == dto.Email)
+            {
+                throw new UserFriendlyException("邮箱已存在");
+            }
         }
 
         public void ChangePassword(int id, ChangePasswordInput input)

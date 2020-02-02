@@ -130,15 +130,15 @@ namespace Netcool.Core.Services
             CheckCreatePermission();
 
             var entity = MapToEntity(input);
-
             BeforeCreate(entity);
+
             Repository.Insert(entity);
             UnitOfWork.SaveChanges();
 
             return MapToEntityDto(entity);
         }
 
-        public virtual void BeforeUpdate(TEntity entity)
+        public virtual void BeforeUpdate(TUpdateInput input, TEntity originEntity)
         {
         }
 
@@ -148,7 +148,7 @@ namespace Netcool.Core.Services
 
             var entity = GetEntityById(input.Id);
 
-            BeforeUpdate(entity);
+            BeforeUpdate(input, entity);
             MapToEntity(input, entity);
             UnitOfWork.SaveChanges();
 
