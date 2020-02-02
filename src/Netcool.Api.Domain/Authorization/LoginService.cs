@@ -38,6 +38,7 @@ namespace Netcool.Api.Domain.Authorization
                     (t.Name == input.Name || t.Email == input.Name || t.Phone == input.Name) &&
                     t.Password == Encrypt.Md5By32(input.Password));
             if (user == null) throw new UserFriendlyException("用户名或密码错误!");
+            if (user.IsActive == false) throw new UserFriendlyException("用户未激活!");
 
             return CreateLoginResult(user);
         }
