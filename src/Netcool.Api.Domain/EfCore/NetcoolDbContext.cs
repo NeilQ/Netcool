@@ -15,6 +15,7 @@ namespace Netcool.Api.Domain.EfCore
         public DbSet<Role> Roles { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<Menu> Menus { get; set; }
+        public DbSet<UserLoginAttempt> UserLoginAttempts { get; set; }
 
         public NetcoolDbContext(DbContextOptions<NetcoolDbContext> options) : base(options)
         {

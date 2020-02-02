@@ -12,19 +12,31 @@ using Netcool.Core;
 using Netcool.Core.Authorization;
 using Netcool.Core.Helpers;
 using Netcool.Core.Repositories;
+using Netcool.Core.WebApi;
 
 namespace Netcool.Api.Domain.Authorization
 {
     public class LoginService : ILoginService
     {
         private readonly IRepository<User> _userRepository;
+        private readonly IRepository<UserLoginAttempt> _userLoginAttemptRepository;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly JwtOptions _jwtOptions;
+        private readonly IClientInfoProvider _clientInfoProvider;
 
-        public LoginService(IRepository<User> userRepository, IMapper mapper, IOptions<JwtOptions> jwtOptionsAccessor)
+        public LoginService(IRepository<User> userRepository,
+            IRepository<UserLoginAttempt> userLoginAttemptRepository,
+            IMapper mapper,
+            IOptions<JwtOptions> jwtOptionsAccessor,
+            IClientInfoProvider clientInfoProvider,
+            IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _clientInfoProvider = clientInfoProvider;
+            _unitOfWork = unitOfWork;
+            _userLoginAttemptRepository = userLoginAttemptRepository;
             _jwtOptions = jwtOptionsAccessor.Value;
         }
 
@@ -37,10 +49,26 @@ namespace Netcool.Api.Domain.Authorization
                 .FirstOrDefault(t =>
                     (t.Name == input.Name || t.Email == input.Name || t.Phone == input.Name) &&
                     t.Password == Encrypt.Md5By32(input.Password));
+            SaveLoginAttempt(input, user);
             if (user == null) throw new UserFriendlyException("用户名或密码错误!");
             if (user.IsActive == false) throw new UserFriendlyException("用户未激活!");
 
             return CreateLoginResult(user);
+        }
+
+        private void SaveLoginAttempt(LoginInput input, User user)
+        {
+            var attempt = new UserLoginAttempt
+            {
+                Success = user != null && user.IsActive,
+                UserId = user?.Id ?? 0,
+                LoginName = input.Name,
+                ClientIp = _clientInfoProvider.ClientIpAddress,
+                ClientName = _clientInfoProvider.ClientName,
+                BrowserInfo = _clientInfoProvider.BrowserInfo
+            };
+            _userLoginAttemptRepository.Insert(attempt);
+            _unitOfWork.SaveChanges();
         }
 
         private LoginResult CreateLoginResult(User user)

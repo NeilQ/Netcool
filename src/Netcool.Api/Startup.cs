@@ -25,6 +25,7 @@ using Netcool.Core.Extensions;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
 using Netcool.Core.Sessions;
+using Netcool.Core.WebApi;
 using Netcool.Core.WebApi.Middlewares;
 using Serilog;
 
@@ -139,10 +140,11 @@ namespace Netcool.Api
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IPermissionChecker, NullPermissionChecker>();
             services.AddScoped<IUserSession, UserSession>();
-            services.AddTransient(typeof(IRepository<>), typeof(CommonRepository<>));
-            services.AddTransient(typeof(IRepository<,>), typeof(CommonRepository<,>));
+            services.AddScoped<IClientInfoProvider, HttpContextClientInfoProvider>();
+            services.AddScoped(typeof(IRepository<>), typeof(CommonRepository<>));
+            services.AddScoped(typeof(IRepository<,>), typeof(CommonRepository<,>));
             services.AddTransient<IServiceAggregator, ServiceAggregator>();
-            services.AddDomainServiceTypes(Assembly.GetAssembly(typeof(NetcoolDbContext)));
+            services.AddDomainServiceTypes(Assembly.GetAssembly(typeof(NetcoolDbContext)), ServiceLifetime.Scoped);
         }
 
 
