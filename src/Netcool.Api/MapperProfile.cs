@@ -14,6 +14,7 @@ namespace Netcool.Api
             CreateMap<Role, RoleDto>();
             CreateMap<RoleSaveInput, Role>();
             CreateMap<Permission, PermissionDto>();
+            CreateMap<UserLoginAttempt, UserLoginAttemptDto>();
         }
     }
 }

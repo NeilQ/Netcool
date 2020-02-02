@@ -4,6 +4,7 @@ using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
 using Netcool.Core.EfCore;
+using Netcool.Core.Sessions;
 
 namespace Netcool.Api.Domain.EfCore
 {
@@ -17,7 +18,8 @@ namespace Netcool.Api.Domain.EfCore
         public DbSet<Menu> Menus { get; set; }
         public DbSet<UserLoginAttempt> UserLoginAttempts { get; set; }
 
-        public NetcoolDbContext(DbContextOptions<NetcoolDbContext> options) : base(options)
+        public NetcoolDbContext(DbContextOptions<NetcoolDbContext> options, IUserSession userSession) : base(options,
+            userSession)
         {
         }
 

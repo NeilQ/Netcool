@@ -15,9 +15,9 @@ namespace Netcool.Core.EfCore
 {
     public class DbContextBase : DbContext
     {
-
-        public DbContextBase(DbContextOptions options) : base(options)
+        public DbContextBase(DbContextOptions options, IUserSession userSession) : base(options)
         {
+            UserSession = userSession;
         }
 
         private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo =
@@ -95,8 +95,9 @@ namespace Netcool.Core.EfCore
                 if (entry.State != EntityState.Modified && entry.CheckOwnedEntityChange())
                 {
                     Entry(entry.Entity).State = EntityState.Modified;
-                    SaveChangesBefore(entry, userId);
                 }
+
+                SaveChangesBefore(entry, userId);
             }
         }
 
@@ -178,7 +179,7 @@ namespace Netcool.Core.EfCore
                 audit.CreateUserId = userId;
             }
 
-            if (audit.CreateTime != null)
+            if (audit.CreateTime == null)
             {
                 audit.CreateTime = DateTime.Now;
             }
