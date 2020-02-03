@@ -8,9 +8,10 @@ namespace Netcool.Api.Domain.Configuration
     {
         public static IConfigurationBuilder AddEfConfiguration(
             this IConfigurationBuilder builder,
-            Action<DbContextOptionsBuilder> optionsAction)
+            Action<DbContextOptionsBuilder> optionsAction,
+            bool reloadOnChange = false)
         {
-            return builder.Add(new EfConfigurationSource(optionsAction));
+            return builder.Add(new EfConfigurationSource(optionsAction, reloadOnChange));
         }
     }
 }

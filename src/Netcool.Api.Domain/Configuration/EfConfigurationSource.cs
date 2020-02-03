@@ -8,14 +8,17 @@ namespace Netcool.Api.Domain.Configuration
     {
         private readonly Action<DbContextOptionsBuilder> _optionsAction;
 
-        public EfConfigurationSource(Action<DbContextOptionsBuilder> optionsAction)
+        private readonly bool _reloadOnChange = false;
+
+        public EfConfigurationSource(Action<DbContextOptionsBuilder> optionsAction, bool reloadOnChange = false)
         {
             _optionsAction = optionsAction;
+            _reloadOnChange = reloadOnChange;
         }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new EfConfigurationProvider(_optionsAction);
+            return new EfConfigurationProvider(_optionsAction, _reloadOnChange);
         }
     }
 }

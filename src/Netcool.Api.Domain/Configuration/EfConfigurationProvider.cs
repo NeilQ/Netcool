@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Netcool.Api.Domain.EfCore;
 using Netcool.Core.AppSettings;
+using Netcool.Core.EfCore;
 using Netcool.Core.Sessions;
 
 namespace Netcool.Api.Domain.Configuration
@@ -12,9 +14,22 @@ namespace Netcool.Api.Domain.Configuration
     {
         public Action<DbContextOptionsBuilder> OptionsAction { get; }
 
-        public EfConfigurationProvider(Action<DbContextOptionsBuilder> optionsAction)
+        public EfConfigurationProvider(Action<DbContextOptionsBuilder> optionsAction, bool reloadOnChange = false)
         {
             OptionsAction = optionsAction;
+
+            if (reloadOnChange)
+            {
+                EntityChangeObserver.Instance.Changed += (sender, args) =>
+                {
+                    if (args.Entry.Entity.GetType() != typeof(AppConfiguration))
+                        return;
+
+                    // Waiting before calling Load. This helps avoid triggering a reload before a change is completely saved.
+                    Thread.Sleep(3000);
+                    Load();
+                };
+            }
         }
 
         public override void Load()

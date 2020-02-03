@@ -107,9 +107,11 @@ namespace Netcool.Core.EfCore
             {
                 case EntityState.Added:
                     ApplyAddedEntity(entry, userId);
+                    EntityChangeObserver.Instance.OnChanged(new EntityChangeEventArgs(entry));
                     break;
                 case EntityState.Modified:
                     ApplyModifiedEntity(entry, userId);
+                    EntityChangeObserver.Instance.OnChanged(new EntityChangeEventArgs(entry));
                     break;
                 case EntityState.Deleted:
                     ApplyDeletedEntity(entry, userId);

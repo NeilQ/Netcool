@@ -41,7 +41,7 @@ namespace Netcool.Api
                 .ConfigureAppConfiguration((hostContext, configBuilder) =>
                 {
                     var connectionString = configBuilder.Build().GetConnectionString("Database");
-                    configBuilder.AddEfConfiguration(options => { options.UseNpgsql(connectionString); });
+                    configBuilder.AddEfConfiguration(options => { options.UseNpgsql(connectionString); }, true);
                 })
                 .UseSerilog();
 
