@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Netcool.Api.Domain.Configuration;
 using Netcool.Api.Domain.Menus;
 using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Roles;
@@ -17,6 +18,7 @@ namespace Netcool.Api.Domain.EfCore
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<UserLoginAttempt> UserLoginAttempts { get; set; }
+        public DbSet<AppConfiguration> AppConfigurations { get; set; }
 
         public NetcoolDbContext(DbContextOptions<NetcoolDbContext> options, IUserSession userSession) : base(options,
             userSession)

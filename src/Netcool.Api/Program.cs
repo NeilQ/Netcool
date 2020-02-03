@@ -1,9 +1,12 @@
 using System;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Netcool.Api.Domain.Configuration;
 using Netcool.Api.Domain.EfCore;
 using Serilog;
 using Serilog.Events;
@@ -35,7 +38,12 @@ namespace Netcool.Api
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>().UseIISIntegration(); })
-               .UseSerilog();
+                .ConfigureAppConfiguration((hostContext, configBuilder) =>
+                {
+                    var connectionString = configBuilder.Build().GetConnectionString("Database");
+                    configBuilder.AddEfConfiguration(options => { options.UseNpgsql(connectionString); });
+                })
+                .UseSerilog();
 
         private static void CreateDbIfNotExists(IHost host)
         {
