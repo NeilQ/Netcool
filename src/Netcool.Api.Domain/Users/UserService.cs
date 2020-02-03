@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Netcool.Api.Domain.Roles;
 using Netcool.Core;
 using Netcool.Core.Entities;
@@ -13,17 +14,19 @@ namespace Netcool.Api.Domain.Users
 {
     public class UserService : CrudService<User, UserDto, int, PageRequest, UserSaveInput>, IUserService
     {
-        private const string DefaultPassword = "123456";
+        private readonly string _defaultPassword;
 
         private readonly IRepository<Role> _roleRepository;
 
         public UserService(IRepository<User> userRepository,
             IServiceAggregator serviceAggregator,
-            IRepository<Role> roleRepository) : base(
+            IRepository<Role> roleRepository,
+            IConfiguration config) : base(
             userRepository,
             serviceAggregator)
         {
             _roleRepository = roleRepository;
+            _defaultPassword = config.GetValue<string>("User.DefaultPassword");
         }
 
         public override void BeforeCreate(User entity)
@@ -32,7 +35,7 @@ namespace Netcool.Api.Domain.Users
             entity.Name = entity.Name.SafeString();
             entity.Phone = entity.Phone.SafeString();
             entity.Email = entity.Email.SafeString();
-            entity.Password = Encrypt.Md5By32(DefaultPassword);
+            entity.Password = Encrypt.Md5By32(_defaultPassword);
 
             // check email and phone
             var duplicateUser = Repository.GetAll().AsNoTracking()

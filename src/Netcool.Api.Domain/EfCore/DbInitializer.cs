@@ -12,7 +12,6 @@ namespace Netcool.Api.Domain.EfCore
             {
                 context.Users.Add(new User
                 {
-                    Id = 1,
                     Name = "admin",
                     DisplayName = "Admin",
                     IsRoot = true,

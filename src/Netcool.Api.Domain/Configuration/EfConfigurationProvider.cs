@@ -39,10 +39,7 @@ namespace Netcool.Api.Domain.Configuration
             OptionsAction(builder);
 
             using var dbContext = new NetcoolDbContext(builder.Options, NullUserSession.Instance);
-            if (!dbContext.AppConfigurations.Any())
-            {
-                InitializeDefaultConfigurations(dbContext);
-            }
+            InitializeDefaultConfigurations(dbContext);
 
             Data = dbContext.AppConfigurations.ToDictionary(c => c.Name, c => c.Value);
         }
@@ -50,11 +47,11 @@ namespace Netcool.Api.Domain.Configuration
         public static void InitializeDefaultConfigurations(NetcoolDbContext dbContext)
         {
             var configs = dbContext.AppConfigurations.ToList();
-            if (configs.All(t => t.Name != "User:DefaultPassword"))
+            if (configs.All(t => t.Name != "User.DefaultPassword"))
             {
                 dbContext.AddRange(new AppConfiguration()
                 {
-                    Name = "User:DefaultPassword",
+                    Name = "User.DefaultPassword",
                     Value = "123456",
                     Type = AppConfigurationType.String,
                     Description = "默认用户密码"
