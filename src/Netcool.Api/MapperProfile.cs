@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Netcool.Api.Domain.Configuration;
 using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
@@ -15,6 +16,8 @@ namespace Netcool.Api
             CreateMap<RoleSaveInput, Role>();
             CreateMap<Permission, PermissionDto>();
             CreateMap<UserLoginAttempt, UserLoginAttemptDto>();
+            CreateMap<AppConfiguration, AppConfigurationDto>();
+            CreateMap<AppConfigurationSaveInput, AppConfiguration>();
         }
     }
 }

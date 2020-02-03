@@ -35,8 +35,19 @@ namespace Netcool.Core.WebApi.Controllers
         }
     }
 
+    public abstract class QueryControllerBase<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput>
+        : QueryControllerBase<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TCreateInput>
+        where TEntityDto : IEntityDto<TPrimaryKey>
+        where TCreateInput : IEntityDto<TPrimaryKey>
+    {
+        protected QueryControllerBase(
+            ICrudService<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TCreateInput> service) : base(service)
+        {
+        }
+    }
+
     [ApiController]
-    [Produces("application/json")] 
+    [Produces("application/json")]
     public abstract class
         QueryControllerBase<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput> : ControllerBase
         where TEntityDto : IEntityDto<TPrimaryKey>
@@ -59,14 +70,14 @@ namespace Netcool.Core.WebApi.Controllers
         }
 
         [HttpGet]
-        public virtual ActionResult<IPagedResult<TEntityDto>> GetByPage([FromQuery]TGetAllInput input)
+        public virtual ActionResult<IPagedResult<TEntityDto>> GetByPage([FromQuery] TGetAllInput input)
         {
             var dto = Service.GetAll(input);
             return dto;
         }
 
         [HttpGet("items")]
-        public virtual ActionResult<IList<TEntityDto>> GetAllItems([FromQuery]TGetAllInput input)
+        public virtual ActionResult<IList<TEntityDto>> GetAllItems([FromQuery] TGetAllInput input)
         {
             var dto = Service.GetAll(input);
             return dto.Items.ToList();
