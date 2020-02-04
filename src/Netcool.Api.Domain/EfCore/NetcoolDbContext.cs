@@ -27,6 +27,7 @@ namespace Netcool.Api.Domain.EfCore
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Menu>().Property(t => t.Id).HasIdentityOptions(startValue: 200);
             base.OnModelCreating(modelBuilder);
         }
 

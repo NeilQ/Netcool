@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Http;
+using Netcool.Core.Authorization;
 
 namespace Netcool.Core.Sessions
 {
@@ -11,11 +12,11 @@ namespace Netcool.Core.Sessions
 
         public UserSession(IHttpContextAccessor httpContextAccessor)
         {
-            var u = httpContextAccessor?.HttpContext.User;
+            var u = httpContextAccessor?.HttpContext?.User;
             if (u == null) return;
             if (!u.Identity.IsAuthenticated) return;
 
-            var idClaim = u.Claims.FirstOrDefault(x => x.Type == "Id");
+            var idClaim = u.Claims.FirstOrDefault(x => x.Type == AppClaimTypes.UserId);
             if (!string.IsNullOrEmpty(idClaim?.Value) && int.TryParse(idClaim.Value, out var userId))
             {
                 UserId = userId;

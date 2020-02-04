@@ -52,7 +52,7 @@ namespace Netcool.Api
 
             try
             {
-                var context = services.GetRequiredService<NetcoolDbContext>();
+                using var context = services.GetRequiredService<NetcoolDbContext>();
                 DbInitializer.Initialize(context);
             }
             catch (Exception ex)
