@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Netcool.Api.Domain.Configuration;
+using Netcool.Api.Domain.Menus;
 using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
@@ -18,6 +19,9 @@ namespace Netcool.Api
             CreateMap<UserLoginAttempt, UserLoginAttemptDto>();
             CreateMap<AppConfiguration, AppConfigurationDto>();
             CreateMap<AppConfigurationSaveInput, AppConfiguration>();
+            CreateMap<Menu, MenuDto>();
+            CreateMap<Menu, MenuTreeNode>();
+            CreateMap<MenuDto, Menu>();
         }
     }
 }
