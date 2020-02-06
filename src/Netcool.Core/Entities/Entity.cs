@@ -11,7 +11,7 @@ namespace Netcool.Core.Entities
     public abstract class Entity<TPrimaryKey> : IEntity<TPrimaryKey>
     {
         public virtual TPrimaryKey Id { get; set; }
-
+        
         public virtual bool IsNewEntity()
         {
             if (EqualityComparer<TPrimaryKey>.Default.Equals(Id, default(TPrimaryKey)))

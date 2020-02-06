@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using Netcool.Api.Domain.Roles;
+﻿using Netcool.Api.Domain.Roles;
 using Netcool.Core.Entities;
 
 namespace Netcool.Api.Domain.Users
 {
-    public class UserRole : CreateAuditEntity
+    public sealed class UserRole : CreateAuditEntity
     {
         public int UserId { get; set; }
         public int RoleId { get; set; }
@@ -18,6 +17,13 @@ namespace Netcool.Api.Domain.Users
 
         public UserRole(int userId, int roleId)
         {
+            UserId = userId;
+            RoleId = roleId;
+        }
+
+        public UserRole(int id, int userId, int roleId)
+        {
+            Id = id;
             UserId = userId;
             RoleId = roleId;
         }

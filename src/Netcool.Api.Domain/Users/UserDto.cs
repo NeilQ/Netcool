@@ -5,7 +5,6 @@ namespace Netcool.Api.Domain.Users
 {
     public class UserDto : UserSaveInput
     {
-        public bool IsRoot { get; set; }
     }
 
     public class UserSaveInput : EntityDto

@@ -21,9 +21,6 @@ namespace Netcool.Api.Domain.Users
         [DefaultValue(true)]
         public bool IsActive { get; set; }
 
-        [DefaultValue(false)]
-        public bool IsRoot { get; set; }
-        
         public ICollection<UserRole> UserRoles { get; set; }
     }
 }

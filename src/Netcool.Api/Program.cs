@@ -30,7 +30,7 @@ namespace Netcool.Api
 
             var host = CreateHostBuilder(args).Build();
 
-            CreateDbIfNotExists(host);
+            // CreateDbIfNotExists(host);
 
             host.Run();
         }

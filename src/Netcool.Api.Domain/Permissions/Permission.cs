@@ -2,12 +2,26 @@
 
 namespace Netcool.Api.Domain.Permissions
 {
-    public class Permission : FullAuditEntity
+    public sealed class Permission : FullAuditEntity
     {
         public string Name { get; set; }
         public string Code { get; set; }
         public string Notes { get; set; }
         public PermissionType Type { get; set; }
         public int MenuId { get; set; }
+
+        public Permission()
+        {
+        }
+
+        public Permission(int id, string name, string code, PermissionType type, int menuId, string notes = null)
+        {
+            Id = id;
+            Name = name;
+            Code = code;
+            Type = type;
+            MenuId = menuId;
+            Notes = notes;
+        }
     }
 }
