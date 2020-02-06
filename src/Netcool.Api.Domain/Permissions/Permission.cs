@@ -1,4 +1,5 @@
-﻿using Netcool.Core.Entities;
+﻿using Netcool.Api.Domain.Menus;
+using Netcool.Core.Entities;
 
 namespace Netcool.Api.Domain.Permissions
 {
@@ -9,6 +10,8 @@ namespace Netcool.Api.Domain.Permissions
         public string Notes { get; set; }
         public PermissionType Type { get; set; }
         public int MenuId { get; set; }
+
+        public Menu Menu { get; set; }
 
         public Permission()
         {

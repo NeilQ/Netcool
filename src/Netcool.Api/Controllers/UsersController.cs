@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Netcool.Api.Domain.Menus;
 using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
 using Netcool.Core.Services.Dto;
@@ -68,6 +69,18 @@ namespace Netcool.Api.Controllers
         {
             _userService.SetUserRoles(id, roleIds);
             return Ok();
+        }
+
+        /// <summary>
+        /// Get user menus
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/menus/tree")]
+        public ActionResult<MenuTreeNode> GetUserMenus(int id)
+        {
+            var tree = _userService.GetUserMenuTree(id);
+            return Ok(tree);
         }
     }
 }

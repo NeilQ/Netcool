@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Netcool.Api.Domain.Menus;
 using Netcool.Api.Domain.Roles;
 using Netcool.Core;
 using Netcool.Core.Entities;
@@ -166,6 +167,49 @@ namespace Netcool.Api.Domain.Users
             }
 
             UnitOfWork.SaveChanges();
+        }
+
+        public MenuTreeNode GetUserMenuTree(int id)
+        {
+            if (id <= 0) throw new EntityNotFoundException(typeof(User), id);
+            var user = Repository.GetAll().AsNoTracking()
+                .Include(t => t.UserRoles)
+                .ThenInclude(t => t.Role)
+                .ThenInclude(t => t.RolePermissions)
+                .ThenInclude(t => t.Permission)
+                .ThenInclude(t => t.Menu)
+                .FirstOrDefault(t => t.Id == id);
+            if (user == null) throw new EntityNotFoundException(typeof(User), id);
+            var menus = user.UserRoles.SelectMany(t => t.Role.RolePermissions.Select(rp => rp.Permission.Menu))
+                .Distinct().OrderBy(t => t.Level).ToList();
+            var rootNode = new MenuTreeNode();
+
+            var dict = new Dictionary<int, MenuTreeNode>
+            {
+                {0, rootNode}
+            };
+            foreach (var menu in menus)
+            {
+                if (dict.ContainsKey(menu.Id)) continue; // ignore duplicate menu node
+                var treeNode = MapToEntityDto<Menu, MenuTreeNode>(menu);
+                dict.Add(menu.Id, treeNode);
+
+                if (menu.ParentId > 0 && menu.Level > 1)
+                {
+                    if (!dict.TryGetValue(menu.ParentId, out var parentNode))
+                        continue; // ignore menu node with invalid parentId
+
+                    if (parentNode.Children == null) parentNode.Children = new List<MenuTreeNode>();
+                    parentNode.Children.Add(treeNode);
+                }
+                else
+                {
+                    if (rootNode.Children == null) rootNode.Children = new List<MenuTreeNode>();
+                    rootNode.Children.Add(treeNode);
+                }
+            }
+
+            return rootNode;
         }
     }
 }
