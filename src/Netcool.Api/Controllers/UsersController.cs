@@ -72,7 +72,7 @@ namespace Netcool.Api.Controllers
         }
 
         /// <summary>
-        /// Get user menus
+        /// Get user menus.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
