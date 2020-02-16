@@ -6,6 +6,8 @@
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <AssemblyName>Netcool.Core</AssemblyName>
     <RootNamespace>Netcool.Core</RootNamespace>
+    <PackageVersion>0.1.0</PackageVersion>
+    <Description />
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

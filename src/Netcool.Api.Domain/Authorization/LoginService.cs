@@ -78,7 +78,7 @@ namespace Netcool.Api.Domain.Authorization
             SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Secret));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
             var now = DateTime.Now;
-            var expires = _jwtOptions.ExpiryMinutes > 0 ? now.AddSeconds(_jwtOptions.ExpiryMinutes) : now.AddDays(1);
+            var expires = _jwtOptions.ExpiryMinutes > 0 ? now.AddMinutes(_jwtOptions.ExpiryMinutes) : now.AddDays(1);
 
             Claim[] claims =
             {
