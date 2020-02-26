@@ -121,22 +121,22 @@ namespace Netcool.Api.Domain.EfCore
         private static void SeedingMenu(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Menu>().HasData(
-                new Menu(1, "dashboard", "首页", MenuType.Link, "dashboard", "home", 1, 1, 0, "/1"));
+                new Menu(1, "dashboard", "首页", MenuType.Link, "/dashboard", "home", 1, 1, 0, "/1"));
 
             modelBuilder.Entity<Menu>().HasData(
-                new Menu(2, "system", "系统设置", MenuType.Node, "system", "setting", 1, 2, 0, "/2"));
+                new Menu(2, "system", "系统设置", MenuType.Node, "/system", "setting", 1, 2, 0, "/2"));
             modelBuilder.Entity<Menu>().HasData(
-                new Menu(20, "app-configuration", "应用配置", MenuType.Link, "app-configuration", "setting", 2, 1, 2,
+                new Menu(20, "app-configuration", "应用配置", MenuType.Link, "/app-configuration", "setting", 2, 1, 2,
                     "/2/20"));
 
             modelBuilder.Entity<Menu>().HasData(
-                new Menu(3, "auth", "权限管理", MenuType.Node, "auth", "safety-certificate", 1, 3, 0, "/3"));
+                new Menu(3, "auth", "权限管理", MenuType.Node, "/auth", "safety-certificate", 1, 3, 0, "/3"));
             modelBuilder.Entity<Menu>().HasData(
-                new Menu(30, "menu", "菜单管理", MenuType.Link, "menu", "menu", 2, 1, 3, "/3/30"));
+                new Menu(30, "menu", "菜单管理", MenuType.Link, "/menu", "menu", 2, 1, 3, "/3/30"));
             modelBuilder.Entity<Menu>().HasData(
-                new Menu(31, "role", "角色管理", MenuType.Link, "role", "usergroup-add", 2, 2, 3, "/3/31"));
+                new Menu(31, "role", "角色管理", MenuType.Link, "/role", "usergroup-add", 2, 2, 3, "/3/31"));
             modelBuilder.Entity<Menu>().HasData(
-                new Menu(32, "user", "用户管理", MenuType.Link, "user", "user", 2, 3, 3, "/3/32"));
+                new Menu(32, "user", "用户管理", MenuType.Link, "/user", "user", 2, 3, 3, "/3/32"));
         }
     }
 }

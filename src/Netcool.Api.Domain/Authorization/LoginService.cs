@@ -5,8 +5,10 @@ using System.Security.Claims;
 using System.Text;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
 using Netcool.Core;
 using Netcool.Core.Authorization;
@@ -46,12 +48,17 @@ namespace Netcool.Api.Domain.Authorization
             input.Name = input.Name.SafeString();
             input.Password = input.Password.SafeString();
             var user = _userRepository.GetAll().AsNoTracking()
+                .Include(t => t.UserRoles)
+                .ThenInclude(t => t.Role)
+                .ThenInclude(t => t.RolePermissions)
+                .ThenInclude(t => t.Permission)
                 .FirstOrDefault(t =>
                     (t.Name == input.Name || t.Email == input.Name || t.Phone == input.Name) &&
                     t.Password == Encrypt.Md5By32(input.Password));
             SaveLoginAttempt(input, user);
             if (user == null) throw new UserFriendlyException("用户名或密码错误!");
             if (user.IsActive == false) throw new UserFriendlyException("用户未激活!");
+
 
             return CreateLoginResult(user);
         }
@@ -98,11 +105,19 @@ namespace Netcool.Api.Domain.Authorization
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(descriptor);
+
+            var permissionCodes = user.UserRoles
+                .SelectMany(t => t.Role.RolePermissions.Select(rp => rp.Permission))
+                .Select(t => t.Code)
+                .Distinct()
+                .ToList();
+
             return new LoginResult
             {
                 User = _mapper.Map<UserDto>(user),
                 AccessToken = tokenHandler.WriteToken(token),
-                ExpiryAt = expires
+                ExpiryAt = expires,
+                PermissionCodes = permissionCodes
             };
         }
     }
