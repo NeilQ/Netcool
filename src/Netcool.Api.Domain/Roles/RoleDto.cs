@@ -10,7 +10,7 @@ namespace Netcool.Api.Domain.Roles
     public class RoleSaveInput : EntityDto
     {
         [Required(AllowEmptyStrings = false)]
-        [MaxLength(31)]
+        [MaxLength(32)]
         public string Name { get; set; }
 
         [MaxLength(256)]
