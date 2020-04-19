@@ -26,7 +26,10 @@ using Netcool.Core.Repositories;
 using Netcool.Core.Services;
 using Netcool.Core.Sessions;
 using Netcool.Core.WebApi;
+using Netcool.Core.WebApi.Filters;
+using Netcool.Core.WebApi.Json;
 using Netcool.Core.WebApi.Middlewares;
+using Netcool.Core.WebApi.ValueProviders;
 using Serilog;
 
 [assembly: ApiController]
@@ -45,7 +48,16 @@ namespace Netcool.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(opt =>
+                {
+                    opt.Filters.Add(new ValidateAttribute());
+                    opt.ValueProviderFactories.Insert(0, new SnakeCaseQueryValueProviderFactory());
+                })
+                .AddJsonOptions(o =>
+                {
+                    o.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+                    o.JsonSerializerOptions.Converters.Add(new TimeSpanConverter());
+                }); // body date utc to local;
             services.AddDbContext<NetcoolDbContext>(options =>
             {
                 options.UseNpgsql(Configuration.GetConnectionString("Database"))
@@ -56,7 +68,7 @@ namespace Netcool.Api
             // swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Netcool API", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Netcool API", Version = "v1" });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));

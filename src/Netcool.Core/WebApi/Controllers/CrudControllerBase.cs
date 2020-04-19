@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Netcool.Core.Services;
 using Netcool.Core.Services.Dto;
 
-// ReSharper disable Mvc.ActionNotResolved
-
 namespace Netcool.Core.WebApi.Controllers
 {
     public abstract class CrudControllerBase<TEntityDto> : CrudControllerBase<TEntityDto, int, IPageRequest>
