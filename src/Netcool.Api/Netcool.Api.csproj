@@ -27,4 +27,12 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
   </ItemGroup>
 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec IgnoreExitCode="true" Command="%25systemroot%25\\system32\\inetsrv\\APPCMD stop apppool &quot;netcool-api&quot;" />
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec IgnoreExitCode="true" Command="%25systemroot%25\\system32\\inetsrv\\APPCMD start apppool &quot;netcool-api&quot;" />
+  </Target>
+
 </Project>

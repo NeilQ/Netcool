@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Users;
+using Netcool.Core;
 using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
@@ -19,6 +21,27 @@ namespace Netcool.Api.Domain.Roles
             IRepository<Permission> permissionRepository) : base(repository, serviceAggregator)
         {
             _permissionRepository = permissionRepository;
+        }
+
+        public override void BeforeCreate(Role entity)
+        {
+            base.BeforeCreate(entity);
+            var nameExist = Repository.GetAll().AsNoTracking().Any(t => t.Name == entity.Name);
+            if (nameExist)
+            {
+                throw new UserFriendlyException("名称重复");
+            }
+        }
+
+        public override void BeforeUpdate(RoleSaveInput input, Role originEntity)
+        {
+            base.BeforeUpdate(input, originEntity);
+            var nameExist = Repository.GetAll().AsNoTracking()
+                .Any(t => t.Name == input.Name && t.Id != originEntity.Id);
+            if (nameExist)
+            {
+                throw new UserFriendlyException("名称重复");
+            }
         }
 
         public IList<PermissionDto> GetRolePermissions(int id)

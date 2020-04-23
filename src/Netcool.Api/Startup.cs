@@ -57,6 +57,7 @@ namespace Netcool.Api
                 {
                     o.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
                     o.JsonSerializerOptions.Converters.Add(new TimeSpanConverter());
+                    o.JsonSerializerOptions.Converters.Add(new StringTrimConverter());
                 }); // body date utc to local;
             services.AddDbContext<NetcoolDbContext>(options =>
             {
