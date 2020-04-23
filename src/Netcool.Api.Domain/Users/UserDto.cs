@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Netcool.Core.Helpers;
 using Netcool.Core.Services.Dto;
 
 namespace Netcool.Api.Domain.Users
 {
     public class UserDto : UserSaveInput
     {
+        public string GenderDescription => Reflection.GetEnumDescription(Gender);
     }
 
     public class UserSaveInput : EntityDto
@@ -24,6 +26,9 @@ namespace Netcool.Api.Domain.Users
         [MaxLength(16)]
         public string Phone { get; set; }
 
+        /// <summary>
+        /// 是否启用
+        /// </summary>
         public bool IsActive { get; set; }
     }
 }

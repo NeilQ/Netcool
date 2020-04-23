@@ -1,8 +1,11 @@
-﻿namespace Netcool.Api.Domain.Users
+﻿using System.ComponentModel;
+
+namespace Netcool.Api.Domain.Users
 {
     public enum Gender
     {
-        Female,
-        Male
+        [Description("女")] Female,
+
+        [Description("男")] Male
     }
 }

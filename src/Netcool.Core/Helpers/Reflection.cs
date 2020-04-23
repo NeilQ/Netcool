@@ -10,6 +10,17 @@ namespace Netcool.Core.Helpers
 {
     public static class Reflection
     {
+        public static string GetEnumDescription<T>(T value) where T : Enum
+        {
+            var type = typeof(T);
+            var name = Enum.GetName(type, value);
+            if (name == null) return null;
+            var field = type.GetField(name);
+            if (field == null) return null;
+            var attr = field.GetCustomAttribute<DescriptionAttribute>();
+            return attr == null ? field.Name : attr.Description;
+        }
+
         public static string GetDescription<T>()
         {
             return GetDescription(Common.GetType<T>());
