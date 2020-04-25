@@ -20,10 +20,10 @@ namespace Netcool.Api.Domain.Users
 
         public Gender Gender { get; set; }
 
-        [MaxLength(64)]
+        [MaxLength(256)]
         public string Email { get; set; }
 
-        [MaxLength(16)]
+        [MaxLength(64)]
         public string Phone { get; set; }
 
         /// <summary>
