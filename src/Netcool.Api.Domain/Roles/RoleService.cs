@@ -14,12 +14,18 @@ namespace Netcool.Api.Domain.Roles
     public class RoleService : CrudService<Role, RoleDto, int, PageRequest, RoleSaveInput>, IRoleService
     {
         private readonly IRepository<Permission> _permissionRepository;
+        private readonly IRepository<RolePermission> _rolePermissionRepository;
+        private readonly IRepository<UserRole> _userRoleRepository;
 
         public RoleService(IRepository<Role> repository,
             IServiceAggregator serviceAggregator,
-            IRepository<Permission> permissionRepository) : base(repository, serviceAggregator)
+            IRepository<Permission> permissionRepository,
+            IRepository<RolePermission> rolePermissionRepository,
+            IRepository<UserRole> userRoleRepository) : base(repository, serviceAggregator)
         {
             _permissionRepository = permissionRepository;
+            _rolePermissionRepository = rolePermissionRepository;
+            _userRoleRepository = userRoleRepository;
         }
 
         public override void BeforeCreate(Role entity)
@@ -87,6 +93,13 @@ namespace Netcool.Api.Domain.Roles
             }
 
             UnitOfWork.SaveChanges();
+        }
+
+        protected override void BeforeDelete(IEnumerable<int> ids)
+        {
+            _userRoleRepository.Delete(t => ids.Contains(t.RoleId));
+            // keep role permissions for deletion mistake temporarily
+            // _rolePermissionRepository.Delete(t => ids.Contains(t.RoleId));
         }
     }
 }

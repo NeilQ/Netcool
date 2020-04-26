@@ -158,6 +158,7 @@ namespace Netcool.Core.Services
         public virtual void Delete(TPrimaryKey id)
         {
             CheckDeletePermission();
+            BeforeDelete(new[] {id});
             Repository.Delete(id);
             UnitOfWork.SaveChanges();
         }
@@ -166,6 +167,7 @@ namespace Netcool.Core.Services
         {
             if (ids == null || !ids.Any()) return;
             CheckDeletePermission();
+            BeforeDelete(ids);
             Repository.Delete(t => ids.Contains(t.Id));
             UnitOfWork.SaveChanges();
         }
@@ -173,6 +175,10 @@ namespace Netcool.Core.Services
         protected virtual TEntity GetEntityById(TPrimaryKey id)
         {
             return Repository.Get(id);
+        }
+
+        protected virtual void BeforeDelete(IEnumerable<TPrimaryKey> ids)
+        {
         }
     }
 }
