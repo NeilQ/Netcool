@@ -33,6 +33,23 @@ namespace Netcool.Api.Domain.Users
             _defaultPassword = config.GetValue<string>("User.DefaultPassword");
         }
 
+        public override PagedResultDto<UserDto> GetAll(PageRequest input)
+        {
+            var dto = base.GetAll(input);
+            if (dto?.Items == null || dto.Items.Count <= 0) return dto;
+
+            var userRoles = _userRoleRepository.GetAll().AsNoTracking()
+                .Where(t => dto.Items.Select(u => u.Id).Contains(t.UserId))
+                .Include(t => t.Role).ToList();
+            foreach (var userDto in dto.Items)
+            {
+                userDto.Roles = userRoles.Where(t => t.UserId == userDto.Id)
+                    .Select(t => MapToEntityDto<Role, RoleDto>(t.Role)).ToList();
+            }
+
+            return dto;
+        }
+
         public override void BeforeCreate(User entity)
         {
             // initialize password

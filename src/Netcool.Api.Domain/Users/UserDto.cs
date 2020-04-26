@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Netcool.Api.Domain.Roles;
 using Netcool.Core.Helpers;
 using Netcool.Core.Services.Dto;
 
@@ -6,6 +8,8 @@ namespace Netcool.Api.Domain.Users
 {
     public class UserDto : UserSaveInput
     {
+        public IList<RoleDto> Roles { get; set; }
+
         public string GenderDescription => Reflection.GetEnumDescription(Gender);
     }
 
