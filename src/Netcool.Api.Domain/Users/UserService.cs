@@ -18,15 +18,18 @@ namespace Netcool.Api.Domain.Users
         private readonly string _defaultPassword;
 
         private readonly IRepository<Role> _roleRepository;
+        private readonly IRepository<UserRole> _userRoleRepository;
 
         public UserService(IRepository<User> userRepository,
             IServiceAggregator serviceAggregator,
             IRepository<Role> roleRepository,
-            IConfiguration config) : base(
+            IConfiguration config,
+            IRepository<UserRole> userRoleRepository) : base(
             userRepository,
             serviceAggregator)
         {
             _roleRepository = roleRepository;
+            _userRoleRepository = userRoleRepository;
             _defaultPassword = config.GetValue<string>("User.DefaultPassword");
         }
 
@@ -89,6 +92,11 @@ namespace Netcool.Api.Domain.Users
             {
                 throw new UserFriendlyException("邮箱已存在");
             }
+        }
+
+        protected override void BeforeDelete(IEnumerable<int> ids)
+        {
+            _userRoleRepository.Delete(t => ids.Contains(t.UserId));
         }
 
         public void ChangePassword(int id, ChangePasswordInput input)
