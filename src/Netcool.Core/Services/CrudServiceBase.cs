@@ -57,12 +57,18 @@ namespace Netcool.Core.Services
 
             if (request.Page > 0 && request.Size > 0)
             {
-                query = query.Skip((request.Page - 1) * request.Size).Take(request.Size);
+                query = query.Skip((request.Page.Value - 1) * request.Size.Value).Take(request.Size.Value);
             }
 
+            return query;
+        }
+
+        protected virtual IQueryable<TEntity> ApplySort(IQueryable<TEntity> query, TGetAllInput input)
+        {
+            if (!(input is IPageRequest request)) return query;
             if (!string.IsNullOrEmpty(request.Sort))
             {
-                query = query.OrderBy("");
+                query = query.OrderBy(request.Sort);
             }
             else
             {

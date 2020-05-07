@@ -112,6 +112,7 @@ namespace Netcool.Core.Services
             var totalCount = query.Count();
 
             query = ApplyPaging(query, input);
+            query = ApplySort(query, input);
 
             var entities = query.AsNoTracking().ToList();
 

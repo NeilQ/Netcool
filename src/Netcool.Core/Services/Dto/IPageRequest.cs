@@ -2,9 +2,9 @@
 {
     public interface IPageRequest
     {
-        int Page { get; set; }
+        int? Page { get; set; }
 
-        int Size { get; set; }
+        int? Size { get; set; }
         
         string Sort { get; set; }
     }
