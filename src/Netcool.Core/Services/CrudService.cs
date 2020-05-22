@@ -109,10 +109,14 @@ namespace Netcool.Core.Services
 
             var query = CreateFilteredQuery(input);
 
-            var totalCount = query.Count();
+            var totalCount = 0;
+            if ((input is IPageRequest request) && request.Page > 0 && request.Size > 0)
+            {
+                totalCount = query.AsNoTracking().Count();
+            }
 
-            query = ApplyPaging(query, input);
             query = ApplySort(query, input);
+            query = ApplyPaging(query, input);
 
             var entities = query.AsNoTracking().ToList();
 
