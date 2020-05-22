@@ -12,6 +12,7 @@ using Netcool.Api.Domain.EfCore;
 using Netcool.Core.Helpers;
 using Serilog;
 using Serilog.Events;
+using Serilog.Filters;
 
 namespace Netcool.Api
 {
@@ -20,14 +21,25 @@ namespace Netcool.Api
         public static void Main(string[] args)
         {
             var logPath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "logs\\.log" : "/logs/.log";
+            var dbLogPath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "logs\\db-.log" : "/logs/db-.log";
+            const string formatTemplate =
+                "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}";
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-                .WriteTo.Console()
-                .WriteTo.File(logPath, rollingInterval: RollingInterval.Day,
-                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
-                    shared: true)
+                .WriteTo.Logger(lc => lc
+                    .Filter.ByIncludingOnly(Matching.FromSource("Microsoft.EntityFrameworkCore"))
+                    .WriteTo.Console()
+                    .WriteTo.File(dbLogPath, rollingInterval: RollingInterval.Day,
+                        outputTemplate: formatTemplate,
+                        shared: true))
+                .WriteTo.Logger(lc => lc
+                    .Filter.ByExcluding(Matching.FromSource("Microsoft.EntityFrameworkCore"))
+                    .WriteTo.Console()
+                    .WriteTo.File(logPath, rollingInterval: RollingInterval.Day,
+                        outputTemplate: formatTemplate,
+                        shared: true))
                 .CreateLogger();
 
             var host = CreateHostBuilder(args).Build();
@@ -45,7 +57,9 @@ namespace Netcool.Api
                     var connectionString = configBuilder.Build().GetConnectionString("Database");
                     configBuilder.AddEfConfiguration(options => { options.UseNpgsql(connectionString); }, true);
 
-                    var confPath = Common.IsWindows ? Path.Combine(Directory.GetCurrentDirectory(), "conf") : "/conf";
+                    var confPath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                        ? Path.Combine(Directory.GetCurrentDirectory(), "conf")
+                        : "/conf";
                     if (Directory.Exists(confPath))
                     {
                         var files = Directory.GetFiles(confPath);
