@@ -1,4 +1,6 @@
-﻿using Netcool.Core.Services.Dto;
+﻿using System.Collections.Generic;
+using Netcool.Api.Domain.Permissions;
+using Netcool.Core.Services.Dto;
 
 namespace Netcool.Api.Domain.Menus
 {
@@ -23,5 +25,7 @@ namespace Netcool.Api.Domain.Menus
         public string Path { get; set; }
 
         public string Notes { get; set; }
+
+        public List<PermissionDto> Permissions { get; set; }
     }
 }

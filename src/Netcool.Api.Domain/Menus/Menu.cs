@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using Netcool.Api.Domain.Permissions;
 using Netcool.Core.Entities;
 
 namespace Netcool.Api.Domain.Menus
@@ -24,6 +26,8 @@ namespace Netcool.Api.Domain.Menus
         public string Path { get; set; }
 
         public string Notes { get; set; }
+
+        public List<Permission> Permissions { get; set; }
 
         public Menu()
         {

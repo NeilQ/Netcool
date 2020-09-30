@@ -15,6 +15,11 @@ namespace Netcool.Api.Domain.Menus
         {
         }
 
+        protected override IQueryable<Menu> CreateFilteredQuery(PageRequest input)
+        {
+            return base.CreateFilteredQuery(input).Include(t => t.Permissions);
+        }
+
         public override void BeforeUpdate(MenuDto input, Menu originEntity)
         {
             if (input.ParentId == originEntity.ParentId) return;
