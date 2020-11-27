@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,13 +54,14 @@ namespace Netcool.Api
                 {
                     opt.Filters.Add(new ValidateAttribute());
                     opt.ValueProviderFactories.Insert(0, new SnakeCaseQueryValueProviderFactory());
+                    opt.ModelBinderProviders.RemoveType<DateTimeModelBinderProvider>(); // keeps use local datetime
                 })
                 .AddJsonOptions(o =>
                 {
-                    o.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+                    o.JsonSerializerOptions.Converters.Add(new LocalDateTimeConverter()); //parse utc datetime to local;
                     o.JsonSerializerOptions.Converters.Add(new TimeSpanConverter());
                     o.JsonSerializerOptions.Converters.Add(new StringTrimConverter());
-                }); // body date utc to local;
+                });
             services.AddDbContext<NetcoolDbContext>(options =>
             {
                 options.UseNpgsql(Configuration.GetConnectionString("Database"))
