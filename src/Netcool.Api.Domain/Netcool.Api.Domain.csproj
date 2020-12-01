@@ -15,11 +15,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Migrations\20200128095335_Init.cs" />
-      <Compile Remove="Migrations\20200128095335_Init.Designer.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Netcool.Core\Netcool.Core.csproj" />
     </ItemGroup>
 

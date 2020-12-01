@@ -1,8 +1,11 @@
-﻿namespace Netcool.Api.Domain.Permissions
+﻿using System.ComponentModel;
+
+namespace Netcool.Api.Domain.Permissions
 {
     public enum PermissionType
     {
-        Menu,
-        Function
+        [Description("菜单权限")] Menu,
+
+        [Description("功能权限")] Function
     }
 }
