@@ -9,7 +9,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Netcool.Api.Domain.Configuration;
 using Netcool.Api.Domain.EfCore;
-using Netcool.Core.Helpers;
 using Serilog;
 using Serilog.Events;
 using Serilog.Filters;
@@ -63,12 +62,14 @@ namespace Netcool.Api
                     if (Directory.Exists(confPath))
                     {
                         var files = Directory.GetFiles(confPath);
-                        if (files == null || files.Length <= 0) return;
-                        foreach (var file in files)
+                        if (files.Length > 0)
                         {
-                            if (Path.GetExtension(file) == ".json")
+                            foreach (var file in files)
                             {
-                                configBuilder.AddJsonFile(file, optional: true, reloadOnChange: true);
+                                if (Path.GetExtension(file) == ".json")
+                                {
+                                    configBuilder.AddJsonFile(file, optional: true, reloadOnChange: true);
+                                }
                             }
                         }
                     }

@@ -14,7 +14,7 @@ namespace Netcool.Api.Domain.Configuration
     {
         public Action<DbContextOptionsBuilder> OptionsAction { get; }
 
-        public EfConfigurationProvider(Action<DbContextOptionsBuilder> optionsAction, bool reloadOnChange = false)
+        public EfConfigurationProvider(Action<DbContextOptionsBuilder> optionsAction, bool reloadOnChange = true)
         {
             OptionsAction = optionsAction;
 

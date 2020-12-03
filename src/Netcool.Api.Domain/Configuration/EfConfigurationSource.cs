@@ -10,7 +10,7 @@ namespace Netcool.Api.Domain.Configuration
 
         private readonly bool _reloadOnChange = false;
 
-        public EfConfigurationSource(Action<DbContextOptionsBuilder> optionsAction, bool reloadOnChange = false)
+        public EfConfigurationSource(Action<DbContextOptionsBuilder> optionsAction, bool reloadOnChange = true)
         {
             _optionsAction = optionsAction;
             _reloadOnChange = reloadOnChange;
