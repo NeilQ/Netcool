@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -77,19 +78,26 @@ namespace Netcool.Core.EfCore
 
         public override int SaveChanges()
         {
-            SaveChangesBefore();
-            return base.SaveChanges();
+            var events = SaveChangesBefore();
+            var result = base.SaveChanges();
+            SaveChangesAfter(events);
+
+            return result;
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            SaveChangesBefore();
-            return base.SaveChangesAsync(cancellationToken);
+            var events = SaveChangesBefore();
+            var result = base.SaveChangesAsync(cancellationToken);
+            SaveChangesAfter(events);
+
+            return result;
         }
 
-        protected virtual void SaveChangesBefore()
+        protected virtual List<EntityChangeEvent> SaveChangesBefore()
         {
             var userId = UserSession?.UserId ?? 0;
+            var events = new List<EntityChangeEvent>();
             foreach (var entry in ChangeTracker.Entries().ToList())
             {
                 if (entry.State != EntityState.Modified && entry.CheckOwnedEntityChange())
@@ -97,49 +105,65 @@ namespace Netcool.Core.EfCore
                     Entry(entry.Entity).State = EntityState.Modified;
                 }
 
-                SaveChangesBefore(entry, userId);
+                SaveChangesBefore(entry, userId, events);
             }
+
+            return events;
         }
 
-        protected virtual void SaveChangesBefore(EntityEntry entry, int userId)
+        protected virtual void SaveChangesBefore(EntityEntry entry, int userId,
+            List<EntityChangeEvent> entityChangeEvents)
         {
             switch (entry.State)
             {
                 case EntityState.Added:
-                    ApplyAddedEntity(entry, userId);
-                    EntityChangeObserver.Instance.OnChanged(new EntityChangeEventArgs(entry));
+                    ApplyAddedEntity(entry, userId, entityChangeEvents);
                     break;
                 case EntityState.Modified:
-                    ApplyModifiedEntity(entry, userId);
-                    EntityChangeObserver.Instance.OnChanged(new EntityChangeEventArgs(entry));
+                    ApplyModifiedEntity(entry, userId, entityChangeEvents);
                     break;
                 case EntityState.Deleted:
-                    ApplyDeletedEntity(entry, userId);
+                    ApplyDeletedEntity(entry, userId, entityChangeEvents);
                     break;
             }
         }
 
-        protected virtual void ApplyAddedEntity(EntityEntry entry, int userId)
+        protected virtual void SaveChangesAfter(List<EntityChangeEvent> entityChangeEvents)
+        {
+            if (entityChangeEvents == null || entityChangeEvents.Count <= 0) return;
+            foreach (var change in entityChangeEvents)
+            {
+                EntityChangeObserver.Instance.OnChanged(change);
+            }
+        }
+
+        protected virtual void ApplyAddedEntity(EntityEntry entry, int userId,
+            List<EntityChangeEvent> entityChangeEvents)
         {
             CheckAndSetId(entry);
             SetCreateAuditProperties(entry, userId);
             SetTenantProperties(entry, UserSession.TenantId);
+            entityChangeEvents.Add(new EntityChangeEvent(entry.Entity, EntityChangeType.Created));
         }
 
-        protected virtual void ApplyModifiedEntity(EntityEntry entry, int userId)
+        protected virtual void ApplyModifiedEntity(EntityEntry entry, int userId,
+            List<EntityChangeEvent> entityChangeEvents)
         {
             switch (entry.Entity)
             {
                 case ISoftDelete sdAudit when sdAudit.IsDeleted:
                     SetSoftDeleteProperties(entry, userId);
+                    entityChangeEvents.Add(new EntityChangeEvent(entry.Entity, EntityChangeType.Deleted));
                     break;
                 case IUpdateAudit _:
                     SetUpdateAuditProperties(entry, userId);
+                    entityChangeEvents.Add(new EntityChangeEvent(entry.Entity, EntityChangeType.Updated));
                     break;
             }
         }
 
-        protected virtual void ApplyDeletedEntity(EntityEntry entry, int userId)
+        protected virtual void ApplyDeletedEntity(EntityEntry entry, int userId,
+            List<EntityChangeEvent> entityChangeEvents)
         {
             // Check if the entity is ISoftDelete, if true, then change to soft delete operation
             if (!(entry.Entity is ISoftDelete sd)) return;
@@ -147,6 +171,7 @@ namespace Netcool.Core.EfCore
             entry.State = EntityState.Modified;
             sd.IsDeleted = true;
             SetSoftDeleteProperties(entry, userId);
+            entityChangeEvents.Add(new EntityChangeEvent(entry.Entity, EntityChangeType.Deleted));
         }
 
 

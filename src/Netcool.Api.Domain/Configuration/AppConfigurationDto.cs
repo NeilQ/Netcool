@@ -19,6 +19,10 @@ namespace Netcool.Api.Domain.Configuration
     {
         [Required(AllowEmptyStrings = false)]
         [MaxLength(256)]
+        public string Name { get; set; }
+        
+        [Required(AllowEmptyStrings = false)]
+        [MaxLength(256)]
         public string Value { get; set; }
 
         [MaxLength(256)]

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Netcool.Api.Domain.EfCore;
@@ -20,15 +19,7 @@ namespace Netcool.Api.Domain.Configuration
 
             if (reloadOnChange)
             {
-                EntityChangeObserver.Instance.Changed += (sender, args) =>
-                {
-                    if (args.Entry.Entity.GetType() != typeof(AppConfiguration))
-                        return;
-
-                    // Waiting before calling Load. This helps avoid triggering a reload before a change is completely saved.
-                    Thread.Sleep(3000);
-                    Load();
-                };
+                EntityChangeObserver.Instance.Changed += OnConfigChanged;
             }
         }
 
@@ -39,9 +30,17 @@ namespace Netcool.Api.Domain.Configuration
             OptionsAction(builder);
 
             using var dbContext = new NetcoolDbContext(builder.Options, NullUserSession.Instance);
+
             InitializeDefaultConfigurations(dbContext);
 
-            Data = dbContext.AppConfigurations.ToDictionary(c => c.Name, c => c.Value);
+            var configs = dbContext.AppConfigurations.ToList();
+            Data.Clear();
+            if (configs.Count <= 0) return;
+            foreach (var config in configs)
+            {
+                if (string.IsNullOrEmpty(config.Name) || Data.ContainsKey(config.Name)) continue;
+                Data.Add(config.Name, config.Value);
+            }
         }
 
         public static void InitializeDefaultConfigurations(NetcoolDbContext dbContext)
@@ -59,6 +58,40 @@ namespace Netcool.Api.Domain.Configuration
             }
 
             dbContext.SaveChanges();
+        }
+
+        private void OnConfigChanged(object sender, EntityChangeEvent args)
+        {
+            if (!(args.Entity is AppConfiguration config)) return;
+
+            if (!string.IsNullOrEmpty(config.Name))
+            {
+                switch (args.ChangeType)
+                {
+                    case EntityChangeType.Created:
+                    {
+                        if (!Data.ContainsKey(config.Name))
+                        {
+                            Data.Add(config.Name, config.Value);
+                        }
+
+                        break;
+                    }
+                    case EntityChangeType.Updated:
+                    {
+                        Data.Remove(config.Name);
+                        if (!config.IsDeleted)
+                        {
+                            Data.Add(config.Name, config.Value);
+                        }
+
+                        break;
+                    }
+                    case EntityChangeType.Deleted:
+                        Data.Remove(config.Name);
+                        break;
+                }
+            }
         }
     }
 }

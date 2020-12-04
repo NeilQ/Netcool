@@ -4,21 +4,31 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Netcool.Core.EfCore
 {
-    public class EntityChangeEventArgs
+    public class EntityChangeEvent
     {
-        public EntityEntry Entry { get; set; }
+        public object Entity { get; set; }
 
-        public EntityChangeEventArgs(EntityEntry entry)
+        public EntityChangeType ChangeType { get; set; }
+
+        public EntityChangeEvent(object entity, EntityChangeType changeType)
         {
-            Entry = entry;
+            Entity = entity;
+            ChangeType = changeType;
         }
+    }
+
+    public enum EntityChangeType
+    {
+        Created,
+        Updated,
+        Deleted
     }
 
     public class EntityChangeObserver
     {
-        public event EventHandler<EntityChangeEventArgs> Changed;
+        public event EventHandler<EntityChangeEvent> Changed;
 
-        public void OnChanged(EntityChangeEventArgs e)
+        public void OnChanged(EntityChangeEvent e)
         {
             ThreadPool.QueueUserWorkItem((_) => Changed?.Invoke(this, e));
         }
