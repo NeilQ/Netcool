@@ -12,5 +12,10 @@ namespace Netcool.Api.Domain.Configuration
         public string Description { get; set; }
 
         public AppConfigurationType Type { get; set; }
+        
+        /// <summary>
+        /// Initial config cannot be deleted.
+        /// </summary>
+        public bool IsInitial { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Netcool.Api.Domain.Menus;
 using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
+using Netcool.Core.AppSettings;
 using Netcool.Core.EfCore;
 using Netcool.Core.Helpers;
 using Netcool.Core.Sessions;
@@ -34,6 +35,7 @@ namespace Netcool.Api.Domain.EfCore
             modelBuilder.Entity<Role>().Property(t => t.Id).HasIdentityOptions(startValue: 1000);
             modelBuilder.Entity<Permission>().Property(t => t.Id).HasIdentityOptions(startValue: 1000);
             modelBuilder.Entity<RolePermission>().Property(t => t.Id).HasIdentityOptions(startValue: 1000);
+            modelBuilder.Entity<AppConfiguration>().Property(t => t.Id).HasIdentityOptions(startValue: 1000);
             SeedingData(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
@@ -59,9 +61,23 @@ namespace Netcool.Api.Domain.EfCore
             modelBuilder.Entity<Role>().HasData(new Role(1, "超级管理员"));
             modelBuilder.Entity<UserRole>().HasData(new UserRole(1, 1, 1));
 
+            SeedingAppConfiguration(modelBuilder);
             SeedingMenu(modelBuilder);
             SeedingPermissions(modelBuilder);
             SeedingRolePermissions(modelBuilder);
+        }
+
+        private static void SeedingAppConfiguration(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<AppConfiguration>().HasData(new AppConfiguration
+            {
+                Id = 1,
+                Name = "User.DefaultPassword",
+                Value = "123456",
+                Type = AppConfigurationType.String,
+                Description = "默认用户密码",
+                IsInitial = true
+            });
         }
 
         private static void SeedingRolePermissions(ModelBuilder modelBuilder)

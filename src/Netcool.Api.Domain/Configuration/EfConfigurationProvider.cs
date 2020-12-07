@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Netcool.Api.Domain.EfCore;
-using Netcool.Core.AppSettings;
 using Netcool.Core.EfCore;
 using Netcool.Core.Sessions;
 
@@ -31,8 +30,6 @@ namespace Netcool.Api.Domain.Configuration
 
             using var dbContext = new NetcoolDbContext(builder.Options, NullUserSession.Instance);
 
-            InitializeDefaultConfigurations(dbContext);
-
             var configs = dbContext.AppConfigurations.ToList();
             Data.Clear();
             if (configs.Count <= 0) return;
@@ -41,23 +38,6 @@ namespace Netcool.Api.Domain.Configuration
                 if (string.IsNullOrEmpty(config.Name) || Data.ContainsKey(config.Name)) continue;
                 Data.Add(config.Name, config.Value);
             }
-        }
-
-        public static void InitializeDefaultConfigurations(NetcoolDbContext dbContext)
-        {
-            var configs = dbContext.AppConfigurations.ToList();
-            if (configs.All(t => t.Name != "User.DefaultPassword"))
-            {
-                dbContext.AddRange(new AppConfiguration()
-                {
-                    Name = "User.DefaultPassword",
-                    Value = "123456",
-                    Type = AppConfigurationType.String,
-                    Description = "默认用户密码"
-                });
-            }
-
-            dbContext.SaveChanges();
         }
 
         private void OnConfigChanged(object sender, EntityChangeEvent args)
