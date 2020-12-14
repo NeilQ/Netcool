@@ -16,10 +16,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Netcool.Api.Domain.Authorization;
 using Netcool.Api.Domain.EfCore;
+using Netcool.Api.Domain.Files;
 using Netcool.Api.Domain.Repositories;
 using Netcool.Core;
 using Netcool.Core.Authorization;
@@ -72,7 +74,8 @@ namespace Netcool.Api
             // swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Netcool API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Netcool API", Version = "v1"});
+                c.OperationFilter<FileUploadOperationFilter>();
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
@@ -153,6 +156,7 @@ namespace Netcool.Api
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // domain
+            services.Configure<FileUploadOptions>(Configuration.GetSection("File"));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IPermissionChecker, NullPermissionChecker>();
             services.AddScoped<IUserSession, UserSession>();
@@ -165,7 +169,7 @@ namespace Netcool.Api
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -180,6 +184,9 @@ namespace Netcool.Api
 
             app.UseSerilogRequestLogging();
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+
+            app.UseStaticFiles();
+            app.UseUploadedStaticFiles(Configuration.GetSection("File").Get<FileUploadOptions>(), logger);
 
             app.UseRouting();
 

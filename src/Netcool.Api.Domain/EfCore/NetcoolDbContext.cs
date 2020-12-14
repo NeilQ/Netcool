@@ -21,6 +21,7 @@ namespace Netcool.Api.Domain.EfCore
         public DbSet<Menu> Menus { get; set; }
         public DbSet<UserLoginAttempt> UserLoginAttempts { get; set; }
         public DbSet<AppConfiguration> AppConfigurations { get; set; }
+        public DbSet<Files.File> Files { get; set; }
 
         public NetcoolDbContext(DbContextOptions<NetcoolDbContext> options, IUserSession userSession) : base(options,
             userSession)

@@ -3,7 +3,7 @@ using Netcool.Core.Entities;
 
 namespace Netcool.Api.Domain.Roles
 {
-    public sealed class Role : FullAuditEntity
+    public class Role : FullAuditEntity
     {
         public string Name { get; set; }
 

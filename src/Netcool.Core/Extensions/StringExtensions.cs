@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace Netcool.Core.Extensions
 {
@@ -67,6 +68,13 @@ namespace Netcool.Core.Extensions
             }
 
             return stringBuilder.ToString();
+        }
+        
+        public static bool IsValidUrl(this string url)
+        {
+            if (string.IsNullOrWhiteSpace(url)) return false;
+            return Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
+                   && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
     }
 }
