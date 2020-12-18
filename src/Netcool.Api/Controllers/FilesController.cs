@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -18,6 +18,7 @@ using ContentDispositionHeaderValue = System.Net.Http.Headers.ContentDisposition
 namespace Netcool.Api.Controllers
 {
     [Route("files")]
+    [Authorize]
     public class FilesController : CrudControllerBase<FileDto, int, FileQuery, FileSaveInput>
     {
         private readonly IOptionsSnapshot<FormOptions> _formOptions;

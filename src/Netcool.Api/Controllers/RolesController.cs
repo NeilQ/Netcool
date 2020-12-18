@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Roles;
@@ -8,6 +9,7 @@ using Netcool.Core.WebApi.Controllers;
 namespace Netcool.Api.Controllers
 {
     [Route("roles")]
+    [Authorize]
     public class RolesController : CrudControllerBase<RoleDto, int, PageRequest, RoleSaveInput>
     {
         private readonly IRoleService _roleService;

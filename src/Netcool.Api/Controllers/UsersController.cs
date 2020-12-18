@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Netcool.Api.Domain.Menus;
 using Netcool.Api.Domain.Roles;
@@ -9,6 +10,7 @@ using Netcool.Core.WebApi.Controllers;
 namespace Netcool.Api.Controllers
 {
     [Route("users")]
+    [Authorize]
     public class UsersController : CrudControllerBase<UserDto, int, PageRequest, UserSaveInput>
     {
         private readonly IUserService _userService;

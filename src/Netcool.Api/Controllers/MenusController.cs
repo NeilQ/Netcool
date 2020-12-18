@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Netcool.Api.Domain.Menus;
 using Netcool.Core.Services.Dto;
 using Netcool.Core.WebApi.Controllers;
@@ -6,6 +7,7 @@ using Netcool.Core.WebApi.Controllers;
 namespace Netcool.Api.Controllers
 {
     [Route("menus")]
+    [Authorize]
     public class MenusController : QueryControllerBase<MenuDto, int, PageRequest>
     {
         private readonly IMenuService _menuService;

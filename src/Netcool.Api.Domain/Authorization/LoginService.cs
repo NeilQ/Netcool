@@ -101,7 +101,7 @@ namespace Netcool.Api.Domain.Authorization
                 SigningCredentials = credentials,
                 NotBefore = now,
                 IssuedAt = now,
-                Expires = expires
+                Expires = expires,
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(descriptor);
