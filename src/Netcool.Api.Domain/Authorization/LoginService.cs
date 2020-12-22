@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -87,11 +88,15 @@ namespace Netcool.Api.Domain.Authorization
             var now = DateTime.Now;
             var expires = _jwtOptions.ExpiryMinutes > 0 ? now.AddMinutes(_jwtOptions.ExpiryMinutes) : now.AddDays(1);
 
-            Claim[] claims =
+            var claims = new List<Claim>()
             {
                 new Claim(AppClaimTypes.UserId, user.Id.ToString()),
                 new Claim(AppClaimTypes.UserName, user.Name)
             };
+            foreach (var userRole in user.UserRoles)
+            {
+                claims.Add(new Claim(AppClaimTypes.Role, userRole.Role.Name));
+            }
 
             var descriptor = new SecurityTokenDescriptor
             {
