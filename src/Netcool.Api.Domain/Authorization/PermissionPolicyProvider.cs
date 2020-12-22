@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
@@ -20,7 +21,8 @@ namespace Netcool.Api.Domain.Authorization
 
         public Task<AuthorizationPolicy> GetPolicyAsync(string policyName)
         {
-            if (InitialEntities.GetInitialPermissions().Exists(t => t.Code == policyName))
+            if (InitialEntities.GetInitialPermissions().Exists(t =>
+                string.Equals(t.Code, policyName, StringComparison.CurrentCultureIgnoreCase)))
             {
                 var policyBuilder = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
                 policyBuilder.Requirements.Add(new OperationAuthorizationRequirement {Name = policyName});

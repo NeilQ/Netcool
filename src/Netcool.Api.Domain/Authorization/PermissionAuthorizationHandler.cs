@@ -31,7 +31,7 @@ namespace Netcool.Api.Domain.Authorization
             {
                 var permissions = userRepository.GetUserPermissions(userId);
                 var permissionCodes = permissions
-                    .Select(t => t.Code)
+                    .Select(t => t.Code.ToLower())
                     .Distinct()
                     .ToList();
                 if (permissionCodes.Contains(requirement.Name)) context.Succeed(requirement);
