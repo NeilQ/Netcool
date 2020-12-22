@@ -26,7 +26,6 @@ namespace Netcool.Api.Domain.Authorization
             using var scope = _scopeFactory.CreateScope();
             var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
-            // Do your stuff with TicketMasterRepository             
             if (!string.IsNullOrEmpty(idClaim?.Value) && int.TryParse(idClaim.Value, out var userId))
             {
                 var permissions = userRepository.GetUserPermissions(userId);
