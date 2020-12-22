@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Users;
@@ -11,21 +12,27 @@ using Netcool.Core.Services.Dto;
 
 namespace Netcool.Api.Domain.Roles
 {
-    public class RoleService : CrudService<Role, RoleDto, int, PageRequest, RoleSaveInput>, IRoleService
+    public sealed class RoleService : CrudService<Role, RoleDto, int, PageRequest, RoleSaveInput>, IRoleService
     {
         private readonly IRepository<Permission> _permissionRepository;
-        private readonly IRepository<RolePermission> _rolePermissionRepository;
         private readonly IRepository<UserRole> _userRoleRepository;
+        private readonly IUserRepository _userRepository;
 
         public RoleService(IRepository<Role> repository,
             IServiceAggregator serviceAggregator,
             IRepository<Permission> permissionRepository,
-            IRepository<RolePermission> rolePermissionRepository,
-            IRepository<UserRole> userRoleRepository) : base(repository, serviceAggregator)
+            IRepository<UserRole> userRoleRepository, IHttpContextAccessor accessor,
+            IUserRepository userRepository) : base(repository,
+            serviceAggregator)
         {
             _permissionRepository = permissionRepository;
-            _rolePermissionRepository = rolePermissionRepository;
             _userRoleRepository = userRoleRepository;
+            _userRepository = userRepository;
+
+            GetPermissionName = "role.view";
+            UpdatePermissionName = "role.update";
+            CreatePermissionName = "role.create";
+            DeletePermissionName = "role.delete";
         }
 
         public override void BeforeCreate(Role entity)
@@ -62,10 +69,12 @@ namespace Netcool.Api.Domain.Roles
 
         public void SetRolePermissions(int id, IList<int> permissionIds)
         {
+            CheckPermission("role.set-permissions");
             // validate role 
             if (id <= 0) throw new EntityNotFoundException(typeof(User), id);
             var role = Repository.GetAll()
                 .Include(t => t.RolePermissions)
+                .Include(t => t.UserRoles)
                 .FirstOrDefault(t => t.Id == id);
             if (role == null) throw new EntityNotFoundException(typeof(Role), id);
 
@@ -93,11 +102,23 @@ namespace Netcool.Api.Domain.Roles
             }
 
             UnitOfWork.SaveChanges();
+
+            foreach (var userRole in role.UserRoles)
+            {
+                _userRepository.ClearUserPermissionCache(userRole.UserId);
+            }
         }
 
         protected override void BeforeDelete(IEnumerable<int> ids)
         {
-            _userRoleRepository.Delete(t => ids.Contains(t.RoleId));
+            base.BeforeDelete(ids);
+            var userRoles = _userRoleRepository.GetAll().AsNoTracking().Where(t => ids.Contains(t.RoleId)).ToList();
+            foreach (var userRole in userRoles)
+            {
+                _userRepository.ClearUserPermissionCache(userRole.UserId);
+            }
+
+            _userRoleRepository.Delete(userRoles);
             // keep role permissions for deletion mistake temporarily
             // _rolePermissionRepository.Delete(t => ids.Contains(t.RoleId));
         }

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using AutoMapper;
-using Netcool.Core.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services.Dto;
@@ -25,11 +25,9 @@ namespace Netcool.Core.Services
         protected readonly IUnitOfWork UnitOfWork;
         protected readonly IUserSession Session;
         protected readonly IMapper Mapper;
-        protected readonly IPermissionChecker PermissionChecker;
+        protected readonly IAuthorizationService AuthorizationService;
 
         protected virtual string GetPermissionName { get; set; }
-
-        protected virtual string GetAllPermissionName { get; set; }
 
         protected virtual string CreatePermissionName { get; set; }
 
@@ -40,10 +38,10 @@ namespace Netcool.Core.Services
         protected CrudServiceBase(IRepository<TEntity, TPrimaryKey> repository, IServiceAggregator serviceAggregator)
         {
             Repository = repository;
+            AuthorizationService = serviceAggregator.AuthorizationService;
             UnitOfWork = serviceAggregator.UnitOfWork;
             Session = serviceAggregator.Session;
             Mapper = serviceAggregator.Mapper;
-            PermissionChecker = serviceAggregator.PermissionChecker;
         }
 
         /// <summary>
@@ -122,19 +120,15 @@ namespace Netcool.Core.Services
 
         protected virtual void CheckPermission(string permissionName)
         {
-            if (string.IsNullOrEmpty(permissionName)) return;
-            if (PermissionChecker.IsGranted(permissionName)) return;
-            throw new UnauthorizedAccessException("Permission Denied.");
+            if (string.IsNullOrWhiteSpace(permissionName)) return;
+            var result = AuthorizationService.AuthorizeAsync(Session.ClaimsPrincipal, permissionName).Result;
+            if (result.Succeeded) return;
+            throw new UnauthorizedAccessException($"Grant permission[{permissionName}] failed.");
         }
 
         protected virtual void CheckGetPermission()
         {
             CheckPermission(GetPermissionName);
-        }
-
-        protected virtual void CheckGetAllPermission()
-        {
-            CheckPermission(GetAllPermissionName);
         }
 
         protected virtual void CheckCreatePermission()

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Netcool.Api.Domain.Menus;
@@ -13,14 +14,15 @@ using Netcool.Core.Services.Dto;
 
 namespace Netcool.Api.Domain.Users
 {
-    public class UserService : CrudService<User, UserDto, int, PageRequest, UserSaveInput>, IUserService
+    public sealed class UserService : CrudService<User, UserDto, int, PageRequest, UserSaveInput>, IUserService
     {
         private readonly string _defaultPassword;
 
+        private readonly IUserRepository _userRepository;
         private readonly IRepository<Role> _roleRepository;
         private readonly IRepository<UserRole> _userRoleRepository;
 
-        public UserService(IRepository<User> userRepository,
+        public UserService(IUserRepository userRepository,
             IServiceAggregator serviceAggregator,
             IRepository<Role> roleRepository,
             IConfiguration config,
@@ -29,8 +31,14 @@ namespace Netcool.Api.Domain.Users
             serviceAggregator)
         {
             _roleRepository = roleRepository;
+            _userRepository = userRepository;
             _userRoleRepository = userRoleRepository;
             _defaultPassword = config.GetValue<string>("User.DefaultPassword");
+
+            GetPermissionName = "user.view";
+            UpdatePermissionName = "user.update";
+            CreatePermissionName = "user.create";
+            DeletePermissionName = "user.delete";
         }
 
         public override PagedResultDto<UserDto> GetAll(PageRequest input)
@@ -53,6 +61,7 @@ namespace Netcool.Api.Domain.Users
         public override void BeforeCreate(User entity)
         {
             // initialize password
+            base.BeforeCreate(entity);
             entity.Name = entity.Name.SafeString();
             entity.Phone = entity.Phone.SafeString();
             entity.Email = entity.Email.SafeString();
@@ -83,6 +92,7 @@ namespace Netcool.Api.Domain.Users
 
         public override void BeforeUpdate(UserSaveInput dto, User originEntity)
         {
+            base.BeforeUpdate(dto, originEntity);
             dto.Name = dto.Name.SafeString();
             dto.Phone = dto.Phone.SafeString();
             dto.Email = dto.Email.SafeString();
@@ -113,6 +123,7 @@ namespace Netcool.Api.Domain.Users
 
         protected override void BeforeDelete(IEnumerable<int> ids)
         {
+            base.BeforeDelete(ids);
             _userRoleRepository.Delete(t => ids.Contains(t.UserId));
         }
 
@@ -135,6 +146,7 @@ namespace Netcool.Api.Domain.Users
 
         public void ResetPassword(int id, ResetPasswordInput input)
         {
+            CheckUpdatePermission();
             input.New = input.New.SafeString();
             input.Confirm = input.Confirm.SafeString();
 
@@ -162,6 +174,7 @@ namespace Netcool.Api.Domain.Users
 
         public void SetUserRoles(int id, IList<int> roleIds)
         {
+            CheckPermission("user.set-roles");
             // validate user
             if (id <= 0) throw new EntityNotFoundException(typeof(User), id);
             var user = Repository.GetAll()
@@ -192,6 +205,7 @@ namespace Netcool.Api.Domain.Users
             }
 
             UnitOfWork.SaveChanges();
+            _userRepository.ClearUserPermissionCache(id);
         }
 
         public MenuTreeNode GetUserMenuTree(int id)

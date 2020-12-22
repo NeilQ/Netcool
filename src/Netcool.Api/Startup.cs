@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Reflection;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -26,7 +25,6 @@ using Netcool.Api.Domain.EfCore;
 using Netcool.Api.Domain.Files;
 using Netcool.Api.Domain.Repositories;
 using Netcool.Core;
-using Netcool.Core.Authorization;
 using Netcool.Core.Extensions;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
@@ -72,6 +70,7 @@ namespace Netcool.Api
                     .UseSnakeCaseNamingConvention();
             });
             services.AddHealthChecks();
+            services.AddMemoryCache();
 
             // swagger
             services.AddSwaggerGen(c =>
@@ -160,13 +159,16 @@ namespace Netcool.Api
             // domain
             services.Configure<FileUploadOptions>(Configuration.GetSection("File"));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddSingleton<IPermissionChecker, NullPermissionChecker>();
             services.AddScoped<IUserSession, UserSession>();
             services.AddScoped<IClientInfoProvider, HttpContextClientInfoProvider>();
             services.AddScoped(typeof(IRepository<>), typeof(CommonRepository<>));
             services.AddScoped(typeof(IRepository<,>), typeof(CommonRepository<,>));
             services.AddTransient<IServiceAggregator, ServiceAggregator>();
+            services.AddDomainRepositoryTypes(Assembly.GetAssembly(typeof(NetcoolDbContext)), ServiceLifetime.Scoped);
             services.AddDomainServiceTypes(Assembly.GetAssembly(typeof(NetcoolDbContext)), ServiceLifetime.Scoped);
+            // authorization
+            services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
         }
 
 
@@ -198,7 +200,8 @@ namespace Netcool.Api
             app.UseEndpoints(endpoints =>
             {
                 if (env.IsDevelopment())
-                    endpoints.MapControllers().WithMetadata(new AllowAnonymousAttribute());
+                    endpoints
+                        .MapControllers(); // endpoints.MapControllers().WithMetadata(new AllowAnonymousAttribute());
                 else
                     endpoints.MapControllers();
                 endpoints.MapHealthChecks("/health");

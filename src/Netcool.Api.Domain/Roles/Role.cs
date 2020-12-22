@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Netcool.Api.Domain.Users;
 using Netcool.Core.Entities;
 
 namespace Netcool.Api.Domain.Roles
@@ -10,6 +11,8 @@ namespace Netcool.Api.Domain.Roles
         public string Notes { get; set; }
 
         public ICollection<RolePermission> RolePermissions { get; set; }
+
+        public ICollection<UserRole> UserRoles { get; set; }
 
         public Role()
         {

@@ -48,6 +48,10 @@ namespace Netcool.Core.WebApi.Middlewares
             {
                 statusCode = HttpStatusCode.BadRequest;
             }
+            else if (exception is UnauthorizedAccessException)
+            {
+                statusCode = HttpStatusCode.Forbidden;
+            }
 
             logger.LogError(exception, exception.Message);
 

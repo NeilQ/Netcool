@@ -105,7 +105,7 @@ namespace Netcool.Core.Services
 
         public virtual PagedResultDto<TEntityDto> GetAll(TGetAllInput input)
         {
-            CheckGetAllPermission();
+            CheckGetPermission();
 
             var query = CreateFilteredQuery(input);
 
@@ -128,12 +128,11 @@ namespace Netcool.Core.Services
 
         public virtual void BeforeCreate(TEntity entity)
         {
+            CheckCreatePermission();
         }
 
         public virtual TEntityDto Create(TCreateInput input)
         {
-            CheckCreatePermission();
-
             var entity = MapToEntity(input);
             BeforeCreate(entity);
 
@@ -145,12 +144,11 @@ namespace Netcool.Core.Services
 
         public virtual void BeforeUpdate(TUpdateInput input, TEntity originEntity)
         {
+            CheckUpdatePermission();
         }
 
         public virtual TEntityDto Update(TUpdateInput input)
         {
-            CheckUpdatePermission();
-
             var entity = GetEntityById(input.Id);
 
             BeforeUpdate(input, entity);
@@ -162,7 +160,6 @@ namespace Netcool.Core.Services
 
         public virtual void Delete(TPrimaryKey id)
         {
-            CheckDeletePermission();
             BeforeDelete(new[] {id});
             Repository.Delete(id);
             UnitOfWork.SaveChanges();
@@ -171,7 +168,6 @@ namespace Netcool.Core.Services
         public virtual void Delete(IEnumerable<TPrimaryKey> ids)
         {
             if (ids == null || !ids.Any()) return;
-            CheckDeletePermission();
             BeforeDelete(ids);
             Repository.Delete(t => ids.Contains(t.Id));
             UnitOfWork.SaveChanges();
@@ -184,6 +180,7 @@ namespace Netcool.Core.Services
 
         protected virtual void BeforeDelete(IEnumerable<TPrimaryKey> ids)
         {
+            CheckDeletePermission();
         }
     }
 }

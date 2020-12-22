@@ -8,11 +8,13 @@ using Netcool.Core.Services.Dto;
 
 namespace Netcool.Api.Domain.Menus
 {
-    public class MenuService : CrudService<Menu, MenuDto, int, PageRequest>, IMenuService
+    public sealed class MenuService : CrudService<Menu, MenuDto, int, PageRequest>, IMenuService
     {
         public MenuService(IRepository<Menu, int> repository, IServiceAggregator serviceAggregator) : base(repository,
             serviceAggregator)
         {
+            GetPermissionName = "menu.view";
+            UpdatePermissionName = "menu.update";
         }
 
         protected override IQueryable<Menu> CreateFilteredQuery(PageRequest input)
@@ -22,6 +24,7 @@ namespace Netcool.Api.Domain.Menus
 
         public override void BeforeUpdate(MenuDto input, Menu originEntity)
         {
+            base.BeforeUpdate(input, originEntity);
             if (input.ParentId == originEntity.ParentId) return;
             if (input.Level <= 1)
             {
@@ -37,6 +40,7 @@ namespace Netcool.Api.Domain.Menus
 
         public MenuTreeNode GetMenuTree()
         {
+            CheckGetPermission();
             var menus = Repository.GetAll().OrderBy(t => t.Level).AsNoTracking().ToList();
             if (menus.Count == 0) return null;
             var rootNode = new MenuTreeNode();

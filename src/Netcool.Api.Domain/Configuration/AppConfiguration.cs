@@ -5,6 +5,21 @@ namespace Netcool.Api.Domain.Configuration
 {
     public class AppConfiguration : FullAuditEntity
     {
+        public AppConfiguration()
+        {
+        }
+
+        public AppConfiguration(int id, string name, string value, string description, AppConfigurationType type,
+            bool isInitial)
+        {
+            Id = id;
+            Name = name;
+            Value = value;
+            Description = description;
+            Type = type;
+            IsInitial = isInitial;
+        }
+
         public string Name { get; set; }
 
         public string Value { get; set; }
@@ -12,7 +27,7 @@ namespace Netcool.Api.Domain.Configuration
         public string Description { get; set; }
 
         public AppConfigurationType Type { get; set; }
-        
+
         /// <summary>
         /// Initial config cannot be deleted.
         /// </summary>
