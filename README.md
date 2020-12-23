@@ -32,14 +32,67 @@ Netcool采用前后端分离的方式，包含Netcool.Api，Netcool.Admin两个�
 每个微服务就是一个业务领域，需要在实践中灵活应用。
 
 # 数据库适配
+Netcool默认使用Postgresql数据库，使用其他数据库只需通过EF更换数据库适配器，并修改`NetcoolDbContext`类中部分不兼容的代码。
+首次同步数据库时，建议将`Netcool.Api.Domain`中的`Migrations`文件夹删除，重新生成同步文件。
 
 # 内置模块
-### 应用配置
 ### 菜单与权限
+
 ### 用户与授权
+Netcool使用JwtBearer进行用户授权，访问Api时，需要添加请求头： `Authorization: Bearer {token}`。
+通过`[Authorize]`与`[AllowAnonymous]`属性控制Action是否需要访问授权。
+
+### 应用配置
+Netcool提供了`EFConfigurationProvider`，将数据库中的配置信息适配到内置的`Configuration`中，可以通过注入`IConfiguration`或者`IOptions`获取数据库中配置的权限，如UserService:
+```c#
+ public UserService(IUserRepository userRepository,
+            IServiceAggregator serviceAggregator,
+            IRepository<Role> roleRepository,
+            IConfiguration config,
+            IRepository<UserRole> userRoleRepository) : base(
+            userRepository,
+            serviceAggregator)
+        {
+            ......            
+            
+            _defaultPassword = config.GetValue<string>("User.DefaultPassword");
+            
+            ......
+        }
+```
+
 ### 文件上传
+启用文件上传需要在`appsettings.json`中加入配置
+```json
+"File" : {
+    "HttpSchema":""    
+    "HttpHost": "",
+    "SubWebPath": "file",
+    "PhysicalPath": "D:\\netcool-resources"
+  }
+```
+- HttpSchema: http或者https。当该值为空时将会从`HttpContext.Request.Schema`中读取。
+- Host: 访问文件资源时使用的域名。当该值为空时将会从`HttpContext.Request.Host`中读取，
+如果使用了多层代理，需要注意配置`X-Forwarded-Host`请求头。为了方便，可以直接为该值配置域名
+- SubWebPath: 访问文件资源跟在域名后的二级路径，注意不能与`ApiController`中定于的路由相同。
+- PhysicalPath: 物理文件路径
+
+当Host="www.domain.com" SubWebPath="file"时，文件上传后返回的Dto中将包含URL:https://www.domain.com/file/20201212/xxx.png。
+URL拼接操作在AutoMapper中自动处理。
+
 ### 权限验证
-TODO
+Netcool使用 [基于资源的授权](https://docs.microsoft.com/zh-cn/aspnet/core/security/authorization/resourcebased?view=aspnetcore-5.0) 的方式校验权限，
+并且兼容`Role-based`与`Claim-based`授权方式。
+
+#### 添加权限定义
+将自定义的权限名称添加到`InitialEntities`中，并通过EF工具同步到数据库。当然，也可以随时更改`PermissionPolicyProvider`或者实现`IAuthorizationPolicyProvider`来自定义你的权限定义获取方式。
+
+#### 在Service中校验权限
+基础的CRUD操作可以直接通过给`GetPermissionName`、`UpdatePermissionName`、`CreatePermissionName`、`DeletePermissionName`属性赋值。
+其他操作权限可以调用Service中的`CheckPermission`或者`AuthorizationService.AuthorizeAsync`方法
+
+#### 在Controller中校验权限
+为Action添加属性`[Authorize("permission")]`
 
 # 如何自定义一个模块
 TODO

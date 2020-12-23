@@ -5,9 +5,7 @@ using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
 using Netcool.Core;
-using Netcool.Core.AppSettings;
 using Netcool.Core.EfCore;
-using Netcool.Core.Helpers;
 using Netcool.Core.Sessions;
 
 namespace Netcool.Api.Domain.EfCore
@@ -31,6 +29,7 @@ namespace Netcool.Api.Domain.EfCore
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // postgresql
             modelBuilder.Entity<Menu>().Property(t => t.Id).HasIdentityOptions(startValue: 1000);
             modelBuilder.Entity<User>().Property(t => t.Id).HasIdentityOptions(startValue: 1000);
             modelBuilder.Entity<UserRole>().Property(t => t.Id).HasIdentityOptions(startValue: 1000);
@@ -38,6 +37,18 @@ namespace Netcool.Api.Domain.EfCore
             modelBuilder.Entity<Permission>().Property(t => t.Id).HasIdentityOptions(startValue: 1000);
             modelBuilder.Entity<RolePermission>().Property(t => t.Id).HasIdentityOptions(startValue: 1000);
             modelBuilder.Entity<AppConfiguration>().Property(t => t.Id).HasIdentityOptions(startValue: 1000);
+
+            // sql server
+            /*
+            modelBuilder.Entity<Menu>().Property(t => t.Id).UseIdentityColumn(1000);
+            modelBuilder.Entity<User>().Property(t => t.Id).UseIdentityColumn(1000);
+            modelBuilder.Entity<UserRole>().Property(t => t.Id).UseIdentityColumn(1000);
+            modelBuilder.Entity<Role>().Property(t => t.Id).UseIdentityColumn(1000);
+            modelBuilder.Entity<Permission>().Property(t => t.Id).UseIdentityColumn(1000);
+            modelBuilder.Entity<RolePermission>().Property(t => t.Id).UseIdentityColumn(1000);
+            modelBuilder.Entity<AppConfiguration>().Property(t => t.Id).UseIdentityColumn(1000);
+            */
+
             SeedingData(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
@@ -60,6 +71,5 @@ namespace Netcool.Api.Domain.EfCore
             modelBuilder.Entity<Permission>().HasData(InitialEntities.GetInitialPermissions());
             modelBuilder.Entity<RolePermission>().HasData(InitialEntities.GetInitialRolePermissions());
         }
-     
     }
 }
