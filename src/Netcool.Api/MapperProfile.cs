@@ -70,15 +70,18 @@ namespace Netcool.Api
             var host = !string.IsNullOrWhiteSpace(_fileOptions.Value.Host)
                 ? _fileOptions.Value.Host
                 : _httpContextAccessor.HttpContext?.Request.Host.Value;
-            var url = AppendUrlHost(host, _fileOptions.Value.SubWebPath, source.Filename);
+            var schema = !string.IsNullOrWhiteSpace(_fileOptions.Value.HostSchema)
+                ? _fileOptions.Value.HostSchema
+                : _httpContextAccessor.HttpContext?.Request.Scheme;
+            var url = AppendUrlHost(schema, host, _fileOptions.Value.SubWebPath, source.Filename);
             return url;
         }
 
-        private string AppendUrlHost(string hostName, string subWebPath, string filename)
+        private string AppendUrlHost(string hostSchema, string hostName, string subWebPath, string filename)
         {
             if (string.IsNullOrWhiteSpace(filename) || string.IsNullOrWhiteSpace(hostName)) return filename;
             if (filename.IsValidUrl()) return filename;
-            return $"http://{hostName}/{subWebPath}/{filename.Trim('/')}";
+            return $"{hostSchema}://{hostName}/{subWebPath}/{filename.Trim('/')}";
         }
     }
 }

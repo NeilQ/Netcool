@@ -200,8 +200,7 @@ namespace Netcool.Api
             app.UseEndpoints(endpoints =>
             {
                 if (env.IsDevelopment())
-                    endpoints
-                        .MapControllers(); // endpoints.MapControllers().WithMetadata(new AllowAnonymousAttribute());
+                    endpoints.MapControllers().WithMetadata(new AllowAnonymousAttribute());
                 else
                     endpoints.MapControllers();
                 endpoints.MapHealthChecks("/health");
