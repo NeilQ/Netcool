@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Netcool.Core.Entities;
 
 namespace Netcool.Core.Repositories
@@ -46,7 +47,7 @@ namespace Netcool.Core.Repositories
 
         public virtual TEntity Get(TPrimaryKey id)
         {
-            var entity = FirstOrDefault(id);
+            var entity = GetAll().FirstOrDefault(CreateEqualityExpressionForId(id));
             if (entity == null)
             {
                 throw new EntityNotFoundException(typeof(TEntity), id);
@@ -57,43 +58,13 @@ namespace Netcool.Core.Repositories
 
         public virtual async Task<TEntity> GetAsync(TPrimaryKey id)
         {
-            var entity = await FirstOrDefaultAsync(id);
+            var entity = await GetAll().FirstOrDefaultAsync(CreateEqualityExpressionForId(id));
             if (entity == null)
             {
                 throw new EntityNotFoundException(typeof(TEntity), id);
             }
 
             return entity;
-        }
-
-        public virtual TEntity Single(Expression<Func<TEntity, bool>> predicate)
-        {
-            return GetAll().Single(predicate);
-        }
-
-        public virtual Task<TEntity> SingleAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return Task.FromResult(Single(predicate));
-        }
-
-        public virtual TEntity FirstOrDefault(TPrimaryKey id)
-        {
-            return GetAll().FirstOrDefault(CreateEqualityExpressionForId(id));
-        }
-
-        public virtual Task<TEntity> FirstOrDefaultAsync(TPrimaryKey id)
-        {
-            return Task.FromResult(FirstOrDefault(id));
-        }
-
-        public virtual TEntity FirstOrDefault(Expression<Func<TEntity, bool>> predicate)
-        {
-            return GetAll().FirstOrDefault(predicate);
-        }
-
-        public virtual Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return Task.FromResult(FirstOrDefault(predicate));
         }
 
         #endregion
@@ -114,41 +85,6 @@ namespace Netcool.Core.Repositories
             Insert(entities);
             return Task.FromResult(0);
         }
-
-        public virtual TPrimaryKey InsertAndGetId(TEntity entity)
-        {
-            return Insert(entity).Id;
-        }
-
-        public virtual Task<TPrimaryKey> InsertAndGetIdAsync(TEntity entity)
-        {
-            return Task.FromResult(InsertAndGetId(entity));
-        }
-
-        public virtual TEntity InsertOrUpdate(TEntity entity)
-        {
-            return entity.IsNewEntity()
-                ? Insert(entity)
-                : Update(entity);
-        }
-
-        public virtual async Task<TEntity> InsertOrUpdateAsync(TEntity entity)
-        {
-            return entity.IsNewEntity()
-                ? await InsertAsync(entity)
-                : await UpdateAsync(entity);
-        }
-
-        public virtual TPrimaryKey InsertOrUpdateAndGetId(TEntity entity)
-        {
-            return InsertOrUpdate(entity).Id;
-        }
-
-        public virtual Task<TPrimaryKey> InsertOrUpdateAndGetIdAsync(TEntity entity)
-        {
-            return Task.FromResult(InsertOrUpdateAndGetId(entity));
-        }
-
         #endregion
 
         #region update
@@ -214,46 +150,6 @@ namespace Netcool.Core.Repositories
         }
 
         #endregion
-
-        public virtual int Count()
-        {
-            return GetAll().Count();
-        }
-
-        public virtual Task<int> CountAsync()
-        {
-            return Task.FromResult(Count());
-        }
-
-        public virtual int Count(Expression<Func<TEntity, bool>> predicate)
-        {
-            return GetAll().Where(predicate).Count();
-        }
-
-        public virtual Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return Task.FromResult(Count(predicate));
-        }
-
-        public virtual long LongCount()
-        {
-            return GetAll().LongCount();
-        }
-
-        public virtual Task<long> LongCountAsync()
-        {
-            return Task.FromResult(LongCount());
-        }
-
-        public virtual long LongCount(Expression<Func<TEntity, bool>> predicate)
-        {
-            return GetAll().Where(predicate).LongCount();
-        }
-
-        public virtual Task<long> LongCountAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return Task.FromResult(LongCount(predicate));
-        }
 
         protected virtual Expression<Func<TEntity, bool>> CreateEqualityExpressionForId(TPrimaryKey id)
         {

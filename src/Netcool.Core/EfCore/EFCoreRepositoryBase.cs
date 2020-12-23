@@ -85,21 +85,6 @@ namespace Netcool.Core.EfCore
             return await GetAll().Where(predicate).ToListAsync();
         }
 
-        public override async Task<TEntity> SingleAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return await GetAll().SingleAsync(predicate);
-        }
-
-        public override async Task<TEntity> FirstOrDefaultAsync(TPrimaryKey id)
-        {
-            return await GetAll().FirstOrDefaultAsync(CreateEqualityExpressionForId(id));
-        }
-
-        public override async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return await GetAll().FirstOrDefaultAsync(predicate);
-        }
-
         public override TEntity Insert(TEntity entity)
         {
             return Table.Add(entity).Entity;
@@ -113,54 +98,6 @@ namespace Netcool.Core.EfCore
         public override Task<TEntity> InsertAsync(TEntity entity)
         {
             return Task.FromResult(Insert(entity));
-        }
-
-        public override TPrimaryKey InsertAndGetId(TEntity entity)
-        {
-            entity = Insert(entity);
-
-            if (entity.IsNewEntity())
-            {
-                ContextBase.SaveChanges();
-            }
-
-            return entity.Id;
-        }
-
-        public override async Task<TPrimaryKey> InsertAndGetIdAsync(TEntity entity)
-        {
-            entity = await InsertAsync(entity);
-
-            if (entity.IsNewEntity())
-            {
-                await ContextBase.SaveChangesAsync();
-            }
-
-            return entity.Id;
-        }
-
-        public override TPrimaryKey InsertOrUpdateAndGetId(TEntity entity)
-        {
-            entity = InsertOrUpdate(entity);
-
-            if (entity.IsNewEntity())
-            {
-                ContextBase.SaveChanges();
-            }
-
-            return entity.Id;
-        }
-
-        public override async Task<TPrimaryKey> InsertOrUpdateAndGetIdAsync(TEntity entity)
-        {
-            entity = await InsertOrUpdateAsync(entity);
-
-            if (entity.IsNewEntity())
-            {
-                await ContextBase.SaveChangesAsync();
-            }
-
-            return entity.Id;
         }
 
         public override TEntity Update(TEntity entity)
@@ -185,7 +122,7 @@ namespace Netcool.Core.EfCore
                 return;
             }
 
-            entity = FirstOrDefault(id);
+            entity = Get(id);
             if (entity == null) return;
             Delete(entity);
         }
@@ -206,26 +143,6 @@ namespace Netcool.Core.EfCore
         public override void Delete(Expression<Func<TEntity, bool>> predicate)
         {
             Delete(GetAll().Where(predicate).ToList());
-        }
-
-        public override async Task<int> CountAsync()
-        {
-            return await GetAll().CountAsync();
-        }
-
-        public override async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return await GetAll().Where(predicate).CountAsync();
-        }
-
-        public override async Task<long> LongCountAsync()
-        {
-            return await GetAll().LongCountAsync();
-        }
-
-        public override async Task<long> LongCountAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return await GetAll().Where(predicate).LongCountAsync();
         }
 
         protected virtual void AttachIfNot(TEntity entity)

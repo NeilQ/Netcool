@@ -24,13 +24,14 @@ namespace Netcool.Api.Domain.Configuration
         public override void BeforeCreate(AppConfiguration entity)
         {
             base.BeforeCreate(entity);
-            if (Repository.FirstOrDefault(t => t.Name == entity.Name) != null) throw new ApplicationException("配置名称重复");
+            if (Repository.GetAll().FirstOrDefault(t => t.Name == entity.Name) != null)
+                throw new ApplicationException("配置名称重复");
         }
 
         public override void BeforeUpdate(AppConfigurationSaveInput input, AppConfiguration originEntity)
         {
             base.BeforeUpdate(input, originEntity);
-            if (Repository.FirstOrDefault(t => t.Name == input.Name && t.Id != originEntity.Id) != null)
+            if (Repository.GetAll().FirstOrDefault(t => t.Name == input.Name && t.Id != originEntity.Id) != null)
                 throw new ApplicationException("配置名称重复");
         }
 
