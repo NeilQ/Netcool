@@ -43,7 +43,9 @@ Netcool使用JwtBearer进行用户授权，访问Api时，需要添加请求头�
 通过`[Authorize]`与`[AllowAnonymous]`属性控制Action是否需要访问授权。
 
 ### 应用配置
-Netcool提供了`EFConfigurationProvider`，将数据库中的配置信息适配到内置的`Configuration`中，可以通过注入`IConfiguration`或者`IOptions`获取数据库中配置的权限，如UserService:
+Netcool将会检索运行目录下的conf文件夹，将所有.json文件添加到配置中，方便使用Docker部署时映射外部文件以覆盖默认配置。
+
+此外，Netcool提供了`EFConfigurationProvider`，将数据库中的配置信息适配到内置的`Configuration`中，可以通过注入`IConfiguration`或者`IOptions`获取数据库中配置的权限，如UserService:
 ```c#
  public UserService(IUserRepository userRepository,
             IServiceAggregator serviceAggregator,
@@ -97,7 +99,9 @@ Netcool使用 [基于资源的授权](https://docs.microsoft.com/zh-cn/aspnet/co
 # 如何自定义一个模块
 TODO
 
+# Docker部署
 
 # 前端开发
 TODO
+
 
