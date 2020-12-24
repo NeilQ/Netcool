@@ -10,7 +10,7 @@ namespace Netcool.Api.Controllers
 {
     [Route("roles")]
     [Authorize]
-    public class RolesController : CrudControllerBase<RoleDto, int, PageRequest, RoleSaveInput>
+    public class RolesController : CrudControllerBase<RoleDto, int, RoleRequest, RoleSaveInput>
     {
         private readonly IRoleService _roleService;
 

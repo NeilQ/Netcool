@@ -12,7 +12,7 @@ using Netcool.Core.Services.Dto;
 
 namespace Netcool.Api.Domain.Roles
 {
-    public sealed class RoleService : CrudService<Role, RoleDto, int, PageRequest, RoleSaveInput>, IRoleService
+    public sealed class RoleService : CrudService<Role, RoleDto, int, RoleRequest, RoleSaveInput>, IRoleService
     {
         private readonly IRepository<Permission> _permissionRepository;
         private readonly IRepository<UserRole> _userRoleRepository;
@@ -33,6 +33,17 @@ namespace Netcool.Api.Domain.Roles
             UpdatePermissionName = "role.update";
             CreatePermissionName = "role.create";
             DeletePermissionName = "role.delete";
+        }
+
+        protected override IQueryable<Role> CreateFilteredQuery(RoleRequest input)
+        {
+            var query = base.CreateFilteredQuery(input);
+            if (input.Name != null)
+            {
+                query = query.Where(t => t.Name == input.Name);
+            }
+
+            return query;
         }
 
         public override void BeforeCreate(Role entity)
