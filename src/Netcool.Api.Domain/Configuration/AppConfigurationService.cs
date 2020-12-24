@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
-using Netcool.Core.Services.Dto;
 
 namespace Netcool.Api.Domain.Configuration
 {

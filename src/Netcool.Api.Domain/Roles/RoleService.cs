@@ -8,7 +8,6 @@ using Netcool.Core;
 using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
-using Netcool.Core.Services.Dto;
 
 namespace Netcool.Api.Domain.Roles
 {
