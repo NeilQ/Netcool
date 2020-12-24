@@ -8,7 +8,7 @@ namespace Netcool.Api.Controllers
 {
     [Route("app-configurations")]
     [Authorize]
-    public class AppConfigurationsController : CrudControllerBase<AppConfigurationDto, int, PageRequest,
+    public class AppConfigurationsController : CrudControllerBase<AppConfigurationDto, int, AppConfigurationRequest,
         AppConfigurationSaveInput>
     {
         public AppConfigurationsController(IAppConfigurationService service) : base(service)

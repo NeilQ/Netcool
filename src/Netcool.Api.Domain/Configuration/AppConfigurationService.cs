@@ -9,7 +9,7 @@ using Netcool.Core.Services.Dto;
 namespace Netcool.Api.Domain.Configuration
 {
     public sealed class AppConfigurationService :
-        CrudService<AppConfiguration, AppConfigurationDto, int, PageRequest, AppConfigurationSaveInput>,
+        CrudService<AppConfiguration, AppConfigurationDto, int, AppConfigurationRequest, AppConfigurationSaveInput>,
         IAppConfigurationService
     {
         public AppConfigurationService(IRepository<AppConfiguration> repository, IServiceAggregator serviceAggregator) :
@@ -19,6 +19,17 @@ namespace Netcool.Api.Domain.Configuration
             CreatePermissionName = "config.create";
             UpdatePermissionName = "config.update";
             DeletePermissionName = "config.delete";
+        }
+
+        protected override IQueryable<AppConfiguration> CreateFilteredQuery(AppConfigurationRequest input)
+        {
+            var query = base.CreateFilteredQuery(input);
+            if (!string.IsNullOrEmpty(input.Name))
+            {
+                query = query.Where(t => t.Name == input.Name);
+            }
+
+            return query;
         }
 
         public override void BeforeCreate(AppConfiguration entity)

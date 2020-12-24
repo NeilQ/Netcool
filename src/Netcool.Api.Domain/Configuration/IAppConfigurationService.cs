@@ -4,7 +4,7 @@ using Netcool.Core.Services.Dto;
 namespace Netcool.Api.Domain.Configuration
 {
     public interface
-        IAppConfigurationService : ICrudService<AppConfigurationDto, int, PageRequest, AppConfigurationSaveInput>
+        IAppConfigurationService : ICrudService<AppConfigurationDto, int, AppConfigurationRequest, AppConfigurationSaveInput>
     {
     }
 }
