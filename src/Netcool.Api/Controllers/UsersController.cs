@@ -4,14 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Netcool.Api.Domain.Menus;
 using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
-using Netcool.Core.Services.Dto;
 using Netcool.Core.WebApi.Controllers;
 
 namespace Netcool.Api.Controllers
 {
     [Route("users")]
     [Authorize]
-    public class UsersController : CrudControllerBase<UserDto, int, PageRequest, UserSaveInput>
+    public class UsersController : CrudControllerBase<UserDto, int, UserRequest, UserSaveInput>
     {
         private readonly IUserService _userService;
 

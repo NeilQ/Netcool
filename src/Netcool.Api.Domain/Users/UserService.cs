@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Netcool.Api.Domain.Menus;
@@ -10,11 +9,10 @@ using Netcool.Core.Entities;
 using Netcool.Core.Helpers;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
-using Netcool.Core.Services.Dto;
 
 namespace Netcool.Api.Domain.Users
 {
-    public sealed class UserService : CrudService<User, UserDto, int, PageRequest, UserSaveInput>, IUserService
+    public sealed class UserService : CrudService<User, UserDto, int, UserRequest, UserSaveInput>, IUserService
     {
         private readonly string _defaultPassword;
 
@@ -41,21 +39,30 @@ namespace Netcool.Api.Domain.Users
             DeletePermissionName = "user.delete";
         }
 
-        public override PagedResultDto<UserDto> GetAll(PageRequest input)
+        protected override IQueryable<User> CreateFilteredQuery(UserRequest input)
         {
-            var dto = base.GetAll(input);
-            if (dto?.Items == null || dto.Items.Count <= 0) return dto;
-
-            var userRoles = _userRoleRepository.GetAll().AsNoTracking()
-                .Where(t => dto.Items.Select(u => u.Id).Contains(t.UserId))
-                .Include(t => t.Role).ToList();
-            foreach (var userDto in dto.Items)
+            var query = base.CreateFilteredQuery(input);
+            if (!string.IsNullOrEmpty(input.Name))
             {
-                userDto.Roles = userRoles.Where(t => t.UserId == userDto.Id)
-                    .Select(t => MapToEntityDto<Role, RoleDto>(t.Role)).ToList();
+                query = query.Where(t => t.Name == input.Name);
             }
 
-            return dto;
+            if (!string.IsNullOrEmpty(input.Email))
+            {
+                query = query.Where(t => t.Email.ToLower() == input.Email.ToLower());
+            }
+
+            if (!string.IsNullOrEmpty(input.Phone))
+            {
+                query = query.Where(t => t.Phone == input.Phone);
+            }
+
+            if (input.Gender != null)
+            {
+                query = query.Where(t => t.Gender == input.Gender);
+            }
+
+            return query.Include(t => t.UserRoles).ThenInclude(t => t.Role);
         }
 
         public override void BeforeCreate(User entity)
@@ -72,7 +79,7 @@ namespace Netcool.Api.Domain.Users
                 .FirstOrDefault(t =>
                     t.Name == entity.Name ||
                     !string.IsNullOrEmpty(t.Phone) && t.Phone == entity.Phone ||
-                    !string.IsNullOrEmpty(t.Email) && t.Email == entity.Email);
+                    !string.IsNullOrEmpty(t.Email) && t.Email.ToLower() == entity.Email.ToLower());
             if (duplicateUser == null) return;
             if (duplicateUser.Name == entity.Name)
             {
@@ -103,7 +110,7 @@ namespace Netcool.Api.Domain.Users
                     t.Id != originEntity.Id &&
                     (t.Name == dto.Name ||
                      !string.IsNullOrEmpty(t.Phone) && t.Phone == dto.Phone ||
-                     !string.IsNullOrEmpty(t.Email) && t.Email == dto.Email));
+                     !string.IsNullOrEmpty(t.Email) && t.Email.ToLower() == dto.Email.ToLower()));
             if (duplicateUser == null) return;
             if (duplicateUser.Name == dto.Name)
             {

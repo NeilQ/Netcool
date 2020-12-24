@@ -2,11 +2,10 @@
 using Netcool.Api.Domain.Menus;
 using Netcool.Api.Domain.Roles;
 using Netcool.Core.Services;
-using Netcool.Core.Services.Dto;
 
 namespace Netcool.Api.Domain.Users
 {
-    public interface IUserService : ICrudService<UserDto, int, PageRequest, UserSaveInput>
+    public interface IUserService : ICrudService<UserDto, int, UserRequest, UserSaveInput>
     {
         public void ChangePassword(int id, ChangePasswordInput input);
 

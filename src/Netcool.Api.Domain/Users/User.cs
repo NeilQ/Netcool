@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using Netcool.Api.Domain.Roles;
 using Netcool.Core.Entities;
 
 namespace Netcool.Api.Domain.Users
@@ -21,6 +24,9 @@ namespace Netcool.Api.Domain.Users
         [DefaultValue(true)]
         public bool IsActive { get; set; }
 
-        public ICollection<UserRole> UserRoles { get; set; }
+        public IList<UserRole> UserRoles { get; set; }
+
+        [NotMapped]
+        public IList<Role> Roles => UserRoles?.Select(t => t.Role).ToList();
     }
 }

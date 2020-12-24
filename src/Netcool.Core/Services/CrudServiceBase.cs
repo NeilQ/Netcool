@@ -83,6 +83,7 @@ namespace Netcool.Core.Services
         /// <param name="input">The input.</param>
         protected virtual IQueryable<TEntity> CreateFilteredQuery(TGetAllInput input)
         {
+            // https://github.com/dotnet/efcore/issues/14366
             return Repository.GetAll();
         }
 
