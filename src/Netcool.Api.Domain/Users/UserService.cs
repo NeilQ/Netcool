@@ -227,7 +227,7 @@ namespace Netcool.Api.Domain.Users
                 .FirstOrDefault(t => t.Id == id);
             if (user == null) throw new EntityNotFoundException(typeof(User), id);
             var menus = user.UserRoles.SelectMany(t => t.Role.RolePermissions.Select(rp => rp.Permission.Menu))
-                .Distinct().OrderBy(t => t.Level).ToList();
+                .Distinct().OrderBy(t => t.Level).ThenBy(t => t.Order).ToList();
             var rootNode = new MenuTreeNode();
 
             var dict = new Dictionary<int, MenuTreeNode>
