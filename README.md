@@ -70,7 +70,7 @@ Netcool将会检索运行目录下的conf文件夹，将所有.json文件添加�
 启用文件上传需要在`appsettings.json`中加入配置
 ```json
 "File" : {
-    "HttpSchema":""    
+    "HttpSchema":"",    
     "HttpHost": "",
     "SubWebPath": "file",
     "PhysicalPath": "D:\\netcool-resources"
