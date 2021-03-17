@@ -54,7 +54,7 @@ namespace Netcool.Core.Organizations
         {
             Delete(new[] {id});
         }
-
+        
         public override void Delete(IEnumerable<int> ids)
         {
             if (ids == null || !ids.Any()) return;

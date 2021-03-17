@@ -19,6 +19,11 @@ namespace Netcool.Api.Domain.Users
 
     public class UserRepository : CommonRepository<User>, IUserRepository
     {
+        public override IQueryable<User> GetAll()
+        {
+            return GetAllIncluding(t => t.Organization);
+        }
+
         private readonly IMemoryCache _cache;
 
         public UserRepository(NetcoolDbContext dbContext, IMemoryCache cache) : base(dbContext)

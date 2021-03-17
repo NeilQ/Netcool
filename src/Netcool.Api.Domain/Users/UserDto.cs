@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Netcool.Api.Domain.Roles;
 using Netcool.Core.Helpers;
+using Netcool.Core.Organizations;
 using Netcool.Core.Services.Dto;
 
 namespace Netcool.Api.Domain.Users
@@ -11,6 +12,8 @@ namespace Netcool.Api.Domain.Users
         public IList<RoleDto> Roles { get; set; }
 
         public string GenderDescription => Reflection.GetEnumDescription(Gender);
+
+        public OrganizationDto Organization { get; set; }
     }
 
     public class UserSaveInput : EntityDto
@@ -34,5 +37,7 @@ namespace Netcool.Api.Domain.Users
         /// 是否启用
         /// </summary>
         public bool IsActive { get; set; }
+
+        public int? OrganizationId { get; set; }
     }
 }

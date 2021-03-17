@@ -5,7 +5,7 @@ namespace Netcool.Core.Organizations
 {
     public class OrganizationDto : OrganizationSaveInput
     {
-        public Organization Parent { get; set; }
+        public OrganizationDto Parent { get; set; }
 
         public string Path { get; set; }
 

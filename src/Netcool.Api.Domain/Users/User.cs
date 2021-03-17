@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Netcool.Api.Domain.Roles;
 using Netcool.Core.Entities;
+using Netcool.Core.Organizations;
 
 namespace Netcool.Api.Domain.Users
 {
@@ -25,6 +26,10 @@ namespace Netcool.Api.Domain.Users
         public bool IsActive { get; set; }
 
         public IList<UserRole> UserRoles { get; set; }
+
+        public int? OrganizationId { get; set; }
+        
+        public Organization Organization { get; set; }
 
         [NotMapped]
         public IList<Role> Roles => UserRoles?.Select(t => t.Role).ToList();

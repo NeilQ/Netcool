@@ -7,6 +7,7 @@ using Netcool.Api.Domain.Roles;
 using Netcool.Core;
 using Netcool.Core.Entities;
 using Netcool.Core.Helpers;
+using Netcool.Core.Organizations;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
 
@@ -19,18 +20,21 @@ namespace Netcool.Api.Domain.Users
         private readonly IUserRepository _userRepository;
         private readonly IRepository<Role> _roleRepository;
         private readonly IRepository<UserRole> _userRoleRepository;
+        private readonly IRepository<Organization> _orgRepository;
 
         public UserService(IUserRepository userRepository,
             IServiceAggregator serviceAggregator,
             IRepository<Role> roleRepository,
             IConfiguration config,
-            IRepository<UserRole> userRoleRepository) : base(
+            IRepository<UserRole> userRoleRepository,
+            IRepository<Organization> orgRepository) : base(
             userRepository,
             serviceAggregator)
         {
             _roleRepository = roleRepository;
             _userRepository = userRepository;
             _userRoleRepository = userRoleRepository;
+            _orgRepository = orgRepository;
             _defaultPassword = config.GetValue<string>("User.DefaultPassword");
 
             GetPermissionName = "user.view";
@@ -38,6 +42,7 @@ namespace Netcool.Api.Domain.Users
             CreatePermissionName = "user.create";
             DeletePermissionName = "user.delete";
         }
+
 
         protected override IQueryable<User> CreateFilteredQuery(UserRequest input)
         {
@@ -62,6 +67,13 @@ namespace Netcool.Api.Domain.Users
                 query = query.Where(t => t.Gender == input.Gender);
             }
 
+            if (input.OrganizationId != null)
+            {
+                query = input.OrganizationId > 0
+                    ? query.Where(t => t.OrganizationId == input.OrganizationId)
+                    : query.Where(t => t.OrganizationId == null);
+            }
+
             return query.Include(t => t.UserRoles).ThenInclude(t => t.Role);
         }
 
@@ -73,6 +85,14 @@ namespace Netcool.Api.Domain.Users
             entity.Phone = entity.Phone.SafeString();
             entity.Email = entity.Email.SafeString();
             entity.Password = Encrypt.Md5By32(_defaultPassword);
+
+            if (entity.OrganizationId > 0)
+            {
+                var org = _orgRepository.Get(entity.OrganizationId.Value);
+                if (org == null) throw new EntityNotFoundException(typeof(Organization), entity.Id);
+            }
+            else entity.OrganizationId = null;
+
 
             // check email and phone
             var duplicateUser = Repository.GetAll().AsNoTracking()
@@ -103,6 +123,13 @@ namespace Netcool.Api.Domain.Users
             dto.Name = dto.Name.SafeString();
             dto.Phone = dto.Phone.SafeString();
             dto.Email = dto.Email.SafeString();
+
+            if (dto.OrganizationId > 0)
+            {
+                var org = _orgRepository.Get(dto.OrganizationId.Value);
+                if (org == null) throw new EntityNotFoundException(typeof(Organization), dto.Id);
+            }
+            else dto.OrganizationId = null;
 
             // check email and phone
             var duplicateUser = Repository.GetAll().AsNoTracking()
