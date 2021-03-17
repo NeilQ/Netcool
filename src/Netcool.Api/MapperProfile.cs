@@ -8,6 +8,7 @@ using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
 using Netcool.Core.Extensions;
+using Netcool.Core.Organizations;
 
 namespace Netcool.Api
 {
@@ -15,6 +16,8 @@ namespace Netcool.Api
     {
         public MapperProfile()
         {
+            CreateMap<Organization, OrganizationDto>();
+            CreateMap<OrganizationSaveInput, Organization>();
             CreateMap<User, UserDto>();
             CreateMap<UserSaveInput, User>();
             CreateMap<Role, RoleDto>();

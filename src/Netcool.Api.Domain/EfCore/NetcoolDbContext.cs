@@ -6,12 +6,14 @@ using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
 using Netcool.Core;
 using Netcool.Core.EfCore;
+using Netcool.Core.Organizations;
 using Netcool.Core.Sessions;
 
 namespace Netcool.Api.Domain.EfCore
 {
     public class NetcoolDbContext : DbContextBase
     {
+        public DbSet<Organization> Organizations { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
@@ -30,6 +32,7 @@ namespace Netcool.Api.Domain.EfCore
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // postgresql
+            modelBuilder.Entity<Organization>().Property(t => t.Id).HasIdentityOptions(startValue: 1000);
             modelBuilder.Entity<Menu>().Property(t => t.Id).HasIdentityOptions(startValue: 1000);
             modelBuilder.Entity<User>().Property(t => t.Id).HasIdentityOptions(startValue: 1000);
             modelBuilder.Entity<UserRole>().Property(t => t.Id).HasIdentityOptions(startValue: 1000);
@@ -40,6 +43,7 @@ namespace Netcool.Api.Domain.EfCore
 
             // sql server
             /*
+            modelBuilder.Entity<Organization>().Property(t => t.Id).UseIdentityColumn(1000);
             modelBuilder.Entity<Menu>().Property(t => t.Id).UseIdentityColumn(1000);
             modelBuilder.Entity<User>().Property(t => t.Id).UseIdentityColumn(1000);
             modelBuilder.Entity<UserRole>().Property(t => t.Id).UseIdentityColumn(1000);

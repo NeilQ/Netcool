@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Netcool.Api.Domain.EfCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -9,9 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Netcool.Api.Domain.Migrations
 {
     [DbContext(typeof(NetcoolDbContext))]
-    partial class NetcoolDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210316074625_AddOrganization")]
+    partial class AddOrganization
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,20 +287,6 @@ namespace Netcool.Api.Domain.Migrations
                         },
                         new
                         {
-                            Id = 21,
-                            DisplayName = "组织",
-                            Icon = "apartment",
-                            IsDeleted = false,
-                            Level = 2,
-                            Name = "organization",
-                            Order = 2,
-                            ParentId = 2,
-                            Path = "/2/21",
-                            Route = "/organization",
-                            Type = 1
-                        },
-                        new
-                        {
                             Id = 3,
                             DisplayName = "权限管理",
                             Icon = "safety-certificate",
@@ -484,42 +472,6 @@ namespace Netcool.Api.Domain.Migrations
                             IsDeleted = false,
                             MenuId = 20,
                             Name = "配置删除",
-                            Type = 1
-                        },
-                        new
-                        {
-                            Id = 21,
-                            Code = "organization.view",
-                            IsDeleted = false,
-                            MenuId = 21,
-                            Name = "组织",
-                            Type = 0
-                        },
-                        new
-                        {
-                            Id = 103,
-                            Code = "organization.create",
-                            IsDeleted = false,
-                            MenuId = 21,
-                            Name = "组织新增",
-                            Type = 1
-                        },
-                        new
-                        {
-                            Id = 104,
-                            Code = "organization.update",
-                            IsDeleted = false,
-                            MenuId = 21,
-                            Name = "组织修改",
-                            Type = 1
-                        },
-                        new
-                        {
-                            Id = 105,
-                            Code = "organization.delete",
-                            IsDeleted = false,
-                            MenuId = 21,
-                            Name = "组织删除",
                             Type = 1
                         },
                         new
@@ -776,96 +728,72 @@ namespace Netcool.Api.Domain.Migrations
                         new
                         {
                             Id = 8,
-                            PermissionId = 21,
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            Id = 9,
-                            PermissionId = 103,
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            Id = 10,
-                            PermissionId = 104,
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            Id = 11,
-                            PermissionId = 105,
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            Id = 12,
                             PermissionId = 30,
                             RoleId = 1
                         },
                         new
                         {
-                            Id = 13,
+                            Id = 9,
                             PermissionId = 110,
                             RoleId = 1
                         },
                         new
                         {
-                            Id = 14,
+                            Id = 10,
                             PermissionId = 31,
                             RoleId = 1
                         },
                         new
                         {
-                            Id = 15,
+                            Id = 11,
                             PermissionId = 120,
                             RoleId = 1
                         },
                         new
                         {
-                            Id = 16,
+                            Id = 12,
                             PermissionId = 121,
                             RoleId = 1
                         },
                         new
                         {
-                            Id = 17,
+                            Id = 13,
                             PermissionId = 122,
                             RoleId = 1
                         },
                         new
                         {
-                            Id = 18,
+                            Id = 14,
                             PermissionId = 123,
                             RoleId = 1
                         },
                         new
                         {
-                            Id = 19,
+                            Id = 15,
                             PermissionId = 32,
                             RoleId = 1
                         },
                         new
                         {
-                            Id = 20,
+                            Id = 16,
                             PermissionId = 130,
                             RoleId = 1
                         },
                         new
                         {
-                            Id = 21,
+                            Id = 17,
                             PermissionId = 131,
                             RoleId = 1
                         },
                         new
                         {
-                            Id = 22,
+                            Id = 18,
                             PermissionId = 132,
                             RoleId = 1
                         },
                         new
                         {
-                            Id = 23,
+                            Id = 19,
                             PermissionId = 133,
                             RoleId = 1
                         });
