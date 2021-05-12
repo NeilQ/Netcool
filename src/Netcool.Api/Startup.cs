@@ -25,6 +25,7 @@ using Netcool.Api.Domain.EfCore;
 using Netcool.Api.Domain.Files;
 using Netcool.Api.Domain.Repositories;
 using Netcool.Core;
+using Netcool.Core.EfCore;
 using Netcool.Core.Extensions;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
@@ -69,6 +70,7 @@ namespace Netcool.Api
                 options.UseNpgsql(Configuration.GetConnectionString("Database"))
                     .UseSnakeCaseNamingConvention();
             });
+
             services.AddHealthChecks();
             services.AddMemoryCache();
 
@@ -136,7 +138,7 @@ namespace Netcool.Api
 
                     // We have to hook the OnMessageReceived event in order to
                     // allow the JWT authentication handler to read the access
-                    // token from the query string when a WebSocket or 
+                    // token from the query string when a WebSocket or
                     // Server-Sent Events request comes in.
                     options.Events = new JwtBearerEvents
                     {
@@ -158,6 +160,8 @@ namespace Netcool.Api
 
             // domain
             services.Configure<FileUploadOptions>(Configuration.GetSection("File"));
+            services.AddScoped<IDbContext>(provider =>
+                provider.GetService<NetcoolDbContext>()); // for UnitOfWork injection
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserSession, UserSession>();
             services.AddScoped<IClientInfoProvider, HttpContextClientInfoProvider>();
