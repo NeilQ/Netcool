@@ -2,19 +2,18 @@
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Netcool.Api.Domain.EfCore;
 using Netcool.Core.EfCore;
 
 namespace Netcool.Core
 {
     public class UnitOfWork : IUnitOfWork
     {
-        protected DbContext DbContext { get; }
+        protected IDbContext DbContext { get; }
 
         /// <summary>
         /// Creates a new <see cref="UnitOfWork"/>.
         /// </summary>
-        public UnitOfWork(NetcoolDbContext dbContext)
+        public UnitOfWork(IDbContext dbContext)
         {
             DbContext = dbContext;
         }

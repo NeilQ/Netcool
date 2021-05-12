@@ -14,7 +14,7 @@ using Netcool.Core.Sessions;
 
 namespace Netcool.Core.EfCore
 {
-    public class DbContextBase : DbContext
+    public class DbContextBase : DbContext, IDbContext
     {
         public DbContextBase(DbContextOptions options, IUserSession userSession) : base(options)
         {
