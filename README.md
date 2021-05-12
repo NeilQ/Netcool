@@ -99,10 +99,212 @@ Netcool使用 [基于资源的授权](https://docs.microsoft.com/zh-cn/aspnet/co
 #### 在Controller中校验权限
 为Action添加属性`[Authorize("permission")]`
 
-# 如何自定义一个模块
-TODO
+# 如何自定义一个CRUD Api
+假设我们要添加一个User Api，我们需要创建哪些对象呢？
+###添加Entity
+创一个`Entity`对象，并实现`IEntity<TPrimaryKey>`接口，在`Netcool.Core.Entities`命名空间下，
+有一些常用的Entity基类，包含一些常用字段，比如 `FullAuditEntity`就包含了`CreateTime`, `CreateUserId`, `UpdateTime`,`UpdateUserId`, `IsDelete`等常用字段,
+这些字段在`DbContext`基类中持久化到数据库时将自动赋值。
+```c#
+public class User : FullAuditEntity
+{
+    public string Name { get; set; }
+
+    public string DisplayName { get; set; }
+    
+    public Gender Gender { get; set; }
+    
+    public Organization Organization { get; set; }
+}
+```
+
+###添加Repository
+Netcool已经准备了通用的`CommonRepository<TEntity>`，包含了大部分的数据库操作，一般情况下我们不需要自己创建，直接使用`IRepository<User, int>`类型的依赖就可以了，
+但如果有自定义的需求，仍然可以实现自己的`IRepository`。
+```c#
+public interface IUserRepository : IRepository<User>
+{
+    void DoSomething();
+}
+    
+public class UserRepository : CommonRepository<User>, IUserRepository
+{
+    public override IQueryable<User> GetAll()
+    {
+        return GetAllIncluding(t => t.Organization);
+    }
+
+    public UserRepository(NetcoolDbContext dbContext) : base(dbContext)
+    {
+    }
+    
+    public void DoSometing() 
+    {
+    }
+}
+```
+
+###添加Dto
+`EntityDto`对象用于从Controller到Service传递用户输入信息，理论上它不应该传递到Repository层
+```c#
+public class UserDto : UserSaveInput
+{
+    public IList<RoleDto> Roles { get; set; }
+
+    public string GenderDescription => Reflection.GetEnumDescription(Gender);
+
+    public OrganizationDto Organization { get; set; }
+}
+
+public class UserSaveInput : EntityDto
+{
+    [Required(AllowEmptyStrings = false)]
+    [MaxLength(64)]
+    public string Name { get; set; }
+
+    [MaxLength(64)]
+    public string DisplayName { get; set; }
+
+    public Gender Gender { get; set; }
+
+    public int? OrganizationId { get; set; }
+}
+
+public class UserRequest : PageRequest
+{
+    public string Name { get; set; }
+
+    public Gender? Gender { get; set; }
+
+    public int? OrganizationId { get; set; }
+}
+```
+
+其中`UserDto`用于返回用户信息到客户端，`UserSaveInput`用于添加及更新`User`时传递客户端输入，
+`UserRequest`用于查询用户信息时通过QueryString检索数据。
+
+由于我们使用`AutoMapper`库来映射Dto与Entity，所以还需要将映射配置添加到`MapperProfile`文件中：
+```c#
+public class MapperProfile : Profile
+{
+    public MapperProfile()
+    {
+        CreateMap<User, UserDto>();
+        CreateMap<UserSaveInput, User>();
+    }
+}
+
+```
+
+
+###添加Service
+默认的`ICrudService`、`CrudService`已经包含了常用的操作以及重载方法，我们只需要继承它就可以了。
+```c#
+public interface IUserService : ICrudService<UserDto, int, UserRequest, UserSaveInput>
+{
+
+}
+
+public sealed class UserService : CrudService<User, UserDto, int, UserRequest, UserSaveInput>, IUserService
+{
+    private readonly string _defaultPassword;
+
+    private new readonly IUserRepository Repository;
+    private readonly IRepository<Organization> _orgRepository;
+
+    public UserService(IUserRepository userRepository,
+        IServiceAggregator serviceAggregator,
+        IConfiguration config,
+        IRepository<Organization> orgRepository) : base(
+        userRepository,
+        serviceAggregator)
+    {
+        _roleRepository = roleRepository;
+        _userRepository = userRepository;
+        _userRoleRepository = userRoleRepository;
+        _orgRepository = orgRepository;
+
+        GetPermissionName = "user.view";
+        UpdatePermissionName = "user.update";
+        CreatePermissionName = "user.create";
+        DeletePermissionName = "user.delete";
+    }
+
+    protected override IQueryable<User> CreateFilteredQuery(UserRequest input)
+    {
+        var query = base.CreateFilteredQuery(input);
+        if (!string.IsNullOrEmpty(input.Name))
+        {
+            query = query.Where(t => t.Name == input.Name);
+        }
+
+        return query;
+    }
+
+    public override void BeforeCreate(User entity)
+    {
+        base.BeforeCreate(entity);
+        entity.Name = entity.Name.SafeString();
+
+        if (entity.OrganizationId > 0)
+        {
+            var org = _orgRepository.Get(entity.OrganizationId.Value);
+            if (org == null) throw new EntityNotFoundException(typeof(Organization), entity.Id);
+        }
+        else entity.OrganizationId = null;
+    }
+
+    public override void BeforeUpdate(UserSaveInput dto, User originEntity)
+    {
+        base.BeforeUpdate(dto, originEntity);
+        dto.Name = dto.Name.SafeString();
+        if (dto.OrganizationId > 0)
+        {
+            var org = _orgRepository.Get(dto.OrganizationId.Value);
+            if (org == null) throw new EntityNotFoundException(typeof(Organization), dto.Id);
+        }
+        else dto.OrganizationId = null;
+    }
+}
+```
+
+###添加依赖注入
+Netcool可以将所有同一个Assembly下，名字以`Repository`或`Service`结尾， 并且实现了`IRepository`或`IService`的类全部添加到IoC容器，
+因此我们不需要一个个得添加。
+```csharp
+   services.AddScoped(typeof(IRepository<>), typeof(CommonRepository<>));
+   services.AddScoped(typeof(IRepository<,>), typeof(CommonRepository<,>));
+   services.AddTransient<IServiceAggregator, ServiceAggregator>();
+   services.AddDomainRepositoryTypes(Assembly.GetAssembly(typeof(NetcoolDbContext)), ServiceLifetime.Scoped);
+   services.AddDomainServiceTypes(Assembly.GetAssembly(typeof(NetcoolDbContext)), ServiceLifetime.Scoped);
+```
+
+###添加Controller
+最后，与`CrudService`类似，创建`UserController`并继承`CrudControllerBase`或者`QueryControllerBase`。
+```c#
+    [Route("users")]
+    [Authorize]
+    public class UsersController : CrudControllerBase<UserDto, int, UserRequest, UserSaveInput>
+    {
+        private readonly IUserService _userService;
+
+        public UsersController(IUserService userUserService) :
+            base(userUserService)
+        {
+            _userService = userUserService;
+        }
+    }
+```
+
+完成这一步后，即可在swagger页面看到CRUD Api
 
 # Docker部署
+根目录下已经准备了`Dockerfile`，编译成镜像后即可直接运行
+```
+docker build -t netcool-api .
+
+docker run -dit --restart always --log-opt max-size=50m -p 8000:80 -v /mnt/logs:/logs -v /mnt/conf:/conf  --name netcool-api netcool-api 
+```
 
 # 前端开发
 TODO
