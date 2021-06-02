@@ -101,7 +101,7 @@ Netcool使用 [基于资源的授权](https://docs.microsoft.com/zh-cn/aspnet/co
 
 # 如何自定义一个CRUD Api
 假设我们要添加一个User Api，我们需要创建哪些对象呢？
-###添加Entity
+### 添加Entity
 创一个`Entity`对象，并实现`IEntity<TPrimaryKey>`接口，在`Netcool.Core.Entities`命名空间下，
 有一些常用的Entity基类，包含一些常用字段，比如 `FullAuditEntity`就包含了`CreateTime`, `CreateUserId`, `UpdateTime`,`UpdateUserId`, `IsDelete`等常用字段,
 这些字段在`DbContext`基类中持久化到数据库时将自动赋值。
@@ -118,7 +118,7 @@ public class User : FullAuditEntity
 }
 ```
 
-###添加Repository
+### 添加Repository
 Netcool已经准备了通用的`CommonRepository<TEntity>`，包含了大部分的数据库操作，一般情况下我们不需要自己创建，直接使用`IRepository<User, int>`类型的依赖就可以了，
 但如果有自定义的需求，仍然可以实现自己的`IRepository`。
 ```c#
@@ -144,7 +144,7 @@ public class UserRepository : CommonRepository<User>, IUserRepository
 }
 ```
 
-###添加Dto
+### 添加Dto
 `EntityDto`对象用于从Controller到Service传递用户输入信息，理论上它不应该传递到Repository层
 ```c#
 public class UserDto : UserSaveInput
@@ -197,7 +197,7 @@ public class MapperProfile : Profile
 ```
 
 
-###添加Service
+### 添加Service
 默认的`ICrudService`、`CrudService`已经包含了常用的操作以及重载方法，我们只需要继承它就可以了。
 ```c#
 public interface IUserService : ICrudService<UserDto, int, UserRequest, UserSaveInput>
@@ -268,7 +268,7 @@ public sealed class UserService : CrudService<User, UserDto, int, UserRequest, U
 }
 ```
 
-###添加依赖注入
+### 添加依赖注入
 Netcool可以将所有同一个Assembly下，名字以`Repository`或`Service`结尾， 并且实现了`IRepository`或`IService`的类全部添加到IoC容器，
 因此我们不需要一个个得添加。
 ```csharp
@@ -279,7 +279,7 @@ Netcool可以将所有同一个Assembly下，名字以`Repository`或`Service`�
    services.AddDomainServiceTypes(Assembly.GetAssembly(typeof(NetcoolDbContext)), ServiceLifetime.Scoped);
 ```
 
-###添加Controller
+### 添加Controller
 最后，与`CrudService`类似，创建`UserController`并继承`CrudControllerBase`或者`QueryControllerBase`。
 ```c#
     [Route("users")]
