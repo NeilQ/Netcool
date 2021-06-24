@@ -29,6 +29,8 @@ namespace Netcool.Core
                     "/2/20"),
                 new Menu(21, "organization", "组织", MenuType.Link, "/organization", "apartment", 2, 2, 2,
                     "/2/21"),
+                new Menu(22, "announcement", "公告", MenuType.Link, "/announcement", "notification", 2, 3, 2,
+                    "/2/22"),
                 new Menu(3, "auth", "权限管理", MenuType.Node, "/auth", "safety-certificate", 1, 3, 0, "/3"),
                 new Menu(30, "menu", "菜单管理", MenuType.Link, "/menu", "menu", 2, 1, 3, "/3/30"),
                 new Menu(31, "role", "角色管理", MenuType.Link, "/role", "usergroup-add", 2, 2, 3, "/3/31"),
@@ -47,12 +49,18 @@ namespace Netcool.Core
                 new Permission(100, "配置新增", "config.create", PermissionType.Function, 20),
                 new Permission(101, "配置修改", "config.update", PermissionType.Function, 20),
                 new Permission(102, "配置删除", "config.delete", PermissionType.Function, 20),
-                
+
                 new Permission(21, "组织", "organization.view", PermissionType.Menu, 21),
                 new Permission(103, "组织新增", "organization.create", PermissionType.Function, 21),
                 new Permission(104, "组织修改", "organization.update", PermissionType.Function, 21),
                 new Permission(105, "组织删除", "organization.delete", PermissionType.Function, 21),
-                
+
+                new Permission(22, "公告", "announcement.view", PermissionType.Menu, 22),
+                new Permission(140, "公告新增", "announcement.create", PermissionType.Function, 22),
+                new Permission(141, "公告修改", "announcement.update", PermissionType.Function, 22),
+                new Permission(142, "公告删除", "announcement.delete", PermissionType.Function, 22),
+                new Permission(143, "公告发布", "announcement.publish", PermissionType.Function, 22),
+
                 new Permission(30, "菜单", "menu.view", PermissionType.Menu, 30),
                 new Permission(110, "菜单修改", "menu.update", PermissionType.Function, 30),
                 new Permission(31, "角色", "role.view", PermissionType.Menu, 31),
