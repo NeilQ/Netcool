@@ -79,7 +79,7 @@ namespace Netcool.Api
             var schema = !string.IsNullOrWhiteSpace(_fileOptions.Value.HostSchema)
                 ? _fileOptions.Value.HostSchema
                 : _httpContextAccessor.HttpContext?.Request.Scheme;
-            var url = AppendUrlHost(schema, host, _fileOptions.Value.SubWebPath, source.Filename);
+            var url = AppendUrlHost(schema, host, _fileOptions.Value.SubWebPath, source.Filename) + "?id=" + source.Id;
             return url;
         }
 

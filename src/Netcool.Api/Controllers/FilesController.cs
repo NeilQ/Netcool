@@ -47,7 +47,7 @@ namespace Netcool.Api.Controllers
         [Validate]
         public IActionResult Post([FromBody] FileActiveInput input)
         {
-            _fileService.ActivePicture(input);
+            _fileService.Active(input);
             return Ok();
         }
 

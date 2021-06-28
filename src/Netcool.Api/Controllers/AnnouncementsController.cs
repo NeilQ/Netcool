@@ -17,7 +17,7 @@ namespace Netcool.Api.Controllers
             Service = service;
         }
 
-        [HttpPut("publish")]
+        [HttpPut("{id}/publish")]
         public IActionResult Publish(int id)
         {
             Service.Publish(id);

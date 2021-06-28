@@ -153,6 +153,10 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasKey("Id")
                         .HasName("pk_files");
 
+                    b.HasIndex(new[] { "Filename" }, "index_files_filename")
+                        .IsUnique()
+                        .HasDatabaseName("index_files_filename");
+
                     b.ToTable("files");
                 });
 
