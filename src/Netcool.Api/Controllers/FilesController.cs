@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
@@ -48,6 +49,28 @@ namespace Netcool.Api.Controllers
         {
             _fileService.ActivePicture(input);
             return Ok();
+        }
+
+
+        [HttpPost("upload/wang-editor")]
+        [RequestSizeLimit(1024 * 1024 * 30)] // 50M
+        [FileUploadOperationFilter.FileContentType]
+        public async Task<ActionResult> UploadWangEditor()
+        {
+            var fileDto = await UploadMultipart();
+            return Ok(new
+            {
+                errno = 0,
+                data = new[]
+                {
+                    new
+                    {
+                        url = fileDto.Url,
+                        alt = fileDto.Title,
+                        href = fileDto.Url
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -99,7 +122,7 @@ namespace Netcool.Api.Controllers
 
 
         /// <summary>
-        /// multipart/form-data方式上传图片
+        /// multipart/form-data方式上传文件
         /// http data 示例：
         /// Content-Type: multipart/form-data; boundary="----WebKitFormBoundarymx2fSWqWSd0OxQqq"
         /// Content-Disposition: form-data; name="myFile1"; filename="Misc002.jpg"
@@ -111,12 +134,18 @@ namespace Netcool.Api.Controllers
         [FileUploadOperationFilter.FileContentType]
         public async Task<IActionResult> Upload()
         {
+            var fileDto = await UploadMultipart();
+            return Ok(fileDto);
+        }
+
+        private async Task<FileDto> UploadMultipart()
+        {
             var customFilename = Request.Query["customFilename"].ToString().ToLower() == "true" ||
-                               Request.Query["custom_filename"].ToString().ToLower() == "true";
+                                 Request.Query["custom_filename"].ToString().ToLower() == "true";
 
             if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
             {
-                return BadRequest($"Expected a multipart request, but got {Request.ContentType}");
+                throw new ArgumentException($"Expected a multipart request, but got {Request.ContentType}");
             }
 
             var boundary = MultipartRequestHelper.GetBoundary(
@@ -125,19 +154,19 @@ namespace Netcool.Api.Controllers
             var reader = new MultipartReader(boundary, HttpContext.Request.Body);
 
             var section = await reader.ReadNextSectionAsync();
-            if (section == null) return BadRequest("Invalid boundary");
+            if (section == null) throw new ApplicationException("Invalid boundary");
 
             var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition,
                 out ContentDispositionHeaderValue contentDisposition);
 
             if (!hasContentDispositionHeader)
             {
-                return BadRequest("Invalid Content-Disposition header.");
+                throw new ArgumentException("Invalid Content-Disposition header.");
             }
 
             if (!MultipartRequestHelper.HasFileContentDisposition(contentDisposition))
             {
-                return BadRequest("Invalid Content-Disposition header value.");
+                throw new ArgumentException("Invalid Content-Disposition header value.");
             }
 
             var fileFolderName = DateTime.Now.ToString("yyyyMMdd");
@@ -147,13 +176,12 @@ namespace Netcool.Api.Controllers
                 Directory.CreateDirectory(fileFolderPath);
             }
 
-            var originFileName = !string.IsNullOrEmpty(contentDisposition.FileName)
+            var originFileName = WebUtility.HtmlEncode(!string.IsNullOrEmpty(contentDisposition.FileName)
                 ? contentDisposition.FileName.Replace("\"", "").Replace("\\", "")
-                : contentDisposition.FileNameStar?.Replace("\"", "").Replace("\\", "");
+                : contentDisposition.FileNameStar?.Replace("\"", "").Replace("\\", ""));
             var fileName = customFilename && !string.IsNullOrEmpty(originFileName)
                 ? originFileName
-                : Guid.NewGuid() +
-                  Path.GetExtension(originFileName);
+                : Path.GetRandomFileName() + Path.GetExtension(originFileName);
             var filePath = Path.Combine(fileFolderPath, fileName);
             await using (var targetStream = System.IO.File.Create(filePath))
             {
@@ -162,14 +190,14 @@ namespace Netcool.Api.Controllers
                 _logger.LogInformation($"Copied the uploaded file '{filePath}'");
             }
 
-            // Persist and return picture dto
+            // Persist and return file dto
             var fileDto = Service.Create(new FileSaveInput
             {
                 Title = originFileName,
                 Filename = $"{fileFolderName}/{fileName}"
                 // Be careful about '/' & '\'. The '/' for url, and  the '\' for disk io path
             });
-            return Ok(fileDto);
+            return fileDto;
         }
     }
 }
