@@ -46,29 +46,44 @@ namespace Netcool.Api.Domain.Files
         }
 
         /// <summary>
-        /// 将图片设置为有效
+        /// 将文件标记为有效
         /// </summary>
         /// <returns></returns>
-        public void ActivePicture(FileActiveInput input)
+        public void Active(FileActiveInput input)
         {
             if (input == null) return;
-            var picture = Repository.Get(input.Id);
-            if (picture == null) throw new EntityNotFoundException(typeof(File), input.Id);
-            picture.Description = input.Description;
-            picture.IsActive = true;
-            Repository.Update(picture);
+            var file = Repository.Get(input.Id);
+            if (file == null) throw new EntityNotFoundException(typeof(File), input.Id);
+            file.Description = input.Description;
+            file.IsActive = true;
+            Repository.Update(file);
+            UnitOfWork.SaveChanges();
+        }
+
+        public void Active(List<int> ids, string description)
+        {
+            if (ids == null || ids.Count == 0) return;
+            var files = Repository.GetAllList(t => ids.Contains(t.Id));
+            if (files == null || files.Count == 0) return;
+            foreach (var file in files)
+            {
+                file.Description = description;
+                file.IsActive = true;
+                Repository.Update(file);
+            }
+
             UnitOfWork.SaveChanges();
         }
 
         public override void Delete(int id)
         {
             CheckDeletePermission();
-            var picture = Repository.Get(id);
-            if (picture == null) return;
+            var file = Repository.Get(id);
+            if (file == null) return;
             base.Delete(id);
 
             // 物理文件删除
-            var picturePath = _fileUploadOptions.PhysicalPath + "/" + picture.Filename;
+            var picturePath = _fileUploadOptions.PhysicalPath + "/" + file.Filename;
             try
             {
                 if (System.IO.File.Exists(picturePath))
@@ -78,7 +93,7 @@ namespace Netcool.Api.Domain.Files
             }
             catch (Exception e)
             {
-                var message = $"物理文件删除失败:[{picture.Id}:{picture.Filename}]";
+                var message = $"物理文件删除失败:[{file.Id}:{file.Filename}]";
                 _logger.LogError(message, e);
                 throw new UserFriendlyException(message);
             }

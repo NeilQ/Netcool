@@ -1,9 +1,11 @@
-﻿using Netcool.Core.Services;
+﻿using System.Collections.Generic;
+using Netcool.Core.Services;
 
 namespace Netcool.Api.Domain.Files
 {
     public interface IFileService : ICrudService<FileDto, int, FileQuery, FileSaveInput>
     {
-        void ActivePicture(FileActiveInput input);
+        void Active(FileActiveInput input);
+        void Active(List<int> ids, string description);
     }
 }

@@ -1,25 +1,28 @@
-﻿using Netcool.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Netcool.Core.Entities;
 
 namespace Netcool.Api.Domain.Files
 {
     /// <summary>
     /// 文件
     /// </summary>
+    [Index(nameof(Filename), IsUnique = true, Name = "index_files_filename")]
     public class File : FullAuditEntity
     {
         /// <summary>
         /// 标题, 通常是保存提交的原始文件名
-        /// </summary>		
+        /// </summary>
         public string Title { get; set; }
 
         /// <summary>
         /// 文件名(相对位置，去除host)
-        /// </summary>		
+        /// </summary>
+
         public string Filename { get; set; }
 
         /// <summary>
         /// 描述，表达文件的用处
-        /// </summary>		
+        /// </summary>
         public string Description { get; set; }
 
         /// <summary>

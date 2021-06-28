@@ -5,6 +5,7 @@ using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
 using Netcool.Core;
+using Netcool.Core.Announcements;
 using Netcool.Core.EfCore;
 using Netcool.Core.Organizations;
 using Netcool.Core.Sessions;
@@ -23,6 +24,9 @@ namespace Netcool.Api.Domain.EfCore
         public DbSet<UserLoginAttempt> UserLoginAttempts { get; set; }
         public DbSet<AppConfiguration> AppConfigurations { get; set; }
         public DbSet<Files.File> Files { get; set; }
+
+        public DbSet<Announcement> Announcements { get; set; }
+        public DbSet<UserAnnouncement> UserAnnouncements { get; set; }
 
         public NetcoolDbContext(DbContextOptions<NetcoolDbContext> options, IUserSession userSession) : base(options,
             userSession)

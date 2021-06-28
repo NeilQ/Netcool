@@ -7,6 +7,7 @@ using Netcool.Api.Domain.Menus;
 using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
+using Netcool.Core.Announcements;
 using Netcool.Core.Extensions;
 using Netcool.Core.Organizations;
 
@@ -33,6 +34,8 @@ namespace Netcool.Api
             CreateMap<File, FileDto>()
                 .ForMember(s => s.Host, opts => opts.MapFrom<HostResolver>())
                 .ForMember(s => s.Url, opts => opts.MapFrom<FileUrlResolver>());
+            CreateMap<Announcement, AnnouncementDto>();
+            CreateMap<AnnouncementSaveInput, Announcement>();
         }
     }
 
@@ -76,7 +79,7 @@ namespace Netcool.Api
             var schema = !string.IsNullOrWhiteSpace(_fileOptions.Value.HostSchema)
                 ? _fileOptions.Value.HostSchema
                 : _httpContextAccessor.HttpContext?.Request.Scheme;
-            var url = AppendUrlHost(schema, host, _fileOptions.Value.SubWebPath, source.Filename);
+            var url = AppendUrlHost(schema, host, _fileOptions.Value.SubWebPath, source.Filename) + "?id=" + source.Id;
             return url;
         }
 
