@@ -220,10 +220,7 @@ namespace Netcool.Core.EfCore
                 audit.UpdateUserId = userId;
             }
 
-            if (audit.UpdateTime == null)
-            {
-                audit.UpdateTime = DateTime.Now;
-            }
+            audit.UpdateTime = DateTime.Now;
         }
 
         private void SetSoftDeleteProperties(EntityEntry entry, int userId)
