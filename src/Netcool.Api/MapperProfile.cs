@@ -36,6 +36,7 @@ namespace Netcool.Api
                 .ForMember(s => s.Url, opts => opts.MapFrom<FileUrlResolver>());
             CreateMap<Announcement, AnnouncementDto>();
             CreateMap<AnnouncementSaveInput, Announcement>();
+            CreateMap<UserAnnouncement, UserAnnouncementDto>();
         }
     }
 
