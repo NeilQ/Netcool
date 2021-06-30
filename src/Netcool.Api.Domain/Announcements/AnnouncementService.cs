@@ -147,7 +147,6 @@ namespace Netcool.Core.Announcements
             Repository.Update(entity);
             _userAnnouncementRepository.Delete(t => t.AnnouncementId == entity.Id);
             var userIds = _userRepository.GetAll()
-                .Where(t => t.IsActive == (entity.NotifyTargetType == NotifyTargetType.ActiveUsers))
                 .AsNoTracking()
                 .Select(t => t.Id).ToList();
             if (userIds.Count > 0)
