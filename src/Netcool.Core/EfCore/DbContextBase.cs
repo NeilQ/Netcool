@@ -142,6 +142,7 @@ namespace Netcool.Core.EfCore
         {
             CheckAndSetId(entry);
             SetCreateAuditProperties(entry, userId);
+            SetUpdateAuditProperties(entry, userId);
             SetTenantProperties(entry, UserSession.TenantId);
             entityChangeEvents.Add(new EntityChangeEvent(entry.Entity, EntityChangeType.Created));
         }

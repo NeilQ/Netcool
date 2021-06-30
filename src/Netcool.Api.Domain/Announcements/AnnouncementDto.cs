@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using Netcool.Core.Helpers;
 using Netcool.Core.Services.Dto;
@@ -7,6 +8,8 @@ namespace Netcool.Core.Announcements
     public class AnnouncementDto : AnnouncementSaveInput
     {
         public AnnouncementStatus Status { get; set; }
+
+        public DateTime UpdateTime { get; set; }
 
         public string StatusDescription => Reflection.GetEnumDescription(Status);
 

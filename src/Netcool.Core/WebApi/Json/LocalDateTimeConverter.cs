@@ -15,6 +15,15 @@ namespace Netcool.Core.WebApi.Json
 
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         {
+            if (value.Kind == DateTimeKind.Unspecified)
+            {
+                value = DateTime.SpecifyKind(value, DateTimeKind.Local);
+            }
+            else if (value.Kind == DateTimeKind.Utc)
+            {
+                value = value.ToLocalTime();
+            }
+
             writer.WriteStringValue(value.ToLocalTime());
         }
     }
