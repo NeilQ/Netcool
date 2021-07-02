@@ -45,6 +45,9 @@ Netcool默认使用Postgresql数据库，使用其他数据库只需通过EF更�
 Netcool使用JwtBearer进行用户授权，访问Api时，需要添加请求头： `Authorization: Bearer {token}`。
 通过`[Authorize]`与`[AllowAnonymous]`属性控制Action是否需要访问授权。
 
+### 公告
+基于富文本的系统公告。
+
 ### 应用配置
 Netcool将会检索运行目录下的conf文件夹，将所有.json文件添加到配置中，方便使用Docker部署时映射外部文件以覆盖默认配置。
 
