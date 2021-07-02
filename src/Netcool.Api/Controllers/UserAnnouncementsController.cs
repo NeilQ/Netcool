@@ -9,8 +9,19 @@ namespace Netcool.Api.Controllers
     [Authorize]
     public class UserAnnouncementsController : QueryControllerBase<UserAnnouncementDto, int, UserAnnouncementRequest>
     {
+        private new readonly IUserAnnouncementService Service;
+
         public UserAnnouncementsController(IUserAnnouncementService service) : base(service)
         {
+            Service = service;
+        }
+
+        [Route("read")]
+        [HttpPost]
+        public IActionResult Read(UserAnnouncementReadInput input)
+        {
+            Service.Read(input);
+            return Ok();
         }
     }
 }
