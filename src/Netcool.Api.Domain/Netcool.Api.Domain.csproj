@@ -21,7 +21,7 @@
     <ItemGroup>
       <PackageReference Include="EFCore.NamingConventions" Version="5.0.0-rc1" />
       <PackageReference Include="HtmlAgilityPack" Version="1.11.34" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.9" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0">
         <PrivateAssets>all</PrivateAssets>
