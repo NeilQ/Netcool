@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Netcool.Core.Extensions;
 
-namespace Netcool.Core.WebApi.ValueProviders
+namespace Netcool.Core.AspNetCore.ValueProviders
 {
     public class SnakeCaseQueryParametersApiDescriptionProvider : IApiDescriptionProvider
     {

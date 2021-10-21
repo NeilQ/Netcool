@@ -10,10 +10,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Netcool.Api.Domain.Users;
 using Netcool.Core;
+using Netcool.Core.AspNetCore;
 using Netcool.Core.Authorization;
 using Netcool.Core.Helpers;
 using Netcool.Core.Repositories;
-using Netcool.Core.WebApi;
 
 namespace Netcool.Api.Domain.Authorization
 {

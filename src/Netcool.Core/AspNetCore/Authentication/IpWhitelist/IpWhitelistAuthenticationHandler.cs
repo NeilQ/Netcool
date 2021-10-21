@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Netcool.Core.Authorization;
 
-namespace Netcool.Core.WebApi.Authentication.IpWhitelist
+namespace Netcool.Core.AspNetCore.Authentication.IpWhitelist
 {
     internal class IpWhitelistAuthenticationHandler : AuthenticationHandler<IpWhitelistAuthenticationOptions>
     {

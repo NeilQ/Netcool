@@ -1,4 +1,4 @@
-﻿namespace Netcool.Core.WebApi
+﻿namespace Netcool.Core.AspNetCore
 {
     public class ValidateResult
     {

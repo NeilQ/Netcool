@@ -1,5 +1,5 @@
 ﻿
-namespace Netcool.Core.WebApi.Authentication.IpWhitelist
+namespace Netcool.Core.AspNetCore.Authentication.IpWhitelist
 {
     public static class IpWhitelistAuthenticationDefaults
     {

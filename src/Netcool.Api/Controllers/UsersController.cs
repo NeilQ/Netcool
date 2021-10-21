@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Netcool.Api.Domain.Menus;
 using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
-using Netcool.Core.WebApi.Controllers;
+using Netcool.Core.AspNetCore.Controllers;
 
 namespace Netcool.Api.Controllers
 {

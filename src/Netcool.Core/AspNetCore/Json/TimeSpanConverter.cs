@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace Netcool.Core.WebApi.Json
+namespace Netcool.Core.AspNetCore.Json
 {
     public class TimeSpanConverter : JsonConverter<TimeSpan>
     {

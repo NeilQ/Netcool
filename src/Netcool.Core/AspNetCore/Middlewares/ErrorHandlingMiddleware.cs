@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Netcool.Core.Entities;
 
-namespace Netcool.Core.WebApi.Middlewares
+namespace Netcool.Core.AspNetCore.Middlewares
 {
     public class ErrorHandlingMiddleware
     {

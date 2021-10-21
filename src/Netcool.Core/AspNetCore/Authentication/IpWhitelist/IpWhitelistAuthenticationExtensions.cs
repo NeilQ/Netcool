@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Authentication;
 
-namespace Netcool.Core.WebApi.Authentication.IpWhitelist
+namespace Netcool.Core.AspNetCore.Authentication.IpWhitelist
 {
     public static class IpWhitelistAuthenticationExtensions
     {

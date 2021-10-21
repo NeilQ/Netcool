@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Netcool.Core.WebApi.ValueProviders
+namespace Netcool.Core.AspNetCore.ValueProviders
 {
     public static class SnakeCaseQueryValueProviderExtentions
     {

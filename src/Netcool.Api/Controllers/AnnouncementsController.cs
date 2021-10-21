@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Netcool.Core.Announcements;
-using Netcool.Core.WebApi.Controllers;
+using Netcool.Core.AspNetCore.Controllers;
 
 namespace Netcool.Api.Controllers
 {

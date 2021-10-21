@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Netcool.Core.WebApi.Json
+namespace Netcool.Core.AspNetCore.Json
 {
     public class StringTrimConverter : JsonConverter<string>
     {

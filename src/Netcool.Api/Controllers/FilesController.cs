@@ -11,9 +11,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Netcool.Api.Domain.Files;
 using Netcool.Core;
-using Netcool.Core.WebApi;
-using Netcool.Core.WebApi.Controllers;
-using Netcool.Core.WebApi.Filters;
+using Netcool.Core.AspNetCore;
+using Netcool.Core.AspNetCore.Controllers;
+using Netcool.Core.AspNetCore.Filters;
 using ContentDispositionHeaderValue = System.Net.Http.Headers.ContentDispositionHeaderValue;
 
 namespace Netcool.Api.Controllers

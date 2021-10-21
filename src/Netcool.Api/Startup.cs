@@ -26,17 +26,17 @@ using Netcool.Api.Domain.EfCore;
 using Netcool.Api.Domain.Files;
 using Netcool.Api.Domain.Repositories;
 using Netcool.Core;
+using Netcool.Core.AspNetCore;
+using Netcool.Core.AspNetCore.Authentication.IpWhitelist;
+using Netcool.Core.AspNetCore.Filters;
+using Netcool.Core.AspNetCore.Json;
+using Netcool.Core.AspNetCore.Middlewares;
+using Netcool.Core.AspNetCore.ValueProviders;
 using Netcool.Core.EfCore;
 using Netcool.Core.Extensions;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
 using Netcool.Core.Sessions;
-using Netcool.Core.WebApi;
-using Netcool.Core.WebApi.Authentication.IpWhitelist;
-using Netcool.Core.WebApi.Filters;
-using Netcool.Core.WebApi.Json;
-using Netcool.Core.WebApi.Middlewares;
-using Netcool.Core.WebApi.ValueProviders;
 using Serilog;
 
 [assembly: ApiController]

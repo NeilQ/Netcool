@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Netcool.Api.Domain.Menus;
+using Netcool.Core.AspNetCore.Controllers;
 using Netcool.Core.Services.Dto;
-using Netcool.Core.WebApi.Controllers;
 
 namespace Netcool.Api.Controllers
 {

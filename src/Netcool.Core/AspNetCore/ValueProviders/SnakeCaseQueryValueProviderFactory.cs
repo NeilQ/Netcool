@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Netcool.Core.WebApi.ValueProviders
+namespace Netcool.Core.AspNetCore.ValueProviders
 {
     public class SnakeCaseQueryValueProviderFactory : IValueProviderFactory
     {

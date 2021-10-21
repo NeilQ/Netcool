@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Netcool.Core.Services;
 using Netcool.Core.Services.Dto;
 
-namespace Netcool.Core.WebApi.Controllers
+namespace Netcool.Core.AspNetCore.Controllers
 {
     public abstract class CrudControllerBase<TEntityDto> : CrudControllerBase<TEntityDto, int, IPageRequest>
         where TEntityDto : IEntityDto<int>

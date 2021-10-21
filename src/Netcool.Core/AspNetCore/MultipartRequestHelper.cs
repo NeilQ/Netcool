@@ -5,7 +5,7 @@ using Microsoft.Net.Http.Headers;
 using Netcool.Core.Helpers;
 using ContentDispositionHeaderValue = System.Net.Http.Headers.ContentDispositionHeaderValue;
 
-namespace Netcool.Core.WebApi
+namespace Netcool.Core.AspNetCore
 {
     public class MultipartRequestHelper
     {
