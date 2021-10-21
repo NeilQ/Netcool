@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -31,6 +32,7 @@ using Netcool.Core.Repositories;
 using Netcool.Core.Services;
 using Netcool.Core.Sessions;
 using Netcool.Core.WebApi;
+using Netcool.Core.WebApi.Authentication.IpWhitelist;
 using Netcool.Core.WebApi.Filters;
 using Netcool.Core.WebApi.Json;
 using Netcool.Core.WebApi.Middlewares;
@@ -77,7 +79,7 @@ namespace Netcool.Api
             // swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Netcool API", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Netcool API", Version = "v1" });
                 c.OperationFilter<FileUploadOperationFilter>();
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -113,15 +115,15 @@ namespace Netcool.Api
             });
 
             // jwt
-            var jwtOptions = new JwtOptions();
-            var jwtSection = Configuration.GetSection("Jwt");
-            jwtSection.Bind(jwtOptions);
-            services.Configure<JwtOptions>(jwtSection);
-            services.AddAuthentication(s =>
+            var jwtOptions = Configuration.GetSection("Jwt").Get<JwtOptions>();
+            services.Configure<JwtOptions>(Configuration.GetSection("Jwt"));
+            var ipWhiteListOptions = Configuration.GetSection(nameof(IpWhitelistAuthenticationOptions))
+                .Get<IpWhitelistAuthenticationOptions>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddIpWhitelist(o =>
                 {
-                    s.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    s.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    s.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    o.Enable = ipWhiteListOptions.Enable;
+                    o.Ips = ipWhiteListOptions.Ips;
                 })
                 .AddJwtBearer(options =>
                 {
@@ -154,6 +156,14 @@ namespace Netcool.Api
                         },
                     };
                 });
+            services.AddAuthorization(options =>
+            {
+                var defaultAuthorizationPolicyBuilder =
+                    new AuthorizationPolicyBuilder(IpWhitelistAuthenticationDefaults.AuthenticationScheme,
+                        JwtBearerDefaults.AuthenticationScheme);
+                defaultAuthorizationPolicyBuilder = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+                options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
+            });
 
             services.AddAutoMapper(typeof(Startup));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -203,10 +213,13 @@ namespace Netcool.Api
 
             app.UseEndpoints(endpoints =>
             {
+                /* Add AllowAnonymousAttribute to all actions for dev env
                 if (env.IsDevelopment())
                     endpoints.MapControllers().WithMetadata(new AllowAnonymousAttribute());
                 else
                     endpoints.MapControllers();
+                    */
+                endpoints.MapControllers();
                 endpoints.MapHealthChecks("/health");
             });
 

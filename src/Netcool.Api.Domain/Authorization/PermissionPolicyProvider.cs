@@ -25,17 +25,15 @@ namespace Netcool.Api.Domain.Authorization
                 string.Equals(t.Code, policyName, StringComparison.CurrentCultureIgnoreCase)))
             {
                 var policyBuilder = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
-                policyBuilder.Requirements.Add(new OperationAuthorizationRequirement {Name = policyName});
+                policyBuilder.Requirements.Add(new OperationAuthorizationRequirement { Name = policyName });
                 return Task.FromResult(policyBuilder.Build());
             }
 
             return BackupPolicyProvider.GetPolicyAsync(policyName);
         }
 
-        public Task<AuthorizationPolicy> GetDefaultPolicyAsync() =>
-            Task.FromResult(new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
-                .RequireAuthenticatedUser().Build());
+        public Task<AuthorizationPolicy> GetDefaultPolicyAsync() => BackupPolicyProvider.GetDefaultPolicyAsync();
 
-        public Task<AuthorizationPolicy> GetFallbackPolicyAsync() => Task.FromResult<AuthorizationPolicy>(null);
+        public Task<AuthorizationPolicy> GetFallbackPolicyAsync() => BackupPolicyProvider.GetFallbackPolicyAsync();
     }
 }

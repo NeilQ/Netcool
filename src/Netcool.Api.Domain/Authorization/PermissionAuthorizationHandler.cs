@@ -35,6 +35,10 @@ namespace Netcool.Api.Domain.Authorization
                     .ToList();
                 if (permissionCodes.Contains(requirement.Name.ToLower())) context.Succeed(requirement);
             }
+            else
+            {
+                context.Succeed(requirement);
+            }
 
 
             return Task.CompletedTask;
