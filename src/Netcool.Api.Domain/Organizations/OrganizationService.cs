@@ -8,12 +8,16 @@ using Netcool.Core.Services.Dto;
 
 namespace Netcool.Core.Organizations
 {
-    public class OrganizationService :
+    public sealed class OrganizationService :
         CrudService<Organization, OrganizationDto, int, PageRequest, OrganizationSaveInput>, IOrganizationService
     {
         public OrganizationService(IRepository<Organization, int> repository, IServiceAggregator serviceAggregator) :
             base(repository, serviceAggregator)
         {
+            GetPermissionName = "organization.view";
+            UpdatePermissionName = "organization.update";
+            CreatePermissionName = "organization.create";
+            DeletePermissionName = "organization.delete";
         }
 
         public override OrganizationDto Create(OrganizationSaveInput input)
