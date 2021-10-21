@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using Netcool.Api.Domain.Organizations;
 using Netcool.Api.Domain.Roles;
 using Netcool.Core.Entities;
 using Netcool.Core.Organizations;

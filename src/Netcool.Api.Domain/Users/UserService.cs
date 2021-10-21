@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Netcool.Api.Domain.Menus;
+using Netcool.Api.Domain.Organizations;
 using Netcool.Api.Domain.Roles;
 using Netcool.Core;
 using Netcool.Core.Entities;

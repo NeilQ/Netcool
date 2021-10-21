@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Netcool.Api.Domain.Configuration;
 using Netcool.Api.Domain.Menus;
+using Netcool.Api.Domain.Organizations;
 using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Netcool.Api.Domain.Organizations;
 using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
@@ -54,7 +55,7 @@ namespace Netcool.Core.Organizations
         {
             Delete(new[] {id});
         }
-        
+
         public override void Delete(IEnumerable<int> ids)
         {
             if (ids == null || !ids.Any()) return;

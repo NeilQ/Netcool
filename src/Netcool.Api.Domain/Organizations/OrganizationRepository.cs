@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Netcool.Api.Domain.EfCore;
+using Netcool.Api.Domain.Organizations;
 using Netcool.Api.Domain.Repositories;
 using Netcool.Core.Repositories;
 

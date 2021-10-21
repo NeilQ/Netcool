@@ -1,6 +1,6 @@
 ﻿using Netcool.Core.Entities;
 
-namespace Netcool.Core.Organizations
+namespace Netcool.Api.Domain.Organizations
 {
     public class Organization : FullAuditEntity
     {
@@ -9,7 +9,7 @@ namespace Netcool.Core.Organizations
         public string Description { get; set; }
 
         public int? ParentId { get; set; }
-        
+
         public int Depth { get; set; }
 
         public Organization Parent { get; set; }
