@@ -45,6 +45,40 @@ Netcool默认使用Postgresql数据库，使用其他数据库只需通过EF更�
 Netcool使用JwtBearer进行用户授权，访问Api时，需要添加请求头： `Authorization: Bearer {token}`。
 通过`[Authorize]`与`[AllowAnonymous]`属性控制Action是否需要访问授权。
 
+为了方便本地调式与局域网调用，Netcool准备了Ip白名单授权，任何符合白名单Ip的请求，在没有JwtBearer的情况下，也可以通过授权验证。
+
+```c#
+ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddIpWhitelist(o =>
+    {
+        o.Enable = true;
+        o.Ips = new {"::1", "127.0.0.1"};
+    })
+    .AddJwtBearer(options =>{});
+ 
+ services.AddAuthorization(options =>
+ {
+     var defaultAuthorizationPolicyBuilder =
+         new AuthorizationPolicyBuilder(IpWhitelistAuthenticationDefaults.AuthenticationScheme,
+             JwtBearerDefaults.AuthenticationScheme);
+     defaultAuthorizationPolicyBuilder = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+     options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
+ })
+```
+
+如果仅仅需要在开发环境下允许不授权调用，也可以通过配置给所有Controller加上`[AllowAnonymous]`。
+```c#
+app.UseEndpoints(endpoints =>
+{
+    // Add AllowAnonymousAttribute to all actions for dev env
+    if (env.IsDevelopment())
+        endpoints.MapControllers().WithMetadata(new AllowAnonymousAttribute());
+    else
+        endpoints.MapControllers();
+    endpoints.MapHealthChecks("/health");
+});
+```
+
 ### 公告
 基于富文本的系统公告。
 
