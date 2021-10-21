@@ -26,7 +26,7 @@ namespace Netcool.Core
 
         public IDbContextTransaction BeginTransaction()
         {
-            return DbContext.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted);
+            return DbContext.Database.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
         }
 
         public int SaveChanges()
