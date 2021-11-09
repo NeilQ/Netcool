@@ -8,7 +8,6 @@ using Netcool.Api.Domain.Users;
 using Netcool.Core;
 using Netcool.Core.Announcements;
 using Netcool.Core.EfCore;
-using Netcool.Core.Organizations;
 using Netcool.Core.Sessions;
 
 namespace Netcool.Api.Domain.EfCore
