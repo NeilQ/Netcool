@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Netcool.Api.Domain.EfCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
+#nullable disable
+
 namespace Netcool.Api.Domain.Migrations
 {
     [DbContext(typeof(NetcoolDbContext))]
@@ -15,21 +17,22 @@ namespace Netcool.Api.Domain.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityByDefaultColumns()
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.0");
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Netcool.Api.Domain.Configuration.AppConfiguration", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn()
-                        .HasIdentityOptions(1000L, null, null, null, null, null);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("Id"), 1000L, null, null, null, null, null);
 
                     b.Property<DateTime?>("CreateTime")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_time");
 
@@ -66,7 +69,6 @@ namespace Netcool.Api.Domain.Migrations
                         .HasColumnName("type");
 
                     b.Property<DateTime?>("UpdateTime")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("update_time");
 
@@ -81,7 +83,7 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasKey("Id")
                         .HasName("pk_app_configurations");
 
-                    b.ToTable("app_configurations");
+                    b.ToTable("app_configurations", (string)null);
 
                     b.HasData(
                         new
@@ -101,11 +103,11 @@ namespace Netcool.Api.Domain.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn();
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CreateTime")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_time");
 
@@ -142,7 +144,6 @@ namespace Netcool.Api.Domain.Migrations
                         .HasColumnName("title");
 
                     b.Property<DateTime?>("UpdateTime")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("update_time");
 
@@ -155,9 +156,9 @@ namespace Netcool.Api.Domain.Migrations
 
                     b.HasIndex(new[] { "Filename" }, "index_files_filename")
                         .IsUnique()
-                        .HasDatabaseName("index_files_filename");
+                        .HasDatabaseName("ix_files_filename");
 
-                    b.ToTable("files");
+                    b.ToTable("files", (string)null);
                 });
 
             modelBuilder.Entity("Netcool.Api.Domain.Menus.Menu", b =>
@@ -165,12 +166,12 @@ namespace Netcool.Api.Domain.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn()
-                        .HasIdentityOptions(1000L, null, null, null, null, null);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("Id"), 1000L, null, null, null, null, null);
 
                     b.Property<DateTime?>("CreateTime")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_time");
 
@@ -231,7 +232,6 @@ namespace Netcool.Api.Domain.Migrations
                         .HasColumnName("type");
 
                     b.Property<DateTime?>("UpdateTime")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("update_time");
 
@@ -242,7 +242,7 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasKey("Id")
                         .HasName("pk_menus");
 
-                    b.ToTable("menus");
+                    b.ToTable("menus", (string)null);
 
                     b.HasData(
                         new
@@ -373,21 +373,88 @@ namespace Netcool.Api.Domain.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Netcool.Api.Domain.Organizations.Organization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("Id"), 1000L, null, null, null, null, null);
+
+                    b.Property<DateTime?>("CreateTime")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_time");
+
+                    b.Property<int?>("CreateUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("create_user_id");
+
+                    b.Property<DateTime?>("DeleteTime")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("delete_time");
+
+                    b.Property<int?>("DeleteUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("delete_user_id");
+
+                    b.Property<int>("Depth")
+                        .HasColumnType("integer")
+                        .HasColumnName("depth");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("integer")
+                        .HasColumnName("parent_id");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("text")
+                        .HasColumnName("path");
+
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("update_time");
+
+                    b.Property<int?>("UpdateUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("update_user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_organizations");
+
+                    b.HasIndex("ParentId")
+                        .HasDatabaseName("ix_organizations_parent_id");
+
+                    b.ToTable("organizations", (string)null);
+                });
+
             modelBuilder.Entity("Netcool.Api.Domain.Permissions.Permission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn()
-                        .HasIdentityOptions(1000L, null, null, null, null, null);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("Id"), 1000L, null, null, null, null, null);
 
                     b.Property<string>("Code")
                         .HasColumnType("text")
                         .HasColumnName("code");
 
                     b.Property<DateTime?>("CreateTime")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_time");
 
@@ -424,7 +491,6 @@ namespace Netcool.Api.Domain.Migrations
                         .HasColumnName("type");
 
                     b.Property<DateTime?>("UpdateTime")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("update_time");
 
@@ -438,7 +504,7 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasIndex("MenuId")
                         .HasDatabaseName("ix_permissions_menu_id");
 
-                    b.ToTable("permissions");
+                    b.ToTable("permissions", (string)null);
 
                     b.HasData(
                         new
@@ -700,12 +766,12 @@ namespace Netcool.Api.Domain.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn()
-                        .HasIdentityOptions(1000L, null, null, null, null, null);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("Id"), 1000L, null, null, null, null, null);
 
                     b.Property<DateTime?>("CreateTime")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_time");
 
@@ -734,7 +800,6 @@ namespace Netcool.Api.Domain.Migrations
                         .HasColumnName("notes");
 
                     b.Property<DateTime?>("UpdateTime")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("update_time");
 
@@ -745,7 +810,7 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasKey("Id")
                         .HasName("pk_roles");
 
-                    b.ToTable("roles");
+                    b.ToTable("roles", (string)null);
 
                     b.HasData(
                         new
@@ -761,12 +826,12 @@ namespace Netcool.Api.Domain.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn()
-                        .HasIdentityOptions(1000L, null, null, null, null, null);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("Id"), 1000L, null, null, null, null, null);
 
                     b.Property<DateTime?>("CreateTime")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_time");
 
@@ -791,7 +856,7 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasIndex("RoleId")
                         .HasDatabaseName("ix_role_permissions_role_id");
 
-                    b.ToTable("role_permissions");
+                    b.ToTable("role_permissions", (string)null);
 
                     b.HasData(
                         new
@@ -969,12 +1034,12 @@ namespace Netcool.Api.Domain.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn()
-                        .HasIdentityOptions(1000L, null, null, null, null, null);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("Id"), 1000L, null, null, null, null, null);
 
                     b.Property<DateTime?>("CreateTime")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_time");
 
@@ -1027,7 +1092,6 @@ namespace Netcool.Api.Domain.Migrations
                         .HasColumnName("phone");
 
                     b.Property<DateTime?>("UpdateTime")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("update_time");
 
@@ -1041,7 +1105,7 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasIndex("OrganizationId")
                         .HasDatabaseName("ix_users_organization_id");
 
-                    b.ToTable("users");
+                    b.ToTable("users", (string)null);
 
                     b.HasData(
                         new
@@ -1061,8 +1125,9 @@ namespace Netcool.Api.Domain.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn();
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BrowserInfo")
                         .HasColumnType("text")
@@ -1077,7 +1142,6 @@ namespace Netcool.Api.Domain.Migrations
                         .HasColumnName("client_name");
 
                     b.Property<DateTime?>("CreateTime")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_time");
 
@@ -1100,7 +1164,7 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasKey("Id")
                         .HasName("pk_user_login_attempts");
 
-                    b.ToTable("user_login_attempts");
+                    b.ToTable("user_login_attempts", (string)null);
                 });
 
             modelBuilder.Entity("Netcool.Api.Domain.Users.UserRole", b =>
@@ -1108,12 +1172,12 @@ namespace Netcool.Api.Domain.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn()
-                        .HasIdentityOptions(1000L, null, null, null, null, null);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("Id"), 1000L, null, null, null, null, null);
 
                     b.Property<DateTime?>("CreateTime")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_time");
 
@@ -1138,7 +1202,7 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasIndex("UserId")
                         .HasDatabaseName("ix_user_roles_user_id");
 
-                    b.ToTable("user_roles");
+                    b.ToTable("user_roles", (string)null);
 
                     b.HasData(
                         new
@@ -1154,15 +1218,15 @@ namespace Netcool.Api.Domain.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn();
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Body")
                         .HasColumnType("text")
                         .HasColumnName("body");
 
                     b.Property<DateTime?>("CreateTime")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_time");
 
@@ -1196,7 +1260,6 @@ namespace Netcool.Api.Domain.Migrations
                         .HasColumnName("title");
 
                     b.Property<DateTime?>("UpdateTime")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("update_time");
 
@@ -1207,7 +1270,7 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasKey("Id")
                         .HasName("pk_announcements");
 
-                    b.ToTable("announcements");
+                    b.ToTable("announcements", (string)null);
                 });
 
             modelBuilder.Entity("Netcool.Core.Announcements.UserAnnouncement", b =>
@@ -1215,8 +1278,9 @@ namespace Netcool.Api.Domain.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn();
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AnnouncementId")
                         .HasColumnType("integer")
@@ -1243,75 +1307,17 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasIndex("UserId")
                         .HasDatabaseName("ix_user_announcements_user_id");
 
-                    b.ToTable("user_announcements");
+                    b.ToTable("user_announcements", (string)null);
                 });
 
-            modelBuilder.Entity("Netcool.Core.Organizations.Organization", b =>
+            modelBuilder.Entity("Netcool.Api.Domain.Organizations.Organization", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn()
-                        .HasIdentityOptions(1000L, null, null, null, null, null);
+                    b.HasOne("Netcool.Api.Domain.Organizations.Organization", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId")
+                        .HasConstraintName("fk_organizations_organizations_parent_id");
 
-                    b.Property<DateTime?>("CreateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("create_time");
-
-                    b.Property<int?>("CreateUserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("create_user_id");
-
-                    b.Property<DateTime?>("DeleteTime")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("delete_time");
-
-                    b.Property<int?>("DeleteUserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("delete_user_id");
-
-                    b.Property<int>("Depth")
-                        .HasColumnType("integer")
-                        .HasColumnName("depth");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("integer")
-                        .HasColumnName("parent_id");
-
-                    b.Property<string>("Path")
-                        .HasColumnType("text")
-                        .HasColumnName("path");
-
-                    b.Property<DateTime?>("UpdateTime")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("update_time");
-
-                    b.Property<int?>("UpdateUserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("update_user_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_organizations");
-
-                    b.HasIndex("ParentId")
-                        .HasDatabaseName("ix_organizations_parent_id");
-
-                    b.ToTable("organizations");
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Netcool.Api.Domain.Permissions.Permission", b =>
@@ -1319,9 +1325,9 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasOne("Netcool.Api.Domain.Menus.Menu", "Menu")
                         .WithMany("Permissions")
                         .HasForeignKey("MenuId")
-                        .HasConstraintName("fk_permissions_menus_menu_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_permissions_menus_menu_id");
 
                     b.Navigation("Menu");
                 });
@@ -1331,16 +1337,16 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasOne("Netcool.Api.Domain.Permissions.Permission", "Permission")
                         .WithMany("RolePermissions")
                         .HasForeignKey("PermissionId")
-                        .HasConstraintName("fk_role_permissions_permissions_permission_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_role_permissions_permissions_permission_id");
 
                     b.HasOne("Netcool.Api.Domain.Roles.Role", "Role")
                         .WithMany("RolePermissions")
                         .HasForeignKey("RoleId")
-                        .HasConstraintName("fk_role_permissions_roles_role_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_role_permissions_roles_role_id");
 
                     b.Navigation("Permission");
 
@@ -1349,7 +1355,7 @@ namespace Netcool.Api.Domain.Migrations
 
             modelBuilder.Entity("Netcool.Api.Domain.Users.User", b =>
                 {
-                    b.HasOne("Netcool.Core.Organizations.Organization", "Organization")
+                    b.HasOne("Netcool.Api.Domain.Organizations.Organization", "Organization")
                         .WithMany()
                         .HasForeignKey("OrganizationId")
                         .HasConstraintName("fk_users_organizations_organization_id");
@@ -1362,16 +1368,16 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasOne("Netcool.Api.Domain.Roles.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
-                        .HasConstraintName("fk_user_roles_roles_role_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_roles_role_id");
 
                     b.HasOne("Netcool.Api.Domain.Users.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
-                        .HasConstraintName("fk_user_roles_users_user_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_users_user_id");
 
                     b.Navigation("Role");
 
@@ -1383,30 +1389,20 @@ namespace Netcool.Api.Domain.Migrations
                     b.HasOne("Netcool.Core.Announcements.Announcement", "Announcement")
                         .WithMany()
                         .HasForeignKey("AnnouncementId")
-                        .HasConstraintName("fk_user_announcements_announcements_announcement_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_user_announcements_announcements_announcement_id");
 
                     b.HasOne("Netcool.Api.Domain.Users.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .HasConstraintName("fk_user_announcements_users_user_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_user_announcements_users_user_id");
 
                     b.Navigation("Announcement");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Netcool.Core.Organizations.Organization", b =>
-                {
-                    b.HasOne("Netcool.Core.Organizations.Organization", "Parent")
-                        .WithMany()
-                        .HasForeignKey("ParentId")
-                        .HasConstraintName("fk_organizations_organizations_parent_id");
-
-                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Netcool.Api.Domain.Menus.Menu", b =>
