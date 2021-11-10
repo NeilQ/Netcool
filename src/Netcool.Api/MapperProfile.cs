@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Netcool.Api.Domain.Configuration;
 using Netcool.Api.Domain.Files;
@@ -11,6 +10,7 @@ using Netcool.Api.Domain.Users;
 using Netcool.Core.Announcements;
 using Netcool.Core.Extensions;
 using Netcool.Core.Organizations;
+using File = Netcool.Api.Domain.Files.File;
 
 namespace Netcool.Api
 {

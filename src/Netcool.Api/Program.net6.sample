@@ -1,0 +1,250 @@
+﻿
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Netcool.Api;
+using Netcool.Api.Domain.Authorization;
+using Netcool.Api.Domain.Configuration;
+using Netcool.Api.Domain.EfCore;
+using Netcool.Api.Domain.Files;
+using Netcool.Api.Domain.Repositories;
+using Netcool.Core;
+using Netcool.Core.AspNetCore;
+using Netcool.Core.AspNetCore.Authentication.IpWhitelist;
+using Netcool.Core.AspNetCore.Filters;
+using Netcool.Core.AspNetCore.Json;
+using Netcool.Core.AspNetCore.Middlewares;
+using Netcool.Core.AspNetCore.ValueProviders;
+using Netcool.Core.EfCore;
+using Netcool.Core.Extensions;
+using Netcool.Core.Repositories;
+using Netcool.Core.Services;
+using Netcool.Core.Sessions;
+using Serilog;
+using Serilog.Events;
+using Serilog.Filters;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+
+// Npgsql break changes for 6.0: https://www.npgsql.org/doc/types/datetime.html
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+// configure serilog
+var logPath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "logs\\.log" : "/logs/.log";
+var dbLogPath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "logs\\db-.log" : "/logs/db-.log";
+const string formatTemplate =
+    "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}";
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .WriteTo.Logger(lc => lc
+        .Filter.ByIncludingOnly(Matching.FromSource("Microsoft.EntityFrameworkCore"))
+        .WriteTo.Console()
+        .WriteTo.File(dbLogPath, rollingInterval: RollingInterval.Day,
+            outputTemplate: formatTemplate,
+            shared: true))
+    .WriteTo.Logger(lc => lc
+        .Filter.ByExcluding(Matching.FromSource("Microsoft.EntityFrameworkCore"))
+        .WriteTo.Console()
+        .WriteTo.File(logPath, rollingInterval: RollingInterval.Day,
+            outputTemplate: formatTemplate,
+            shared: true))
+    .CreateLogger();
+
+var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
+{
+    var connectionString = config.Build().GetConnectionString("Database");
+    config.AddEfConfiguration(options => { options.UseNpgsql(connectionString); }, true);
+
+    var confPath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+        ? Path.Combine(Directory.GetCurrentDirectory(), "conf")
+        : "/conf";
+    if (Directory.Exists(confPath))
+    {
+        var files = Directory.GetFiles(confPath);
+        if (files.Length > 0)
+        {
+            foreach (var file in files)
+            {
+                if (Path.GetExtension(file) == ".json")
+                {
+                    config.AddJsonFile(file, optional: true, reloadOnChange: true);
+                }
+            }
+        }
+    }
+}).UseSerilog();
+
+
+// Add services to the container.
+
+builder.Services.AddControllers(opt =>
+{
+    opt.Filters.Add(new ValidateAttribute());
+    opt.ValueProviderFactories.Insert(0, new SnakeCaseQueryValueProviderFactory());
+    opt.ModelBinderProviders.RemoveType<DateTimeModelBinderProvider>(); // keeps use local datetime
+}).AddJsonOptions(o =>
+{
+    o.JsonSerializerOptions.Converters.Add(new LocalDateTimeConverter()); //parse utc datetime to local;
+    o.JsonSerializerOptions.Converters.Add(new TimeSpanConverter());
+    o.JsonSerializerOptions.Converters.Add(new StringTrimConverter());
+});
+
+builder.Services.AddDbContext<NetcoolDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Database"))
+        .UseSnakeCaseNamingConvention();
+});
+
+builder.Services.AddHealthChecks();
+builder.Services.AddMemoryCache();
+
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Netcool API", Version = "v1" });
+    c.OperationFilter<FileUploadOperationFilter>();
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Core.xml"));
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Api.Domain.xml"));
+
+    c.AddSecurityDefinition("Bearer",
+        new OpenApiSecurityScheme
+        {
+            Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+              {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Id = "Bearer", //The name of the previously defined security scheme.
+                                Type = ReferenceType.SecurityScheme,
+                            },
+                            Name = "Bearer"
+                        },
+                        new string[] { }
+                    }
+              });
+});
+
+// jwt
+var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+var ipWhiteListOptions = builder.Configuration.GetSection(nameof(IpWhitelistAuthenticationOptions))
+    .Get<IpWhitelistAuthenticationOptions>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+     .AddIpWhitelist(o =>
+     {
+         o.Enable = ipWhiteListOptions.Enable;
+         o.Ips = ipWhiteListOptions.Ips;
+     })
+     .AddJwtBearer(options =>
+     {
+         options.TokenValidationParameters = new TokenValidationParameters
+         {
+             ValidateIssuer = true,
+             ValidateAudience = true,
+             ValidateLifetime = true,
+             ValidateIssuerSigningKey = true,
+             ValidIssuer = jwtOptions.Issuer,
+             ValidAudience = jwtOptions.Audience,
+             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret))
+         };
+
+         // We have to hook the OnMessageReceived event in order to
+         // allow the JWT authentication handler to read the access
+         // token from the query string when a WebSocket or
+         // Server-Sent Events request comes in.
+         options.Events = new JwtBearerEvents
+         {
+             OnMessageReceived = context =>
+             {
+                 var accessToken = context.Request.Query["access_token"];
+                 if (!string.IsNullOrEmpty(accessToken))
+                 {
+                     context.Token = accessToken;
+                 }
+
+                 return Task.CompletedTask;
+             },
+         };
+     });
+
+builder.Services.AddAuthorization(options =>
+{
+    var defaultAuthorizationPolicyBuilder =
+        new AuthorizationPolicyBuilder(IpWhitelistAuthenticationDefaults.AuthenticationScheme,
+            JwtBearerDefaults.AuthenticationScheme);
+    defaultAuthorizationPolicyBuilder = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+    options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
+});
+
+builder.Services.AddAutoMapper(typeof(Startup));
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+// domain
+builder.Services.Configure<FileUploadOptions>(builder.Configuration.GetSection("File"));
+builder.Services.AddScoped<IDbContext>(provider => provider.GetService<NetcoolDbContext>()); // for UnitOfWork injection
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUserSession, UserSession>();
+builder.Services.AddScoped<IClientInfoProvider, HttpContextClientInfoProvider>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(CommonRepository<>));
+builder.Services.AddScoped(typeof(IRepository<,>), typeof(CommonRepository<,>));
+builder.Services.AddTransient<IServiceAggregator, ServiceAggregator>();
+builder.Services.AddDomainRepositoryTypes(Assembly.GetAssembly(typeof(NetcoolDbContext)), ServiceLifetime.Scoped);
+builder.Services.AddDomainServiceTypes(Assembly.GetAssembly(typeof(NetcoolDbContext)), ServiceLifetime.Scoped);
+// authorization
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+app.UseSerilogRequestLogging();
+app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+
+app.UseStaticFiles();
+app.UseUploadedStaticFiles(builder.Configuration.GetSection("File").Get<FileUploadOptions>(), app.Logger);
+
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+app.MapHealthChecks("/health");
+
+app.Run();

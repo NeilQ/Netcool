@@ -19,8 +19,9 @@ namespace Netcool.Api
     {
         public static void Main(string[] args)
         {
-            // Npgsql Break changes for 6.0: https://www.npgsql.org/doc/types/datetime.html
+            // Npgsql break changes for 6.0: https://www.npgsql.org/doc/types/datetime.html
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
             var logPath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "logs\\.log" : "/logs/.log";
             var dbLogPath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "logs\\db-.log" : "/logs/db-.log";
             const string formatTemplate =
