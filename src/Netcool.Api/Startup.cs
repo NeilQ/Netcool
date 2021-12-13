@@ -1,23 +1,13 @@
-using System;
-using System.IO;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+using Acartons.Api.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Netcool.Api.Domain.Authorization;
@@ -78,6 +68,7 @@ namespace Netcool.Api
             // swagger
             services.AddSwaggerGen(c =>
             {
+                c.DocumentFilter<EnumDescriptionDocumentFilter>();
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Netcool API", Version = "v1" });
                 c.OperationFilter<FileUploadOperationFilter>();
 
