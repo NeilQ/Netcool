@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="EFCore.NamingConventions" Version="6.0.0-rc.1" />
+      <PackageReference Include="EFCore.NamingConventions" Version="6.0.0" />
       <PackageReference Include="HtmlAgilityPack" Version="1.11.38" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
