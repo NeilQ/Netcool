@@ -8,6 +8,8 @@ Netcool是一个基于.Net 6的Web应用脚手架，可以用于快速搭建后�
 Netcool采用前后端分离的方式，包含Netcool.Api，Netcool.Admin两个项目，
 包含用户、菜单、权限等基础功能。
 
+[![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://jb.gg/OpenSourceSupport)
+
 # 项目依赖
 在集成一些基础设施时，Netcool尽量使用Microsoft的官方推荐方案，或者使用比较主流、Star数最多并且轻量的第三方Package。 
 过多造轮子会增加使用者的学习精力，过多的封装会让人使用起来摸不着头脑，
