@@ -87,9 +87,20 @@ app.UseEndpoints(endpoints =>
 基于富文本的系统公告。
 
 ### 应用配置
-Netcool将会检索运行目录下的conf文件夹，将所有.json文件添加到配置中，方便使用Docker部署时映射外部文件以覆盖默认配置。
+Netcool将会检索运行目录下的conf文件夹，将所有.json文件添加到配置中，方便使用Docker部署时映射外部文件以覆盖默认配置，你也可以自定义你的配置文件夹：
+```c#
+ public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>().UseIISIntegration(); })
+                .ConfigureAppConfiguration(configBuilder =>
+                {
+                    var connectionString = configBuilder.Build().GetConnectionString("Database");
+                    configBuilder.AddEfConfiguration(options => { options.UseNpgsql(connectionString); }, true);
+                    configBuilder.AddJsonFileFromDirectory(Common.IsWindows ? "conf" : "/conf");
+                });
+```
 
-此外，Netcool提供了`EFConfigurationProvider`，将数据库中的配置信息适配到内置的`Configuration`中，可以通过注入`IConfiguration`或者`IOptions`获取数据库中配置的权限，如UserService:
+此外，Netcool提供了`EFConfigurationProvider`，将数据库中的配置信息适配到内置的`Configuration`中，可以通过注入`IConfiguration`或者`IOptions`获取数据库中的配置信息，如UserService:
 ```c#
  public UserService(IUserRepository userRepository,
             IServiceAggregator serviceAggregator,
