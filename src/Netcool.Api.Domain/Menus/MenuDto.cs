@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Netcool.Api.Domain.Permissions;
-using Netcool.Core.Helpers;
+using Netcool.Core;
 using Netcool.Core.Services.Dto;
 
 namespace Netcool.Api.Domain.Menus
@@ -28,7 +28,7 @@ namespace Netcool.Api.Domain.Menus
         public string Notes { get; set; }
 
         public List<PermissionDto> Permissions { get; set; }
-        
+
         public string TypeDescription => Reflection.GetEnumDescription(Type);
     }
 }

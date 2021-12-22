@@ -12,7 +12,6 @@ using Netcool.Api.Domain.Users;
 using Netcool.Core;
 using Netcool.Core.AspNetCore;
 using Netcool.Core.Authorization;
-using Netcool.Core.Helpers;
 using Netcool.Core.Repositories;
 
 namespace Netcool.Api.Domain.Authorization

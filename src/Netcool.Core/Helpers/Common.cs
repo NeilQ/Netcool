@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace Netcool.Core.Helpers
+namespace Netcool.Core
 {
     public static class Common
     {
@@ -26,7 +25,7 @@ namespace Netcool.Core.Helpers
 
         public static string SafeString(this object input)
         {
-            return input?.ToString().Trim() ?? string.Empty;
+            return input?.ToString()?.Trim() ?? string.Empty;
         }
 
         public static bool TryGetEnumDescription<T>(T value, out string description) where T : struct

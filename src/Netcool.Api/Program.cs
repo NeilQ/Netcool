@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Netcool.Api.Domain.Configuration;
 using Netcool.Api.Domain.EfCore;
 using Netcool.Core;
-using Netcool.Core.Helpers;
 using Serilog;
 using Serilog.Events;
 using Serilog.Filters;
@@ -71,7 +70,7 @@ namespace Netcool.Api
             catch (Exception ex)
             {
                 var logger = services.GetRequiredService<ILogger<Program>>();
-                logger.LogError(ex, "An error occurred creating the DB.");
+                logger.LogError(ex, "An error occurred creating the DB");
             }
         }
     }

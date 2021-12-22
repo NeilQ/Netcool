@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Netcool.Api.Domain.Roles;
-using Netcool.Core.Helpers;
+using Netcool.Core;
 using Netcool.Core.Organizations;
 using Netcool.Core.Services.Dto;
 

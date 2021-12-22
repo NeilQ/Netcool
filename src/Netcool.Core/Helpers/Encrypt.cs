@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Netcool.Core.Helpers
+namespace Netcool.Core
 {
     public static class Encrypt
     {

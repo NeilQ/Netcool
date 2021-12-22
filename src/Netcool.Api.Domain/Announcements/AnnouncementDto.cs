@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using Netcool.Core.Helpers;
 using Netcool.Core.Services.Dto;
 
 namespace Netcool.Core.Announcements

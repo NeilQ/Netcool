@@ -7,8 +7,6 @@ using Netcool.Api.Domain.Organizations;
 using Netcool.Api.Domain.Roles;
 using Netcool.Core;
 using Netcool.Core.Entities;
-using Netcool.Core.Helpers;
-using Netcool.Core.Organizations;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
 

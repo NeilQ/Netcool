@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace Netcool.Core.Helpers
+namespace Netcool.Core
 {
     public static class ExpressionCombiner
     {

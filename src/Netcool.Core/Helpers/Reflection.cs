@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Netcool.Core.Helpers
+namespace Netcool.Core
 {
     public static class Reflection
     {

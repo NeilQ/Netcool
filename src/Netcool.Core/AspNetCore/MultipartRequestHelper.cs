@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using Microsoft.Net.Http.Headers;
-using Netcool.Core.Helpers;
 using ContentDispositionHeaderValue = System.Net.Http.Headers.ContentDispositionHeaderValue;
 
 namespace Netcool.Core.AspNetCore

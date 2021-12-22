@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Netcool.Core.Entities;
-using Netcool.Core.Helpers;
 using Netcool.Core.Sessions;
 
 namespace Netcool.Core.EfCore

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Netcool.Core.Helpers
+namespace Netcool.Core
 {
     public class IgnoreCaseStringComparer: IEqualityComparer<string>
     {
