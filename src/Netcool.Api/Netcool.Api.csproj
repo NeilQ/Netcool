@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Netcool.Api.Domain\Netcool.Api.Domain.csproj" />
     <ProjectReference Include="..\Netcool.Core\Netcool.Core.csproj" />
+    <ProjectReference Include="..\packages\Netcool.Swashbuckle.AspNetCore\Netcool.Swashbuckle.AspNetCore.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />

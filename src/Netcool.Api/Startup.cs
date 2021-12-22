@@ -1,6 +1,5 @@
 using System.Reflection;
 using System.Text;
-using Acartons.Api.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -26,6 +25,7 @@ using Netcool.Core.Extensions;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
 using Netcool.Core.Sessions;
+using Netcool.Swashbuckle.AspNetCore;
 using Serilog;
 
 [assembly: ApiController]

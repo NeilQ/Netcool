@@ -1,9 +1,13 @@
-﻿using Microsoft.OpenApi.Any;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using Netcool.Core.Helpers;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Acartons.Api.Swagger
+namespace Netcool.Swashbuckle.AspNetCore
 {
     public class EnumDescriptionDocumentFilter : IDocumentFilter
     {
@@ -27,7 +31,8 @@ namespace Acartons.Api.Swagger
             }
         }
 
-        private void DescribeEnumParameters(IDictionary<OperationType, OpenApiOperation> operations, OpenApiDocument swaggerDoc)
+        private void DescribeEnumParameters(IDictionary<OperationType, OpenApiOperation> operations,
+            OpenApiDocument swaggerDoc)
         {
             if (operations == null) return;
             foreach (var operation in operations)
@@ -63,10 +68,20 @@ namespace Acartons.Api.Swagger
                 var enumOption = (OpenApiInteger)openApiAny;
                 var enumInt = enumOption.Value;
 
-                enumDescriptions.Add($"{enumInt} = {Reflection.GetEnumDescription(enumType, enumInt)}");
+                enumDescriptions.Add($"{enumInt} = {GetEnumDescription(enumType, enumInt)}");
             }
 
             return string.Join("</br>", enumDescriptions.ToArray());
+        }
+
+        private string GetEnumDescription(Type type, int value)
+        {
+            var name = Enum.GetName(type, value);
+            if (name == null) return null;
+            var field = type.GetField(name);
+            if (field == null) return null;
+            var attr = field.GetCustomAttribute<DescriptionAttribute>();
+            return attr == null ? field.Name : attr.Description;
         }
     }
 }
