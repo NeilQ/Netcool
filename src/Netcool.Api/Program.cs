@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 using Microsoft.EntityFrameworkCore;
 using Netcool.Api.Domain.Configuration;
 using Netcool.Api.Domain.EfCore;
-using Netcool.Core.Extensions;
+using Netcool.Core;
 using Netcool.Core.Helpers;
 using Serilog;
 using Serilog.Events;

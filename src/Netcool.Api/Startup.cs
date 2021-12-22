@@ -21,7 +21,6 @@ using Netcool.Core.AspNetCore.Json;
 using Netcool.Core.AspNetCore.Middlewares;
 using Netcool.Core.AspNetCore.ValueProviders;
 using Netcool.Core.EfCore;
-using Netcool.Core.Extensions;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
 using Netcool.Core.Sessions;

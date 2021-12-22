@@ -7,7 +7,6 @@ using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;
 using Netcool.Api.Domain.Files;
 using Netcool.Api.Domain.Users;
-using Netcool.Core.Extensions;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
 

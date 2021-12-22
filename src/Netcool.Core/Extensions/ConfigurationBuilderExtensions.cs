@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Microsoft.Extensions.Configuration;
 
-namespace Netcool.Core.Extensions;
+namespace Netcool.Core;
 
 public static class ConfigurationBuilderExtensions
 {

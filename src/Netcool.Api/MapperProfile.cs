@@ -7,8 +7,8 @@ using Netcool.Api.Domain.Organizations;
 using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Roles;
 using Netcool.Api.Domain.Users;
+using Netcool.Core;
 using Netcool.Core.Announcements;
-using Netcool.Core.Extensions;
 using Netcool.Core.Organizations;
 using File = Netcool.Api.Domain.Files.File;
 

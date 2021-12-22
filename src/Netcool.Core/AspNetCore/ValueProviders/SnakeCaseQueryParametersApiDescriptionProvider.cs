@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Netcool.Core.Extensions;
 
 namespace Netcool.Core.AspNetCore.ValueProviders
 {

@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Netcool.Core.Extensions;
 
 namespace Netcool.Core.AspNetCore.ValueProviders
 {
