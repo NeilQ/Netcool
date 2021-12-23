@@ -11,11 +11,15 @@ Display enum descriptions for enum member decorated by DescriptionAttribute.
 Put a file upload button for uploading file with content-type:multipart/form-data.
 
 ### Extension methods
+```
 void IncludeAllXmlComments(this SwaggerGenOptions options, bool includeControllerXmlComments = false)
 
 void IncludeXmlComments(this SwaggerGenOptions options, Assembly assembly, bool includeControllerXmlComments = false)
 
 void AddJwtBearerSecurity(this SwaggerGenOptions options)
+
+void InjectHeadContent(this SwaggerUIOptions options, string headContent)
+```
 
 ## Examples
 ```c#
@@ -29,6 +33,23 @@ services.AddSwaggerGen(c =>
     
     c.AddJwtBearerSecurity();
 });
+```
+
+```c#
+app.UseSwaggerUI(c =>
+ {
+     if (env.IsDevelopment())
+     {
+         c.InjectHeadContent(
+             @"<script async id=""mini-profiler"" src=""/profiler/includes.min.js?v=4.2.22+4563a9e1ab""
+               data-version=""4.2.22+4563a9e1ab"" data-path=""/profiler/"" 
+               data-current-id=""7a3d98bb-3968-41fb-8836-65f9923ee6eb""
+               data-ids=""7a3d98bb-3968-41fb-8836-65f9923ee6eb""
+               data-position=""Left"" data-scheme=""Light"" data-authorized=""true"" data-max-traces=""15""
+               data-toggle-shortcut=""Alt+P"" data-trivial-milliseconds=""2.0"" 
+               data-ignored-duplicate-execute-types=""Open,OpenAsync,Close,CloseAsync""></script>");
+     }
+ });
 ```
 
 ```c#
