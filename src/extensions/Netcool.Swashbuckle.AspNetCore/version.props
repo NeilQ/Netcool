@@ -1,0 +1,12 @@
+<Project>
+	<PropertyGroup>
+        <PackageId>Netcool.Swashbuckle.AspNetCore</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>邱尘</Authors>
+        <Description>Extensions for Swashbuckle.AspNetCore</Description>
+        <PackageTags>.net,Swashbuckle.AspNetCore,Swagger</PackageTags>
+        <PackageLicenseExpression>Apache License 2.0</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/NeilQ/Netcool.Api</RepositoryUrl>
+        <PackageReleaseNotes>Extensions for Swashbuckle.AspNetCore</PackageReleaseNotes>
+	</PropertyGroup>
+</Project>
