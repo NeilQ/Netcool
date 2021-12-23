@@ -71,10 +71,12 @@ namespace Netcool.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Netcool API", Version = "v1" });
                 c.OperationFilter<FileUploadOperationFilter>();
 
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
-                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Core.xml"));
-                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Api.Domain.xml"));
+                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                //c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
+                //c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Core.xml"));
+                //c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Api.Domain.xml"));
+                //c.IncludeXmlComments(Assembly.GetAssembly(typeof(NetcoolDbContext)));
+                c.IncludeAllXmlComments();
 
                 c.AddSecurityDefinition("Bearer",
                     new OpenApiSecurityScheme
