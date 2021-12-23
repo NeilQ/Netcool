@@ -24,7 +24,7 @@ namespace Netcool.Api
                     Type = "boolean"
                 },
                 In = ParameterLocation.Query,
-                Description = "自定义文件名",
+                Description = "Custom filename",
             });
 
             var uploadFileMediaType = new OpenApiMediaType()
@@ -36,7 +36,7 @@ namespace Netcool.Api
                     {
                         ["uploadedFile"] = new OpenApiSchema
                         {
-                            Description = "Upload File",
+                            Description = "Uploaded File",
                             Type = "file",
                             Format = "formData"
                         }

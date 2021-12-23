@@ -71,38 +71,9 @@ namespace Netcool.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Netcool API", Version = "v1" });
                 c.OperationFilter<FileUploadOperationFilter>();
 
-                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                //c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
-                //c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Core.xml"));
-                //c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Netcool.Api.Domain.xml"));
                 //c.IncludeXmlComments(Assembly.GetAssembly(typeof(NetcoolDbContext)));
                 c.IncludeAllXmlComments();
-
-                c.AddSecurityDefinition("Bearer",
-                    new OpenApiSecurityScheme
-                    {
-                        Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
-                        Name = "Authorization",
-                        In = ParameterLocation.Header,
-                        Type = SecuritySchemeType.ApiKey,
-                        Scheme = "Bearer"
-                    });
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Id = "Bearer", //The name of the previously defined security scheme.
-                                Type = ReferenceType.SecurityScheme,
-                            },
-                            Name = "Bearer"
-                        },
-                        new string[] { }
-                    }
-                });
+                c.AddJwtBearerSecurity();
             });
 
             // jwt
@@ -215,7 +186,10 @@ namespace Netcool.Api
             });
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Netcool API V1"); });
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Netcool API V1");
+            });
         }
     }
 }

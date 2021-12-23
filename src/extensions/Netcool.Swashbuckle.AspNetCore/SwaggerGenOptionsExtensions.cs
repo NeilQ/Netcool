@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Netcool.Swashbuckle.AspNetCore
@@ -49,6 +50,35 @@ namespace Netcool.Swashbuckle.AspNetCore
 
             if (!File.Exists(path)) return;
             options.IncludeXmlComments(path, includeControllerXmlComments);
+        }
+
+        public static void AddJwtBearerSecurity(this SwaggerGenOptions options)
+        {
+            options.AddSecurityDefinition("Bearer",
+                new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Id = "Bearer", //The name of the previously defined security scheme.
+                            Type = ReferenceType.SecurityScheme,
+                        },
+                        Name = "Bearer"
+                    },
+                    new string[] { }
+                }
+            });
         }
     }
 }
