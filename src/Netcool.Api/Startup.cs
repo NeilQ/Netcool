@@ -64,6 +64,14 @@ namespace Netcool.Api
             services.AddHealthChecks();
             services.AddMemoryCache();
 
+            services.AddMiniProfiler(options =>
+            {
+                options.RouteBasePath = "/profiler";
+                options.EnableMvcFilterProfiling = false;
+                options.EnableMvcViewProfiling = false;
+                options.IgnoredPaths.AddIfNotContains("/swagger/");
+            }).AddEntityFramework();
+
             // swagger
             services.AddSwaggerGen(c =>
             {
@@ -71,7 +79,6 @@ namespace Netcool.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Netcool API", Version = "v1" });
                 c.OperationFilter<FileUploadOperationFilter>();
 
-                //c.IncludeXmlComments(Assembly.GetAssembly(typeof(NetcoolDbContext)));
                 c.IncludeAllXmlComments();
                 c.AddJwtBearerSecurity();
             });
@@ -154,6 +161,7 @@ namespace Netcool.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseMiniProfiler();
             }
 
             //app.UseHttpsRedirection();
@@ -189,6 +197,17 @@ namespace Netcool.Api
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Netcool API V1");
+                if (env.IsDevelopment())
+                {
+                    c.InjectHeadContent(
+                        @"<script async id=""mini-profiler"" src=""/profiler/includes.min.js?v=4.2.22+4563a9e1ab""
+                          data-version=""4.2.22+4563a9e1ab"" data-path=""/profiler/"" 
+                          data-current-id=""7a3d98bb-3968-41fb-8836-65f9923ee6eb""
+                          data-ids=""7a3d98bb-3968-41fb-8836-65f9923ee6eb""
+                          data-position=""Left"" data-scheme=""Light"" data-authorized=""true"" data-max-traces=""15""
+                          data-toggle-shortcut=""Alt+P"" data-trivial-milliseconds=""2.0"" 
+                          data-ignored-duplicate-execute-types=""Open,OpenAsync,Close,CloseAsync""></script>");
+                }
             });
         }
     }
