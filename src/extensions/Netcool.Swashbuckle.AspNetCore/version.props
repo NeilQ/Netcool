@@ -5,8 +5,11 @@
         <Authors>邱尘</Authors>
         <Description>Extensions for Swashbuckle.AspNetCore</Description>
         <PackageTags>.net,Swashbuckle.AspNetCore,Swagger</PackageTags>
-        <PackageLicenseExpression>Apache License 2.0</PackageLicenseExpression>
-        <RepositoryUrl>https://github.com/NeilQ/Netcool.Api</RepositoryUrl>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/NeilQ/Netcool.Api/tree/master/src/extensions/Netcool.Swashbuckle.AspNetCore</RepositoryUrl>
         <PackageReleaseNotes>Extensions for Swashbuckle.AspNetCore</PackageReleaseNotes>
 	</PropertyGroup>
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 </Project>
