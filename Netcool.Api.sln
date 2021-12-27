@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "extensions", "extensions", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netcool.Swashbuckle.AspNetCore", "src\extensions\Netcool.Swashbuckle.AspNetCore\Netcool.Swashbuckle.AspNetCore.csproj", "{194AEE7B-A287-4343-9C22-4C2839D8729D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netcool.HttpProxy", "src\extensions\Netcool.HttpProxy\Netcool.HttpProxy.csproj", "{5A9F332D-F066-4112-B3BA-B582AAD30299}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{194AEE7B-A287-4343-9C22-4C2839D8729D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{194AEE7B-A287-4343-9C22-4C2839D8729D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{194AEE7B-A287-4343-9C22-4C2839D8729D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A9F332D-F066-4112-B3BA-B582AAD30299}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A9F332D-F066-4112-B3BA-B582AAD30299}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A9F332D-F066-4112-B3BA-B582AAD30299}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A9F332D-F066-4112-B3BA-B582AAD30299}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,6 +53,7 @@ Global
 		{46CEBC5E-AE66-4649-BE0E-4FB3A3AED78D} = {9D65CB28-545C-487A-A0EB-FA60E08AB833}
 		{1C07C64C-3225-4EB5-95A0-5D94FBB548F0} = {9D65CB28-545C-487A-A0EB-FA60E08AB833}
 		{194AEE7B-A287-4343-9C22-4C2839D8729D} = {1C07C64C-3225-4EB5-95A0-5D94FBB548F0}
+		{5A9F332D-F066-4112-B3BA-B582AAD30299} = {1C07C64C-3225-4EB5-95A0-5D94FBB548F0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {839F28E8-142D-4869-BBE0-2DF038A938EC}

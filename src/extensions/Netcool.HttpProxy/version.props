@@ -1,0 +1,11 @@
+<Project>
+	<PropertyGroup>
+        <Version>1.0.1</Version>
+        <Authors>邱尘</Authors>
+        <Description>A http proxy middleware for asp.net core app</Description>
+        <PackageTags>Dotnetcore,HttpProxy,Proxy</PackageTags>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/NeilQ/Netcool.Api/tree/master/src/extensions/Netcool.HttpProxy</RepositoryUrl>
+        <PackageReleaseNotes>Update dependent package</PackageReleaseNotes>
+	</PropertyGroup>
+</Project>
