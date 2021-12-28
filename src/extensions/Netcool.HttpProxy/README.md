@@ -26,7 +26,8 @@ public void ConfigureServices(IServiceCollection services)
 
 public void Configure(IApplicationBuilder app)
 {
-    app.Map("/api", builder => { builder.RunProxy(new Uri("http://api.domain.com")); });
+    app.Map("/baidu", builder => { builder.RunProxy("https://www.baidu.com"); });
+    app.Map("/api", builder => { builder.RunProxy(new Uri("http://api.domain.com/v1")); });
 }
 
 ```

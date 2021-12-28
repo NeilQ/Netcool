@@ -11,7 +11,17 @@ namespace Netcool.HttpProxy
     public static class ProxyExtensions
     {
         /// <summary>
-        ///     Runs proxy forwarding requests to the server specified by base uri.
+        /// Runs proxy forwarding requests to the server specified by base url.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="baseUrl">Destination base url</param>
+        public static void RunProxy(this IApplicationBuilder app, string baseUrl)
+        {
+            RunProxy(app, new Uri(baseUrl));
+        }
+
+        /// <summary>
+        /// Runs proxy forwarding requests to the server specified by base uri.
         /// </summary>
         /// <param name="app"></param>
         /// <param name="baseUri">Destination base uri</param>
@@ -27,22 +37,11 @@ namespace Netcool.HttpProxy
                 PathBase = baseUri.AbsolutePath,
                 AppendQuery = new QueryString(baseUri.Query)
             };
-            app.UseMiddleware<ProxyMiddleware>(Options.Create(options));
+            RunProxy(app, options);
         }
 
         /// <summary>
-        ///     Runs proxy forwarding requests to the server specified by options.
-        /// </summary>
-        /// <param name="app"></param>
-        public static void RunProxy(this IApplicationBuilder app)
-        {
-            if (app == null) throw new ArgumentNullException(nameof(app));
-
-            app.UseMiddleware<ProxyMiddleware>();
-        }
-
-        /// <summary>
-        ///     Runs proxy forwarding requests to the server specified by options.
+        /// Runs proxy forwarding requests to the server specified by options.
         /// </summary>
         /// <param name="app"></param>
         /// <param name="options">Proxy options</param>
@@ -55,7 +54,7 @@ namespace Netcool.HttpProxy
         }
 
         /// <summary>
-        ///     Forwards current request to the specified destination uri.
+        /// Forwards current request to the specified destination uri.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="destinationUri">Destination Uri</param>

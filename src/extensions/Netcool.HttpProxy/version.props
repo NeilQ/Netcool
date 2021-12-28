@@ -6,6 +6,6 @@
         <PackageTags>Dotnetcore,HttpProxy,Proxy</PackageTags>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/NeilQ/Netcool.Api/tree/master/src/extensions/Netcool.HttpProxy</RepositoryUrl>
-        <PackageReleaseNotes>Update dependent package</PackageReleaseNotes>
+        <PackageReleaseNotes>Add new extensions</PackageReleaseNotes>
 	</PropertyGroup>
 </Project>
