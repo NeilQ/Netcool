@@ -3,6 +3,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -10,6 +12,47 @@ namespace Netcool.HttpProxy
 {
     public static class ProxyExtensions
     {
+        /// <summary>
+        /// Branches the request pipeline based on matches of the given request path.
+        /// If the request path starts with the given path, proxy forwarding the request to the server specified by base url.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="pathMatch">The request path to match</param>
+        /// <param name="baseUrl">Destination base url</param>
+        /// <returns></returns>
+        public static IApplicationBuilder MapProxy(this IApplicationBuilder app, string pathMatch, string baseUrl)
+        {
+            return app.Map(pathMatch, appBuilder => { appBuilder.RunProxy(new Uri(baseUrl)); });
+        }
+
+        public static IEndpointConventionBuilder MapProxy(this IEndpointRouteBuilder endpoints, string pattern,
+            Func<RouteValueDictionary, string> routeValueDelegate)
+        {
+            if (endpoints == null) throw new ArgumentNullException(nameof(endpoints));
+
+            return endpoints.Map(pattern, context =>
+            {
+                var url = routeValueDelegate.Invoke(context.GetRouteData()?.Values ?? new RouteValueDictionary());
+                var targetUri = new Uri(url);
+                var uri = new Uri(UriHelper.BuildAbsolute(targetUri.Scheme, new HostString(targetUri.Authority),
+                    targetUri.AbsolutePath, null, context.Request.QueryString.Add(new QueryString(targetUri.Query))));
+                return context.ProxyRequest(uri);
+            });
+        }
+
+        /// <summary>
+        /// Branches the request pipeline based on matches of the given request path.
+        /// If the request path starts with the given path, proxy forwarding the request to the server specified by base url.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="pathMatch">The request path to match</param>
+        /// <param name="baseUri">Destination base uri</param>
+        /// <returns></returns>
+        public static IApplicationBuilder MapProxy(this IApplicationBuilder app, string pathMatch, Uri baseUri)
+        {
+            return app.Map(pathMatch, appBuilder => { appBuilder.RunProxy(baseUri); });
+        }
+
         /// <summary>
         /// Runs proxy forwarding requests to the server specified by base url.
         /// </summary>

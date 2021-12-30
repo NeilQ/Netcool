@@ -47,9 +47,16 @@ namespace Netcool.HttpProxy.Example
 
             app.UseRouting();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                // map proxy with endpoint
+                endpoints.MapProxy("/baidu2/s/{wd:alpha}", dictionary => $"https://www.baidu.com/s?wd={dictionary["wd"]}");
+                endpoints.MapProxy("/baidu3", _ => "https://www.baidu.com/s");
+            });
 
             app.Map("/baidu", builder => { builder.RunProxy("https://www.baidu.com"); });
+            app.MapProxy("/baiduIp", "https://www.baidu.com/s?wd=ip");
         }
     }
 }
