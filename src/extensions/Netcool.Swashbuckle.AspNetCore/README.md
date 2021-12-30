@@ -1,4 +1,7 @@
 # Netcool.Swashbuckle.AspNetCore
+[![GitHub](https://img.shields.io/github/license/neilq/Netcool)](https://github.com/NeilQ/Netcool/blob/master/LICENSE)
+[![Nuget](https://img.shields.io/nuget/v/Netcool.Swashbuckle.AspNetCore)](https://www.nuget.org/packages/Netcool.Swashbuckle.AspNetCore/)
+![Nuget](https://img.shields.io/nuget/dt/Netcool.Swashbuckle.AspNetCore)
 
 Extensions library for Swashbuckle.AspNetCore.
 

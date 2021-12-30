@@ -1,4 +1,4 @@
-# Netcool.Api
+# Netcool
 
 - 2021-11-09 从.Net 5升级至.Net 6 
 

@@ -1,4 +1,8 @@
 # Netcool.HttpProxy
+[![GitHub](https://img.shields.io/github/license/neilq/Netcool)](https://github.com/NeilQ/Netcool/blob/master/LICENSE)
+[![Nuget](https://img.shields.io/nuget/v/Netcool.HttpProxy)](https://www.nuget.org/packages/Netcool.HttpProxy/)
+![Nuget](https://img.shields.io/nuget/dt/Netcool.HttpProxy)
+
 
 A http proxy for asp.net core app.  
 

@@ -6,7 +6,7 @@
         <Description>Extensions for Swashbuckle.AspNetCore</Description>
         <PackageTags>.net,Swashbuckle.AspNetCore,Swagger</PackageTags>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-        <RepositoryUrl>https://github.com/NeilQ/Netcool.Api/tree/master/src/extensions/Netcool.Swashbuckle.AspNetCore</RepositoryUrl>
+        <RepositoryUrl>https://github.com/NeilQ/Netcool/tree/master/src/extensions/Netcool.Swashbuckle.AspNetCore</RepositoryUrl>
         <PackageReleaseNotes>Extensions for Swashbuckle.AspNetCore</PackageReleaseNotes>
 	</PropertyGroup>
     <ItemGroup>
