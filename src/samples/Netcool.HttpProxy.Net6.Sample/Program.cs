@@ -29,7 +29,7 @@ app.MapProxy("/baiduIp", "https://www.baidu.com/s?wd=ip");
 app.Map("/baidu", appBuilder => { appBuilder.RunProxy("https://www.baidu.com/"); });
 
 // map proxy with endpoint
-app.MapProxy("/baidu2/s/{wd:alpha}", dictionary => $"https://www.baidu.com/s?wd={dictionary["wd"]}");
+app.MapProxy("/baidu2/s/{wd:alpha}", dictionary => $"https://www.baidu.com/s?wd={dictionary["wd"]}").WithName("");
 app.MapProxy("/baidu3", _ => "https://www.baidu.com/s");
 
 
