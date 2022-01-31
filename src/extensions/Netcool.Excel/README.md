@@ -43,7 +43,7 @@ using var wb = new ExcelExporter()
  {
      var wb = new ExcelExporter()
               ...
-              .ExportAsWorkbook(data);
+              .ExportAsWorkbook();
      var memoryStream = new MemoryStream();
      wb.SaveAs(memoryStream);
      wb.Disponse();
