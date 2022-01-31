@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ClosedXML.Excel;
 using Netcool.Excel;
+using Netcool.Excel.Attributes;
 using NUnit.Framework;
 
 namespace Netcool.Tests;
@@ -68,5 +69,42 @@ public class ExcelTests
             })
             .ExportAsWorkbook();
         wb.SaveAs($"export_with_styles.xlsx");
+    }
+
+    [Test]
+    public void ExportToWorkbookWithTypedRows()
+    {
+        using var wb = new ExcelExporter<Student>()
+            .WithRows(new List<Student>
+            {
+                new Student("John", 16,"Mail"),
+                new Student("Lily", 17,"Female")
+            })
+            .ExportAsWorkbook();
+        wb.SaveAs("export_typed_objs.xlsx");
+    }
+
+    public class Student
+    {
+        public Student(string name, int age, string gender)
+        {
+            Name = name;
+            Age = age;
+            Gender = gender;
+        }
+
+        [ExcelColumnHeader("姓名")]
+        [ExcelColumnOrder(3)]
+        public string Name { get; set; }
+
+        [ExcelColumnHeader("年龄")]
+        [ExcelColumnOrder(1)]
+        public int Age { get; set; }
+
+        public string Gender { get; set; }
+
+
+        [ExcelColumnIgnore]
+        public string Ignore { get; set; }
     }
 }

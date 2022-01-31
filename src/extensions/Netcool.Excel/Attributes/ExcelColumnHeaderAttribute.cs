@@ -1,10 +1,10 @@
 ﻿namespace Netcool.Excel.Attributes;
 
-public class ExcelHeaderAttribute : Attribute
+public class ExcelColumnHeaderAttribute : Attribute
 {
     public string Name { get; set; }
 
-    public ExcelHeaderAttribute(string name)
+    public ExcelColumnHeaderAttribute(string name)
     {
         Name = name;
     }

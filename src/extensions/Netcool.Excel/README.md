@@ -55,8 +55,44 @@ using var wb = new ExcelExporter()
  }
 ```
 
-### Object list export
-TODO
+### Typed object export
+```c#
+public class Student
+ {
+     public Student(string name, int age, string gender)
+     {
+         Name = name;
+         Age = age;
+         Gender = gender;
+     }
+
+     [ExcelColumnHeader("姓名")]
+     [ExcelColumnOrder(3)]
+     public string Name { get; set; }
+
+     [ExcelColumnHeader("年龄")]
+     [ExcelColumnOrder(1)]
+     public int Age { get; set; }
+
+     public string Gender { get; set; }
+
+
+     [ExcelColumnIgnore]
+     public string Ignore { get; set; }
+ }
+```
+
+```c#
+using var wb = new ExcelExporter<Student>()
+    ...
+    .WithRows(new List<Student>
+    {
+        new Student("John", 16,"Mail"),
+        new Student("Lily", 17,"Female")
+    })
+    .ExportAsWorkbook();
+wb.SaveAs("export_typed_objs.xlsx");
+```
 
 ### Import
 TODO

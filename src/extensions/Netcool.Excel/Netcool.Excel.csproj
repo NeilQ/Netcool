@@ -10,7 +10,7 @@
         <PackageReference Include="ClosedXML" Version="0.95.4" />
     </ItemGroup>
     <ItemGroup>
-      <None Include="README.md" Pack="true" PackagePath="\"/>
+      <None Include="README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>
