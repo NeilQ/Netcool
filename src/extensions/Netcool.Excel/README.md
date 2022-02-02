@@ -46,7 +46,7 @@ using var wb = new ExcelExporter()
               .ExportAsWorkbook();
      var memoryStream = new MemoryStream();
      wb.SaveAs(memoryStream);
-     wb.Disponse();
+     wb.Dispose();
      memoryStream.Seek(0, SeekOrigin.Begin);
      return new FileStreamResult(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
      {
@@ -95,4 +95,9 @@ wb.SaveAs("export_typed_objs.xlsx");
 ```
 
 ### Import
-TODO
+```c#
+ var list = new ExcelImporter<Student>()
+     .FromFile(memoryStream)
+     // or .FromFile("students.xlsx")
+     .Import();
+```

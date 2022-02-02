@@ -4,6 +4,40 @@ using Netcool.Excel.Attributes;
 
 namespace Netcool.Excel;
 
+public class ExcelColumnMetadata
+{
+    public string PropertyName { get; internal set; }
+
+    public string HeaderName { get; internal set; }
+
+    public int Order { get; internal set; }
+
+    public int Index { get; internal set; }
+
+    public bool IgnoreColumn { get; internal set; }
+
+    public PropertyInfo PropertyInfo { get; internal set; }
+
+    public static ExcelColumnMetadata ForPropertyInfo(PropertyInfo pi)
+    {
+        var ci = new ExcelColumnMetadata { PropertyInfo = pi };
+        var attrs = pi.GetCustomAttributes();
+
+        ci.PropertyName = pi.Name;
+        var ignoreAttrs = attrs.OfType<ExcelColumnIgnoreAttribute>().ToArray();
+        if (ignoreAttrs.Any()) ci.IgnoreColumn = true;
+
+        var headerAttrs = attrs.OfType<ExcelColumnHeaderAttribute>().ToArray();
+        ci.HeaderName = headerAttrs.FirstOrDefault(x => !string.IsNullOrEmpty(x.Name))?.Name ?? pi.Name;
+
+        var orderAttrs = attrs.OfType<ExcelColumnOrderAttribute>().ToArray();
+
+        ci.Order = orderAttrs.FirstOrDefault()?.Order ?? int.MaxValue;
+        return ci;
+    }
+
+}
+
 public class ExcelExporter<T> where T : class
 {
     private ExcelStyleOptions _styleOptions;
@@ -36,50 +70,6 @@ public class ExcelExporter<T> where T : class
         return type.GetProperties(BindingFlags.Instance | BindingFlags.Public).ToList();
     }
 
-    public static IEnumerable<Attribute> GetCustomAttributes(MemberInfo memberInfo)
-    {
-        var attrs = memberInfo.GetCustomAttributes();
-        return attrs;
-    }
-
-    public static IEnumerable<Attribute> GetCustomAttributes(MemberInfo memberInfo, Type type)
-    {
-        var attrs = memberInfo.GetCustomAttributes(type);
-        return attrs;
-    }
-
-    public class ExcelColumnMetadata
-    {
-        public string PropertyName { get; internal set; }
-
-        public string HeaderName { get; internal set; }
-
-        public int Order { get; internal set; }
-
-        public int Index { get; internal set; }
-
-        public bool IgnoreColumn { get; internal set; }
-
-        public PropertyInfo PropertyInfo { get; internal set; }
-
-        public static ExcelColumnMetadata ForMemberInfo(PropertyInfo pi)
-        {
-            var ci = new ExcelColumnMetadata { PropertyInfo = pi };
-            var attrs = GetCustomAttributes(pi).ToArray();
-
-            ci.PropertyName = pi.Name;
-            var ignoreAttrs = attrs.OfType<ExcelColumnIgnoreAttribute>().ToArray();
-            if (ignoreAttrs.Any()) ci.IgnoreColumn = true;
-
-            var headerAttrs = attrs.OfType<ExcelColumnHeaderAttribute>().ToArray();
-            ci.HeaderName = headerAttrs.FirstOrDefault(x => !string.IsNullOrEmpty(x.Name))?.Name ?? pi.Name;
-
-            var orderAttrs = attrs.OfType<ExcelColumnOrderAttribute>().ToArray();
-
-            ci.Order = orderAttrs.FirstOrDefault()?.Order ?? int.MaxValue;
-            return ci;
-        }
-    }
 
     public ExcelExporter<T> WithRows(IEnumerable<T> rows)
     {
@@ -91,7 +81,7 @@ public class ExcelExporter<T> where T : class
         var columnMetadataList = new List<ExcelColumnMetadata>();
         foreach (var propertyInfo in properties)
         {
-            columnMetadataList.Add(ExcelColumnMetadata.ForMemberInfo(propertyInfo));
+            columnMetadataList.Add(ExcelColumnMetadata.ForPropertyInfo(propertyInfo));
         }
 
         columnMetadataList.Sort((x, y) => x.Order.CompareTo(y.Order));
@@ -133,7 +123,6 @@ public class ExcelExporter<T> where T : class
             rngTitle.Style.Fill.BackgroundColor = _styleOptions.TitleBackgroundColor;
             rowNumber++;
         }
-
 
         // header
         for (var i = 0; i < _columns.Count; i++)
