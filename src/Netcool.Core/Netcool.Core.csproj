@@ -32,4 +32,8 @@
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.14" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Netcool.Core.Utility\Netcool.Core.Utility.csproj" />
+  </ItemGroup>
+
 </Project>
