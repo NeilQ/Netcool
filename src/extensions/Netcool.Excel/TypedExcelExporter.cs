@@ -35,7 +35,6 @@ public class ExcelColumnMetadata
         ci.Order = orderAttrs.FirstOrDefault()?.Order ?? int.MaxValue;
         return ci;
     }
-
 }
 
 public class ExcelExporter<T> where T : class
@@ -84,7 +83,7 @@ public class ExcelExporter<T> where T : class
             columnMetadataList.Add(ExcelColumnMetadata.ForPropertyInfo(propertyInfo));
         }
 
-        columnMetadataList.Sort((x, y) => x.Order.CompareTo(y.Order));
+        columnMetadataList = columnMetadataList.OrderBy(x => x.Order).ToList();
         var columnIndex = 1;
         for (var i = 0; i < columnMetadataList.Count; i++)
         {
@@ -130,7 +129,7 @@ public class ExcelExporter<T> where T : class
             var metadata = _columns[i];
             if (metadata.IgnoreColumn) continue;
 
-            ws.Row(rowNumber).Cell(i + 1).Value = metadata.HeaderName;
+            ws.Row(rowNumber).Cell(metadata.Index).Value = metadata.HeaderName;
         }
 
         var rngHeaders = ws.Range(ws.Row(rowNumber).Cell(1), ws.Row(rowNumber).Cell(exportColumnCount));
@@ -160,9 +159,15 @@ public class ExcelExporter<T> where T : class
                     var propertyValue = metadata.PropertyInfo.GetValue(row);
                     if (propertyValue != null)
                     {
+                        if (metadata.PropertyInfo.PropertyType == typeof(string) &&
+                            decimal.TryParse(propertyValue.ToString(), out _))
+                        {
+                            propertyValue = "'" + propertyValue;
+                        }
+
                         if (_styleOptions.ValueFontSize > 0) cell.Style.Font.FontSize = _styleOptions.ValueFontSize;
                         cell.Style.Font.FontName = _styleOptions.FontFamily;
-                        cell.Value = metadata.PropertyInfo.GetValue(row) ?? "";
+                        cell.Value = propertyValue;
                     }
                 }
 

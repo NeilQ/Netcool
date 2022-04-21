@@ -66,7 +66,9 @@ public class ExcelTests
             {
                 new List<object>() { "r1c1", "1", DateTime.Now },
                 new List<object>() { "r2c1", "2.2" },
-                new List<object>() { "r3c1" }
+                new List<object>() { "r3c1" },
+                new List<object>() { "004", 004 },
+                new List<object>() { "", "005" }
             })
             .ExportAsWorkbook();
         wb.SaveAs($"export_with_styles.xlsx");
@@ -79,7 +81,9 @@ public class ExcelTests
             .WithRows(new List<Student>
             {
                 new Student("John", 16, "Male", GenderE.Male),
-                new Student("Lily", 17, "Female", GenderE.Female)
+                new Student("Lily", 17, "Female", GenderE.Female),
+                new Student("001", 17, "Female", GenderE.Female),
+                new Student("", 17, "Female", GenderE.Female)
             })
             .ExportAsWorkbook();
         wb.SaveAs("export_typed_objs.xlsx");
@@ -111,8 +115,8 @@ public class ExcelTests
         Assert.AreEqual("Lily", list[1].Name);
         Assert.AreEqual(16, list[0].Age);
         Assert.AreEqual(17, list[1].Age);
-        Assert.AreEqual(GenderE.Male,list[0].GenderE);
-        Assert.AreEqual(GenderE.Female,list[1].GenderE);
+        Assert.AreEqual(GenderE.Male, list[0].GenderE);
+        Assert.AreEqual(GenderE.Female, list[1].GenderE);
     }
 
     public class Student
@@ -129,6 +133,9 @@ public class ExcelTests
             GenderE = genderE;
         }
 
+        [ExcelColumnIgnore]
+        public int Id { get; set; }
+
         [ExcelColumnHeader("姓名")]
         [ExcelColumnOrder(3)]
         public string? Name { get; set; }
@@ -141,6 +148,7 @@ public class ExcelTests
 
         public GenderE GenderE { get; set; }
 
+        [ExcelColumnOrder(2)]
         public DateTime Birthday { get; set; } = DateTime.Now;
 
         [ExcelColumnIgnore]

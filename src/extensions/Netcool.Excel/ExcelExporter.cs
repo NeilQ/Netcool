@@ -89,8 +89,15 @@ public class ExcelExporter
                 if (row == null || !row.Any()) continue;
                 for (var j = 0; j < row.Count(); j++)
                 {
+                    var value = row.ElementAt(j);
                     var cell = ws.Row(rowNumber).Cell(j + 1);
-                    cell.Value = row.ElementAt(j);
+
+                    if (value is string && decimal.TryParse(value.ToString(), out _))
+                    {
+                        value = "'" + value;
+                    }
+
+                    cell.Value = value;
                     if (_styleOptions.ValueFontSize > 0) cell.Style.Font.FontSize = _styleOptions.ValueFontSize;
                     cell.Style.Font.FontName = _styleOptions.FontFamily;
                 }
