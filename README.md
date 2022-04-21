@@ -20,11 +20,9 @@ Netcool采用前后端分离的方式，包含Netcool.Api，Netcool.Admin两个�
 - Logger: Serilog
 - Swagger: Swashbuckle.AspNetCore
 - Authentication: JwtBearer
-- Mapper: AutoMapper
+- Mapper: Mapster
 
 其他帮助类均根据 [官方文档](https://docs.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core?view=aspnetcore-5.0) 中推荐的解决方案实现。
-
-如有流量控制的需求，这里推荐一个Pakcage：[AspNetCoreRateLimit](https://github.com/stefanprodan/AspNetCoreRateLimit)
 
 # 项目分层
 根据多年的开发经验，传统的三层框架（DAL，BLL，Application）在业务比较多的情况下，

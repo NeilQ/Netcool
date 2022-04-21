@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using AutoMapper;
+using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
