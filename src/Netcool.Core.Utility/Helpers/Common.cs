@@ -23,7 +23,7 @@ public static class Common
     {
         return input?.ToString()?.Trim() ?? string.Empty;
     }
-
+    
     public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
     public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);

@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\extensions\Netcool.Caching\Netcool.Caching.csproj" />
       <ProjectReference Include="..\..\src\extensions\Netcool.Excel\Netcool.Excel.csproj" />
     </ItemGroup>
 
