@@ -17,7 +17,7 @@ public class RedisCacheTests
     }
 
     private readonly DistributedCacheEntryOptions _entryOptions =
-        new DistributedCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(5));
+        new DistributedCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
 
     [Test]
     public void Increase()

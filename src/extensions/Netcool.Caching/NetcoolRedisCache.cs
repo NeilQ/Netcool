@@ -90,7 +90,7 @@ public class NetcoolRedisCache : RedisCache, INetcoolDistributedCache
         long value;
         if (maxValue == null)
         {
-            value = RedisDatabase.HashIncrement(Instance + key, DataKey, byValue);
+            value = RedisDatabase.HashIncrement(Instance + key, DataKey, byValue, GetCommandFlag(fireAndForget));
         }
         else
         {
@@ -112,7 +112,8 @@ public class NetcoolRedisCache : RedisCache, INetcoolDistributedCache
         long value;
         if (maxValue == null)
         {
-            value = await RedisDatabase.HashIncrementAsync(Instance + key, DataKey, byValue);
+            value = await RedisDatabase.HashIncrementAsync(Instance + key, DataKey, byValue,
+                GetCommandFlag(fireAndForget));
         }
         else
         {
@@ -133,7 +134,7 @@ public class NetcoolRedisCache : RedisCache, INetcoolDistributedCache
         long value;
         if (minValue == null)
         {
-            value = RedisDatabase.HashDecrement(Instance + key, DataKey, byValue);
+            value = RedisDatabase.HashDecrement(Instance + key, DataKey, byValue, GetCommandFlag(fireAndForget));
         }
         else
         {
@@ -156,7 +157,8 @@ public class NetcoolRedisCache : RedisCache, INetcoolDistributedCache
         long value;
         if (minValue == null)
         {
-            value = await RedisDatabase.HashDecrementAsync(Instance + key, DataKey, byValue);
+            value = await RedisDatabase.HashDecrementAsync(Instance + key, DataKey, byValue,
+                GetCommandFlag(fireAndForget));
         }
         else
         {

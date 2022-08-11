@@ -13,8 +13,9 @@ public static class ServiceCollectionExtensions
 
         if (setupAction == null) throw new ArgumentNullException(nameof(setupAction));
 
+        services.AddOptions();
         services.Configure(setupAction);
-        services.AddSingleton<INetcoolDistributedCache, NetcoolRedisCache>();
+        services.TryAddSingleton<INetcoolDistributedCache, NetcoolRedisCache>();
         return services;
     }
 
@@ -27,11 +28,12 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-    
-    public static IServiceCollection AddNetcoolDistributedMemoryCache(this IServiceCollection services, Action<MemoryDistributedCacheOptions> setupAction)
+
+    public static IServiceCollection AddNetcoolDistributedMemoryCache(this IServiceCollection services,
+        Action<MemoryDistributedCacheOptions> setupAction)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
-        
+
         services.AddNetcoolDistributedMemoryCache();
         services.Configure(setupAction);
 
