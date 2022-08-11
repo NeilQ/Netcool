@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Netcool.Caching;
@@ -30,7 +29,7 @@ public static class ServiceCollectionExtensions
     }
 
     public static IServiceCollection AddNetcoolDistributedMemoryCache(this IServiceCollection services,
-        Action<MemoryDistributedCacheOptions> setupAction)
+        Action<NetcoolMemoryDistributedCacheOptions> setupAction)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
 
