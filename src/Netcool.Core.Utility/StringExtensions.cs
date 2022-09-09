@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Netcool.Core;
 
@@ -74,5 +75,14 @@ public static class StringExtensions
         if (string.IsNullOrWhiteSpace(url)) return false;
         return Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+    }
+    
+    public static bool IsIpAddress(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return false;
+        const string validIpRegex =
+            "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
+        var regex = new Regex(validIpRegex);
+        return regex.IsMatch(text);
     }
 }
