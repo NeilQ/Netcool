@@ -1,12 +1,15 @@
 # Netcool
+# 介绍
+`Netcool`是一个基于.Net 6的Web应用脚手架，可以用于快速搭建后台管理系统，或者一个简单Web Api。
 
-- 2021-11-09 从.Net 5升级至.Net 6 
-
-# 前言
-Netcool是一个基于.Net 6的Web应用脚手架，可以用于快速搭建后台管理系统，或者一个简单Web Api。
-
-Netcool采用前后端分离的方式，包含Netcool.Api，Netcool.Admin两个项目，
+`Netcool`采用前后端分离的方式，包含Netcool.Api，[Netcool.Admin](https://github.com/NeilQ/Netcool.Admin)两个主要项目，
 包含用户、菜单、权限等基础功能。
+
+同时，Netcool系列还包含一些便捷的开发库以满足日常使用：
+ - [Netcool.Caching](https://github.com/NeilQ/Netcool/tree/master/src/extensions/Netcool.Caching)
+ - [Netcool.Excel](https://github.com/NeilQ/Netcool/tree/master/src/extensions/Netcool.Excel)
+ - [Netcool.HttpProxy](https://github.com/NeilQ/Netcool/tree/master/src/extensions/Netcool.HttpProxy)
+- [Netcool.Swashbuckle.AspNetCore](https://github.com/NeilQ/Netcool/tree/master/src/extensions/Netcool.Swashbuckle.AspNetCore)
 
 [![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://jb.gg/OpenSourceSupport)
 
@@ -233,18 +236,7 @@ public class UserRequest : PageRequest
 其中`UserDto`用于返回用户信息到客户端，`UserSaveInput`用于添加及更新`User`时传递客户端输入，
 `UserRequest`用于查询用户信息时通过QueryString检索数据。
 
-由于我们使用`AutoMapper`库来映射Dto与Entity，所以还需要将映射配置添加到`MapperProfile`文件中：
-```c#
-public class MapperProfile : Profile
-{
-    public MapperProfile()
-    {
-        CreateMap<User, UserDto>();
-        CreateMap<UserSaveInput, User>();
-    }
-}
-
-```
+我们使用`Mapster`库来动态映射Dto与Entity，对于自定义字段映射可以参考`Mapster`文档。
 
 
 ### 添加Service
