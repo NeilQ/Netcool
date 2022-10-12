@@ -11,8 +11,6 @@ public class NetcoolMemoryDistributedCache : MemoryDistributedCache, INetcoolDis
     private MemoryCache _memCache;
     protected MemoryCache MemCache => GetMemoryCache();
 
-    private readonly SemaphoreSlim _semaphoreSlim = new(1, 1);
-
     private static readonly FieldInfo MemCacheField;
 
     private readonly ISerializer _cacheSerializer;
@@ -72,36 +70,22 @@ public class NetcoolMemoryDistributedCache : MemoryDistributedCache, INetcoolDis
     public long Increase(string key, long byValue = 1, long? maxValue = null, bool fireAndForget = false)
     {
         if (key == null) throw new ArgumentNullException(nameof(key));
-        long val;
-        _semaphoreSlim.Wait();
-        try
-        {
-            val = DoInternalIncrease(key, byValue, maxValue);
-        }
-        finally
-        {
-            _semaphoreSlim.Release();
-        }
+        long val = 0;
+
+        DynamicLock.ExecuteLock(key, () => { val = DoInternalIncrease(key, byValue, maxValue); });
 
         return val;
     }
 
-    public async Task<long> IncreaseAsync(string key, long byValue = 1, long? maxValue = null,
+    public Task<long> IncreaseAsync(string key, long byValue = 1, long? maxValue = null,
         bool fireAndForget = false, CancellationToken token = default)
     {
         if (key == null) throw new ArgumentNullException(nameof(key));
-        long val;
-        await _semaphoreSlim.WaitAsync(token);
-        try
-        {
-            val = DoInternalIncrease(key, byValue, maxValue);
-        }
-        finally
-        {
-            _semaphoreSlim.Release();
-        }
+        long val = 0;
 
-        return val;
+        DynamicLock.ExecuteLock(key, () => { val = DoInternalIncrease(key, byValue, maxValue); });
+
+        return Task.FromResult(val);
     }
 
     private long DoInternalIncrease(string key, long byValue, long? maxValue)
@@ -123,37 +107,26 @@ public class NetcoolMemoryDistributedCache : MemoryDistributedCache, INetcoolDis
     public long Decrease(string key, long byValue = 1, long? minValue = null, bool fireAndForget = false)
     {
         if (key == null) throw new ArgumentNullException(nameof(key));
-        long val;
-        _semaphoreSlim.Wait();
+        long val = 0;
         try
         {
-            val = DoInternalDecrease(key, byValue, minValue);
+            DynamicLock.ExecuteLock(key, () => { val = DoInternalDecrease(key, byValue, minValue); });
         }
-        finally
+        catch (Exception)
         {
-            _semaphoreSlim.Release();
+            // ignore
         }
 
         return val;
     }
 
 
-    public async Task<long> DecreaseAsync(string key, long byValue = 1, long? minValue = null,
+    public Task<long> DecreaseAsync(string key, long byValue = 1, long? minValue = null,
         bool fireAndForget = false, CancellationToken token = default)
     {
-        if (key == null) throw new ArgumentNullException(nameof(key));
-        long val;
-        await _semaphoreSlim.WaitAsync(token);
-        try
-        {
-            val = DoInternalDecrease(key, byValue, minValue);
-        }
-        finally
-        {
-            _semaphoreSlim.Release();
-        }
+        var val = Decrease(key, byValue, minValue, fireAndForget);
 
-        return val;
+        return Task.FromResult(val);
     }
 
     private long DoInternalDecrease(string key, long byValue, long? minValue)
