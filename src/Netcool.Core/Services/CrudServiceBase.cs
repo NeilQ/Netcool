@@ -23,7 +23,7 @@ namespace Netcool.Core.Services
     {
         protected readonly IRepository<TEntity, TPrimaryKey> Repository;
         protected readonly IUnitOfWork UnitOfWork;
-        protected readonly IUserSession Session;
+        protected readonly ICurrentUser CurrentUser;
         protected readonly IMapper Mapper;
         protected readonly IAuthorizationService AuthorizationService;
 
@@ -40,7 +40,7 @@ namespace Netcool.Core.Services
             Repository = repository;
             AuthorizationService = serviceAggregator.AuthorizationService;
             UnitOfWork = serviceAggregator.UnitOfWork;
-            Session = serviceAggregator.Session;
+            CurrentUser = serviceAggregator.Session;
             Mapper = serviceAggregator.Mapper;
         }
 
@@ -122,7 +122,7 @@ namespace Netcool.Core.Services
         protected virtual void CheckPermission(string permissionName)
         {
             if (string.IsNullOrWhiteSpace(permissionName)) return;
-            var result = AuthorizationService.AuthorizeAsync(Session.ClaimsPrincipal, permissionName).Result;
+            var result = AuthorizationService.AuthorizeAsync(CurrentUser.ClaimsPrincipal, permissionName).Result;
             if (result.Succeeded) return;
             throw new UnauthorizedAccessException($"Grant permission[{permissionName}] failed.");
         }

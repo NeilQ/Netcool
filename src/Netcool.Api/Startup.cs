@@ -154,7 +154,7 @@ public class Startup
         services.AddScoped<IDbContext>(provider =>
             provider.GetService<NetcoolDbContext>()); // for UnitOfWork injection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IUserSession, UserSession>();
+        services.AddScoped<ICurrentUser, CurrentUser>();
         services.AddScoped<IClientInfoProvider, HttpContextClientInfoProvider>();
         services.AddScoped(typeof(IRepository<>), typeof(CommonRepository<>));
         services.AddScoped(typeof(IRepository<,>), typeof(CommonRepository<,>));

@@ -17,7 +17,7 @@ namespace Netcool.Api.Domain.EfCore
                     "Server=127.0.0.1;Port=5413;Database=Netcool;User Id=postgres;Password=postgres;Enlist=true;")
                 .UseSnakeCaseNamingConvention();
 
-            return new NetcoolDbContext(optionsBuilder.Options, new NullUserSession());
+            return new NetcoolDbContext(optionsBuilder.Options, new NullCurrentUser());
         }
     }
 }

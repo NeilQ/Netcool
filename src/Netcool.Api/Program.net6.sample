@@ -208,7 +208,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.Configure<FileUploadOptions>(builder.Configuration.GetSection("File"));
 builder.Services.AddScoped<IDbContext>(provider => provider.GetService<NetcoolDbContext>()); // for UnitOfWork injection
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IUserSession, UserSession>();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddScoped<IClientInfoProvider, HttpContextClientInfoProvider>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(CommonRepository<>));
 builder.Services.AddScoped(typeof(IRepository<,>), typeof(CommonRepository<,>));

@@ -5,7 +5,7 @@ using Netcool.Core.Authorization;
 
 namespace Netcool.Core.Sessions
 {
-    public class UserSession : IUserSession
+    public class CurrentUser : ICurrentUser
     {
         public int UserId { get; set; }
 
@@ -13,7 +13,7 @@ namespace Netcool.Core.Sessions
 
         public ClaimsPrincipal ClaimsPrincipal { get; set; }
 
-        public UserSession(IHttpContextAccessor httpContextAccessor)
+        public CurrentUser(IHttpContextAccessor httpContextAccessor)
         {
             ClaimsPrincipal = httpContextAccessor?.HttpContext?.User;
             if (ClaimsPrincipal?.Identity == null || !ClaimsPrincipal.Identity.IsAuthenticated) return;

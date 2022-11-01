@@ -15,16 +15,16 @@ namespace Netcool.Core.EfCore
 {
     public class DbContextBase : DbContext, IDbContext
     {
-        public DbContextBase(DbContextOptions options, IUserSession userSession) : base(options)
+        public DbContextBase(DbContextOptions options, ICurrentUser currentUser) : base(options)
         {
-            UserSession = userSession;
+            CurrentUser = currentUser;
         }
 
         private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo =
             typeof(DbContextBase).GetMethod(nameof(ConfigureGlobalFilters),
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
-        public IUserSession UserSession { get; set; }
+        public ICurrentUser CurrentUser { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -65,7 +65,7 @@ namespace Netcool.Core.EfCore
             if (typeof(IHasTenant).IsAssignableFrom(typeof(TEntity)))
             {
                 Expression<Func<TEntity, bool>> mustHaveTenantFilter =
-                    e => ((IHasTenant) e).TenantId == UserSession.TenantId;
+                    e => ((IHasTenant) e).TenantId == CurrentUser.TenantId;
                 expression = expression == null
                     ? mustHaveTenantFilter
                     : CombineExpressions(expression, mustHaveTenantFilter);
@@ -95,7 +95,7 @@ namespace Netcool.Core.EfCore
 
         protected virtual List<EntityChangeEvent> SaveChangesBefore()
         {
-            var userId = UserSession?.UserId ?? 0;
+            var userId = CurrentUser?.UserId ?? 0;
             var events = new List<EntityChangeEvent>();
             foreach (var entry in ChangeTracker.Entries().ToList())
             {
@@ -142,7 +142,7 @@ namespace Netcool.Core.EfCore
             CheckAndSetId(entry);
             SetCreateAuditProperties(entry, userId);
             SetUpdateAuditProperties(entry, userId);
-            SetTenantProperties(entry, UserSession.TenantId);
+            SetTenantProperties(entry, CurrentUser.TenantId);
             entityChangeEvents.Add(new EntityChangeEvent(entry.Entity, EntityChangeType.Created));
         }
 

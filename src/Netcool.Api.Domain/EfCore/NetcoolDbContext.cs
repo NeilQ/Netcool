@@ -28,8 +28,8 @@ namespace Netcool.Api.Domain.EfCore
         public DbSet<Announcement> Announcements { get; set; }
         public DbSet<UserAnnouncement> UserAnnouncements { get; set; }
 
-        public NetcoolDbContext(DbContextOptions<NetcoolDbContext> options, IUserSession userSession) : base(options,
-            userSession)
+        public NetcoolDbContext(DbContextOptions<NetcoolDbContext> options, ICurrentUser currentUser) : base(options,
+            currentUser)
         {
         }
 

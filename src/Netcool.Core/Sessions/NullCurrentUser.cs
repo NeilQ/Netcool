@@ -2,12 +2,12 @@
 
 namespace Netcool.Core.Sessions
 {
-    public class NullUserSession : IUserSession
+    public class NullCurrentUser : ICurrentUser
     {
         public int UserId { get; set; }
         public int TenantId { get; set; }
         public ClaimsPrincipal ClaimsPrincipal { get; set; }
 
-        public static NullUserSession Instance => new NullUserSession();
+        public static NullCurrentUser Instance => new NullCurrentUser();
     }
 }

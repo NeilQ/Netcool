@@ -28,7 +28,7 @@ namespace Netcool.Api.Domain.Configuration
 
             OptionsAction(builder);
 
-            using var dbContext = new NetcoolDbContext(builder.Options, NullUserSession.Instance);
+            using var dbContext = new NetcoolDbContext(builder.Options, NullCurrentUser.Instance);
 
             var configs = dbContext.AppConfigurations.ToList();
             Data.Clear();

@@ -7,7 +7,7 @@ namespace Netcool.Core.Services
     public interface IServiceAggregator
     {
         IUnitOfWork UnitOfWork { get; set; }
-        IUserSession Session { get; set; }
+        ICurrentUser Session { get; set; }
         IMapper Mapper { get; set; }
         IAuthorizationService AuthorizationService { get; set; }
     }

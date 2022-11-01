@@ -2,7 +2,7 @@
 
 namespace Netcool.Core.Sessions
 {
-    public interface IUserSession
+    public interface ICurrentUser
     {
         int UserId { get; set; }
 
