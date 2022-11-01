@@ -7,5 +7,6 @@ namespace Netcool.Core.Authorization
         public const string UserId = ClaimTypes.NameIdentifier;
         public const string UserName = ClaimTypes.Name;
         public const string Role = ClaimTypes.Role;
+        public const string TenantId = "TenantId";
     }
 }

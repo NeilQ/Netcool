@@ -9,7 +9,7 @@ namespace Netcool.Core.Sessions
     {
         public int UserId { get; set; }
 
-        public int TenantId { get; set; }
+        public int? TenantId { get; set; }
 
         public ClaimsPrincipal ClaimsPrincipal { get; set; }
 
@@ -24,7 +24,7 @@ namespace Netcool.Core.Sessions
                 UserId = userId;
             }
 
-            var tenantClaim = ClaimsPrincipal.Claims.FirstOrDefault(x => x.Type == "TenantId");
+            var tenantClaim = ClaimsPrincipal.Claims.FirstOrDefault(x => x.Type == AppClaimTypes.TenantId);
             if (!string.IsNullOrEmpty(tenantClaim?.Value) && int.TryParse(tenantClaim.Value, out var tenantId))
             {
                 TenantId = tenantId;

@@ -6,7 +6,7 @@ namespace Netcool.Core.Sessions
     {
         int UserId { get; set; }
 
-        int TenantId { get; set; }
+        int? TenantId { get; set; }
 
         ClaimsPrincipal ClaimsPrincipal { get; set; }
     }

@@ -34,7 +34,7 @@ namespace Netcool.Core.EfCore
             {
                 ConfigureGlobalFiltersMethodInfo
                     .MakeGenericMethod(entityType.ClrType)
-                    .Invoke(this, new object[] {modelBuilder, entityType});
+                    .Invoke(this, new object[] { modelBuilder, entityType });
             }
         }
 
@@ -58,14 +58,16 @@ namespace Netcool.Core.EfCore
 
             if (typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
             {
-                Expression<Func<TEntity, bool>> softDeleteFilter = e => !((ISoftDelete) e).IsDeleted;
+                Expression<Func<TEntity, bool>> softDeleteFilter = e => !((ISoftDelete)e).IsDeleted;
                 expression = softDeleteFilter;
             }
 
             if (typeof(IHasTenant).IsAssignableFrom(typeof(TEntity)))
             {
                 Expression<Func<TEntity, bool>> mustHaveTenantFilter =
-                    e => ((IHasTenant) e).TenantId == CurrentUser.TenantId;
+                    e => EF.Property<int?>(e, nameof(IHasTenant.TenantId)) == null ||
+                         !(EF.Property<int?>(e, nameof(IHasTenant.TenantId)) > 0) ||
+                         EF.Property<int?>(e, nameof(IHasTenant.TenantId)) == CurrentUser.TenantId;
                 expression = expression == null
                     ? mustHaveTenantFilter
                     : CombineExpressions(expression, mustHaveTenantFilter);
@@ -84,7 +86,7 @@ namespace Netcool.Core.EfCore
             return result;
         }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
         {
             var events = SaveChangesBefore();
             var result = base.SaveChangesAsync(cancellationToken);
@@ -151,7 +153,7 @@ namespace Netcool.Core.EfCore
         {
             switch (entry.Entity)
             {
-                case ISoftDelete sdAudit when sdAudit.IsDeleted:
+                case ISoftDelete { IsDeleted: true }:
                     SetSoftDeleteProperties(entry, userId);
                     entityChangeEvents.Add(new EntityChangeEvent(entry.Entity, EntityChangeType.Deleted));
                     break;
@@ -166,14 +168,13 @@ namespace Netcool.Core.EfCore
             List<EntityChangeEvent> entityChangeEvents)
         {
             // Check if the entity is ISoftDelete, if true, then change to soft delete operation
-            if (!(entry.Entity is ISoftDelete sd)) return;
+            if (entry.Entity is not ISoftDelete sd) return;
             entry.Reload();
             entry.State = EntityState.Modified;
             sd.IsDeleted = true;
             SetSoftDeleteProperties(entry, userId);
             entityChangeEvents.Add(new EntityChangeEvent(entry.Entity, EntityChangeType.Deleted));
         }
-
 
         protected virtual void CheckAndSetId(EntityEntry entry)
         {
@@ -182,17 +183,17 @@ namespace Netcool.Core.EfCore
             {
                 var idPropertyEntry = entry.Property("Id");
 
-                if (idPropertyEntry != null && idPropertyEntry.Metadata.ValueGenerated == ValueGenerated.Never)
+                if (idPropertyEntry.Metadata.ValueGenerated == ValueGenerated.Never)
                 {
                     entity.Id = Guid.NewGuid();
                 }
             }
         }
 
-        private void SetTenantProperties(EntityEntry entry, int tenantId)
+        private void SetTenantProperties(EntityEntry entry, int? tenantId)
         {
-            if (!(entry.Entity is IHasTenant tenant)) return;
-            if (tenant.TenantId > 0)
+            if (entry.Entity is not IHasTenant tenant) return;
+            if (tenant.TenantId is > 0)
             {
                 tenant.TenantId = tenantId;
             }
@@ -200,16 +201,13 @@ namespace Netcool.Core.EfCore
 
         private void SetCreateAuditProperties(EntityEntry entry, int userId)
         {
-            if (!(entry.Entity is ICreateAudit audit)) return;
-            if (audit.CreateUserId == null || audit.CreateUserId <= 0)
+            if (entry.Entity is not ICreateAudit audit) return;
+            if (audit.CreateUserId is null or <= 0)
             {
                 audit.CreateUserId = userId;
             }
 
-            if (audit.CreateTime == null)
-            {
-                audit.CreateTime = DateTime.Now;
-            }
+            audit.CreateTime ??= DateTime.Now;
         }
 
         private void SetUpdateAuditProperties(EntityEntry entry, int userId)
@@ -225,16 +223,13 @@ namespace Netcool.Core.EfCore
 
         private void SetSoftDeleteProperties(EntityEntry entry, int userId)
         {
-            if (!(entry.Entity is IDeleteAudit dAudit)) return;
-            if (dAudit.DeleteUserId == null || dAudit.DeleteUserId <= 0)
+            if (entry.Entity is not IDeleteAudit dAudit) return;
+            if (dAudit.DeleteUserId is null or <= 0)
             {
                 dAudit.DeleteUserId = userId;
             }
 
-            if (dAudit.DeleteTime == null)
-            {
-                dAudit.DeleteTime = DateTime.Now;
-            }
+            dAudit.DeleteTime ??= DateTime.Now;
         }
 
         private Expression<Func<T, bool>> CombineExpressions<T>(Expression<Func<T, bool>> expression1,
