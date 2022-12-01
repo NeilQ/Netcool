@@ -87,10 +87,10 @@ public class Startup
         });
 
         // jwt
-        var jwtOptions = Configuration.GetSection("Jwt").Get<JwtOptions>();
+        var jwtOptions = Configuration.GetSection("Jwt").Get<JwtOptions>()!;
         services.Configure<JwtOptions>(Configuration.GetSection("Jwt"));
         var ipWhiteListOptions = Configuration.GetSection(nameof(IpWhitelistAuthenticationOptions))
-            .Get<IpWhitelistAuthenticationOptions>();
+            .Get<IpWhitelistAuthenticationOptions>()!;
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddIpWhitelist(o =>
             {
@@ -101,13 +101,13 @@ public class Startup
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtOptions.Issuer,
-                    ValidAudience = jwtOptions.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret))
+                    ValidateIssuer = jwtOptions.ValidateIssuer,
+                    ValidateAudience = jwtOptions.ValidateAudience,
+                    ValidateLifetime = jwtOptions.ValidateLifetime,
+                    ValidateIssuerSigningKey = jwtOptions.ValidateIssuerSigningKey,
+                    ValidIssuer = jwtOptions.ValidIssuer,
+                    ValidAudience = jwtOptions.ValidAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.IssuerSigningKey))
                 };
 
                 // We have to hook the OnMessageReceived event in order to
@@ -138,7 +138,7 @@ public class Startup
         });
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            
+
         // mapper
         services.AddScoped<FileHostResolver>();
         services.AddScoped<FileUrlResolver>();

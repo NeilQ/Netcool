@@ -1,13 +1,20 @@
-﻿namespace Netcool.Api.Domain.Authorization
+﻿namespace Netcool.Api.Domain.Authorization;
+
+public class JwtOptions
 {
-    public class JwtOptions
-    {
-        public string Secret { get; set; }
+    public bool ValidateIssuer { get; set; }
 
-        public string Audience { get; set; }
+    public bool ValidateAudience { get; set; }
 
-        public string Issuer { get; set; }
+    public bool ValidateLifetime { get; set; }
 
-        public int ExpiryMinutes { get; set; }
-    }
+    public bool ValidateIssuerSigningKey { get; set; }
+
+    public string IssuerSigningKey { get; set; }
+
+    public string ValidAudience { get; set; }
+
+    public string ValidIssuer { get; set; }
+
+    public int ExpiryMinutes { get; set; } = 120;
 }
