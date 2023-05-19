@@ -98,6 +98,7 @@ public class ExcelTests
                 new Student("John", 16, "Male", GenderE.Male),
                 new Student("Lily", 17, "Female", GenderE.Female)
             })
+            .WithTitle("Students")
             .ExportAsWorkbook();
 
         var memoryStream = new MemoryStream();
@@ -107,6 +108,7 @@ public class ExcelTests
 
         var list = new ExcelImporter<Student>()
             .FromFile(memoryStream)
+            .WithHeaderRowIndex(2)
             .Import();
 
         Assert.IsNotNull(list);

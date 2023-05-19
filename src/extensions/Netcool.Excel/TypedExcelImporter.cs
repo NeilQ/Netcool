@@ -97,7 +97,7 @@ public class ExcelImporter<T> where T : class, new()
             }
         }
 
-        var dataRows = ws.RowsUsed(t => t.RowNumber() != headerRow.RowNumber());
+        var dataRows = ws.RowsUsed(t => t.RowNumber() > headerRow.RowNumber());
         if (dataRows == null || !dataRows.Any()) return null;
 
         var list = new List<T>();
