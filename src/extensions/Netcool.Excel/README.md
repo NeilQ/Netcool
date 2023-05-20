@@ -101,3 +101,14 @@ wb.SaveAs("export_typed_objs.xlsx");
      // or .FromFile("students.xlsx")
      .Import();
 ```
+
+
+### Linux font
+Since System.Drawing.Common has become Windows-only, ClosedXML uses [SixLabors.Fonts](https://github.com/SixLabors/Fonts) library for font measurements from v0.97.0.
+So on non-windows environment, it will be necessary to specify a default font. Use this code:
+```c#
+// All workbooks created later will use the engine with a fallback font DejaVu Sans
+LoadOptions.DefaultGraphicsEngine = new DefaultGraphicEngine("DejaVu Sans"); // or Tahoma or any other font that is installed
+```
+For more details about how the engine works and available API, see [this](https://closedxml.readthedocs.io/en/latest/tips/missing-font.html) page.
+
