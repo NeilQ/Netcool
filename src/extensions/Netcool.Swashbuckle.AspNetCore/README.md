@@ -7,6 +7,9 @@ Extensions library for Swashbuckle.AspNetCore.
 
 ## What's included
 
+### CamelCaseQueryStringOperationFilter
+Display query string parameters in camel case.
+
 ### EnumDescriptionDocumentFilter
 Display enum descriptions for enum member decorated by DescriptionAttribute.
 
@@ -29,6 +32,7 @@ void InjectHeadContent(this SwaggerUIOptions options, string headContent)
 services.AddSwaggerGen(c =>
 {
     c.DocumentFilter<EnumDescriptionDocumentFilter>();
+    c.OperationFilter<CamelCaseQueryStringOperationFilter>();
     c.OperationFilter<FileUploadOperationFilter>();
 
     c.IncludeXmlComments(Assembly.GetAssembly(typeof(NetcoolDbContext)));
