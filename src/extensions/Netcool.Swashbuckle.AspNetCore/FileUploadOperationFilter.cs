@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Netcool.Api
+namespace Netcool.Swashbuckle.AspNetCore
 {
     public class FileUploadOperationFilter : IOperationFilter
     {

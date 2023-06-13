@@ -1,12 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Netcool.Api.Domain.Files;
@@ -14,6 +10,7 @@ using Netcool.Core;
 using Netcool.Core.AspNetCore;
 using Netcool.Core.AspNetCore.Controllers;
 using Netcool.Core.AspNetCore.Filters;
+using Netcool.Swashbuckle.AspNetCore;
 using ContentDispositionHeaderValue = System.Net.Http.Headers.ContentDispositionHeaderValue;
 
 namespace Netcool.Api.Controllers

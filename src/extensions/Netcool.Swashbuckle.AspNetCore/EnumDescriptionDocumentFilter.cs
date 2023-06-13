@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -19,7 +20,7 @@ namespace Netcool.Swashbuckle.AspNetCore
                 var propertyEnums = property.Value.Enum;
                 if (propertyEnums != null && propertyEnums.Count > 0)
                 {
-                    property.Value.Description += "</br>";
+                    property.Value.Description += "<p>Members:</p>";
                     property.Value.Description += DescribeEnum(propertyEnums, property.Key);
                 }
             }
@@ -27,23 +28,24 @@ namespace Netcool.Swashbuckle.AspNetCore
             // add enum descriptions to input parameters
             foreach (var pathItem in swaggerDoc.Paths.Values)
             {
-                DescribeEnumParameters(pathItem.Operations, swaggerDoc);
+                DescribeEnumParameters(pathItem.Operations, context);
             }
         }
 
-        private void DescribeEnumParameters(IDictionary<OperationType, OpenApiOperation> operations,
-            OpenApiDocument swaggerDoc)
+        private void DescribeEnumParameters(IDictionary<OperationType, OpenApiOperation> operations, DocumentFilterContext context)
         {
             if (operations == null) return;
             foreach (var operation in operations)
             {
                 foreach (var param in operation.Value.Parameters)
                 {
-                    var paramEnum = swaggerDoc.Components.Schemas.FirstOrDefault(x => x.Key == param.Name);
-                    if (paramEnum.Value != null)
-                    {
-                        param.Description += DescribeEnum(paramEnum.Value.Enum, paramEnum.Key);
-                    }
+                    var schemaReferenceId = param.Schema.Reference?.Id;
+                    if (string.IsNullOrEmpty(schemaReferenceId)) continue;
+
+                    var schema = context.SchemaRepository.Schemas[schemaReferenceId];
+                    if (schema.Enum == null || schema.Enum.Count == 0) continue;
+
+                    param.Description += schema.Description;
                 }
             }
         }
@@ -58,20 +60,22 @@ namespace Netcool.Swashbuckle.AspNetCore
 
         private string DescribeEnum(IEnumerable<IOpenApiAny> enums, string propertyTypeName)
         {
-            var enumDescriptions = new List<string>();
             var enumType = GetEnumTypeByName(propertyTypeName);
             if (enumType == null)
                 return null;
 
+            var des = new StringBuilder();
+            
+            des.Append("<ul>");
             foreach (var openApiAny in enums)
             {
                 var enumOption = (OpenApiInteger)openApiAny;
                 var enumInt = enumOption.Value;
 
-                enumDescriptions.Add($"{enumInt} = {GetEnumDescription(enumType, enumInt)}");
+                des.Append($"<li>{enumInt} = {GetEnumDescription(enumType, enumInt)}</li>");
             }
 
-            return string.Join("</br>", enumDescriptions.ToArray());
+            return des.ToString();
         }
 
         private string GetEnumDescription(Type type, int value)
