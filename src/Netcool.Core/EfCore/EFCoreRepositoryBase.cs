@@ -101,70 +101,32 @@ namespace Netcool.Core.EfCore
 
         public override TEntity Update(TEntity entity)
         {
-            AttachIfNot(entity);
-            ContextBase.Entry(entity).State = EntityState.Modified;
-            return entity;
+            ContextBase.Attach(entity);
+            var updatedEntity = ContextBase.Update(entity).Entity;
+            return updatedEntity;
         }
 
         public override void Delete(TEntity entity)
         {
-            AttachIfNot(entity);
             Table.Remove(entity);
         }
 
         public override void Delete(TPrimaryKey id)
         {
-            var entity = GetFromChangeTrackerOrNull(id);
-            if (entity != null)
-            {
-                Delete(entity);
-                return;
-            }
-
-            entity = Get(id);
+            var entity = Table.Find(id);
             if (entity == null) return;
             Delete(entity);
         }
 
         public override void Delete(IList<TEntity> list)
         {
-            if (list == null || list.Count == 0)
-                return;
-
-            foreach (var entity in list)
-            {
-                AttachIfNot(entity);
-            }
-
+            if (list == null || list.Count == 0) return;
             Table.RemoveRange(list);
         }
 
         public override void Delete(Expression<Func<TEntity, bool>> predicate)
         {
             Delete(GetAll().Where(predicate).ToList());
-        }
-
-        protected virtual void AttachIfNot(TEntity entity)
-        {
-            var entry = ContextBase.ChangeTracker.Entries().FirstOrDefault(ent => ent.Entity == entity);
-            if (entry != null)
-            {
-                return;
-            }
-
-            Table.Attach(entity);
-        }
-
-        private TEntity GetFromChangeTrackerOrNull(TPrimaryKey id)
-        {
-            var entry = ContextBase.ChangeTracker.Entries()
-                .FirstOrDefault(
-                    ent =>
-                        ent.Entity is TEntity entity &&
-                        EqualityComparer<TPrimaryKey>.Default.Equals(id, entity.Id)
-                );
-
-            return entry?.Entity as TEntity;
         }
     }
 }

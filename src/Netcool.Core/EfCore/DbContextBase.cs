@@ -170,7 +170,6 @@ namespace Netcool.Core.EfCore
             // Check if the entity is ISoftDelete, if true, then change to soft delete operation
             if (entry.Entity is not ISoftDelete sd) return;
             entry.Reload();
-            entry.State = EntityState.Modified;
             sd.IsDeleted = true;
             SetSoftDeleteProperties(entry, userId);
             entityChangeEvents.Add(new EntityChangeEvent(entry.Entity, EntityChangeType.Deleted));
