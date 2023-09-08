@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
@@ -131,13 +132,13 @@ namespace Netcool.Core.Services
             CheckCreatePermission();
         }
 
-        public virtual TEntityDto Create(TCreateInput input)
+        public virtual async Task<TEntityDto> CreateAsync(TCreateInput input)
         {
             var entity = MapToEntity(input);
             BeforeCreate(entity);
 
             Repository.Insert(entity);
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
 
             return MapToEntityDto(entity);
         }
@@ -147,30 +148,30 @@ namespace Netcool.Core.Services
             CheckUpdatePermission();
         }
 
-        public virtual TEntityDto Update(TUpdateInput input)
+        public virtual async Task<TEntityDto> UpdateAsync(TUpdateInput input)
         {
             var entity = GetEntityById(input.Id);
 
             BeforeUpdate(input, entity);
             MapToEntity(input, entity);
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
 
             return MapToEntityDto(entity);
         }
 
-        public virtual void Delete(TPrimaryKey id)
+        public virtual async Task DeleteAsync(TPrimaryKey id)
         {
-            BeforeDelete(new[] {id});
+            BeforeDelete(new[] { id });
             Repository.Delete(id);
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
         }
 
-        public virtual void Delete(IEnumerable<TPrimaryKey> ids)
+        public virtual async Task DeleteAsync(IEnumerable<TPrimaryKey> ids)
         {
             if (ids == null || !ids.Any()) return;
             BeforeDelete(ids);
             Repository.Delete(t => ids.Contains(t.Id));
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
         }
 
         protected virtual TEntity GetEntityById(TPrimaryKey id)

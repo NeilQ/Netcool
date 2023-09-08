@@ -1,23 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Netcool.Api.Domain.Authorization;
 
-namespace Netcool.Api.Controllers
+namespace Netcool.Api.Controllers;
+
+[Route("account")]
+public class AccountController : ControllerBase
 {
-    [Route("account")]
-    public class AccountController : ControllerBase
+    private readonly ILoginService _loginService;
+
+    public AccountController(ILoginService loginService)
     {
-        private readonly ILoginService _loginService;
+        _loginService = loginService;
+    }
 
-        public AccountController(ILoginService loginService)
-        {
-            _loginService = loginService;
-        }
-
-        [HttpPost("authenticate")]
-        public ActionResult<LoginResult> Login(LoginInput input)
-        {
-            var result = _loginService.Login(input);
-            return Ok(result);
-        }
+    [HttpPost("authenticate")]
+    public async Task<ActionResult<LoginResult>> LoginAsync(LoginInput input)
+    {
+        var result = await _loginService.LoginAsync(input);
+        return Ok(result);
     }
 }

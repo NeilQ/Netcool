@@ -21,7 +21,8 @@ namespace Netcool.Core
         public TransactionScope BeginTransactionScope()
         {
             return new TransactionScope(TransactionScopeOption.Required,
-                new TransactionOptions {IsolationLevel = IsolationLevel.ReadCommitted});
+                new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
+                TransactionScopeAsyncFlowOption.Enabled);
         }
 
         public IDbContextTransaction BeginTransaction()

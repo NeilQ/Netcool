@@ -10,8 +10,6 @@ namespace Netcool.Core
 
         IDbContextTransaction BeginTransaction();
 
-        int SaveChanges();
-
         Task<int> SaveChangesAsync();
     }
 }

@@ -77,6 +77,7 @@ namespace Netcool.Core.EfCore
             return expression;
         }
 
+
         public override int SaveChanges()
         {
             var events = SaveChangesBefore();

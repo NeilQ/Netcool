@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -48,7 +49,7 @@ namespace Netcool.Api.Domain.Files
         /// 将文件标记为有效
         /// </summary>
         /// <returns></returns>
-        public void Active(FileActiveInput input)
+        public async Task ActiveAsync(FileActiveInput input)
         {
             if (input == null) return;
             var file = Repository.Get(input.Id);
@@ -56,10 +57,10 @@ namespace Netcool.Api.Domain.Files
             file.Description = input.Description;
             file.IsActive = true;
             Repository.Update(file);
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
         }
 
-        public void Active(List<int> ids, string description)
+        public async Task ActiveAsync(List<int> ids, string description)
         {
             if (ids == null || ids.Count == 0) return;
             var files = Repository.GetAllList(t => ids.Contains(t.Id));
@@ -71,15 +72,15 @@ namespace Netcool.Api.Domain.Files
                 Repository.Update(file);
             }
 
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
         }
 
-        public override void Delete(int id)
+        public override async Task DeleteAsync(int id)
         {
             CheckDeletePermission();
             var file = Repository.Get(id);
             if (file == null) return;
-            base.Delete(id);
+            await base.DeleteAsync(id);
 
             // 物理文件删除
             var picturePath = _fileUploadOptions.PhysicalPath + "/" + file.Filename;
@@ -97,16 +98,16 @@ namespace Netcool.Api.Domain.Files
                 throw new UserFriendlyException(message);
             }
 
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
         }
 
-        public override void Delete(IEnumerable<int> ids)
+        public override async Task DeleteAsync(IEnumerable<int> ids)
         {
             CheckDeletePermission();
             if (ids == null || !ids.Any()) return;
             var pictures = Repository.GetAll().AsNoTracking().Where(t => ids.Contains(t.Id)).ToList();
             if (pictures.Count == 0) return;
-            base.Delete(ids);
+            await base.DeleteAsync(ids);
 
             foreach (var picture in pictures)
             {
@@ -123,7 +124,7 @@ namespace Netcool.Api.Domain.Files
                 }
             }
 
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Transactions;
 using System.Web;
 using HtmlAgilityPack;
@@ -59,7 +60,7 @@ namespace Netcool.Core.Announcements
             return query;
         }
 
-        public override AnnouncementDto Create(AnnouncementSaveInput input)
+        public override async Task<AnnouncementDto> CreateAsync(AnnouncementSaveInput input)
         {
             CheckCreatePermission();
             var entity = MapToEntity(input);
@@ -68,16 +69,16 @@ namespace Netcool.Core.Announcements
             if (!string.IsNullOrEmpty(input.Body))
             {
                 var fileIds = FetchFileIds(input.Body);
-                _fileService.Active(fileIds, $"公告[{input.Title}]插图");
+                await _fileService.ActiveAsync(fileIds, $"公告[{input.Title}]插图");
             }
 
             Repository.Insert(entity);
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
 
             return MapToEntityDto(entity);
         }
 
-        public override AnnouncementDto Update(AnnouncementSaveInput input)
+        public override async Task<AnnouncementDto> UpdateAsync(AnnouncementSaveInput input)
         {
             CheckUpdatePermission();
             var entity = GetEntityById(input.Id);
@@ -92,47 +93,47 @@ namespace Netcool.Core.Announcements
             using var scope = UnitOfWork.BeginTransactionScope();
             var fileIdsToDelete = originFileIds.Except(currentFileIds);
             var filesToAdd = currentFileIds.Except(originFileIds);
-            _fileService.Delete(fileIdsToDelete);
-            _fileService.Active(filesToAdd.ToList(), $"公告[{input.Title}]插图");
+            await _fileService.DeleteAsync(fileIdsToDelete);
+            await _fileService.ActiveAsync(filesToAdd.ToList(), $"公告[{input.Title}]插图");
 
             MapToEntity(input, entity);
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
             scope.Complete();
 
             return MapToEntityDto(entity);
         }
 
-        public override void Delete(int id)
+        public override async Task DeleteAsync(int id)
         {
             var entity = GetEntityById(id);
             if (entity == null) return;
             var fileIds = FetchFileIds(entity.Body);
 
             using var scope = new TransactionScope();
-            _fileService.Delete(fileIds);
+            await _fileService.DeleteAsync(fileIds);
             Repository.Delete(entity);
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
             scope.Complete();
         }
 
-        public override void Delete(IEnumerable<int> ids)
+        public override async Task DeleteAsync(IEnumerable<int> ids)
         {
             var entities = Repository.GetAllList(t => ids.Contains(t.Id));
             if (entities == null || entities.Count == 0) return;
 
-            using var scope = new TransactionScope();
+            using var scope = UnitOfWork.BeginTransactionScope();
             foreach (var entity in entities)
             {
                 var fileIds = FetchFileIds(entity.Body);
-                _fileService.Delete(fileIds);
+                await _fileService.DeleteAsync(fileIds);
             }
 
             Repository.Delete(entities);
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
             scope.Complete();
         }
 
-        public void Publish(int id)
+        public async Task PublishAsync(int id)
         {
             CheckPermission(PublishPermissionName);
 
@@ -163,7 +164,7 @@ namespace Netcool.Core.Announcements
                 _userAnnouncementRepository.Insert(userAnnouncements);
             }
 
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
         }
 
         private List<int> FetchFileIds(string html)

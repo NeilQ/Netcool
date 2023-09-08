@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Netcool.Core.Services;
 using Netcool.Core.Services.Dto;
@@ -33,7 +34,7 @@ namespace Netcool.Core.AspNetCore.Controllers
         {
         }
     }
-    
+
     public abstract class CrudControllerBase<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput>
         : CrudControllerBase<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TCreateInput>
         where TEntityDto : IEntityDto<TPrimaryKey>
@@ -46,7 +47,7 @@ namespace Netcool.Core.AspNetCore.Controllers
     }
 
     [ApiController]
-    [Produces("application/json")] 
+    [Produces("application/json")]
     public abstract class CrudControllerBase<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput>
         : QueryControllerBase<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput>
         where TEntityDto : IEntityDto<TPrimaryKey>
@@ -63,10 +64,10 @@ namespace Netcool.Core.AspNetCore.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Create([FromBody] TCreateInput input)
+        public async Task<IActionResult> CreateAsync([FromBody] TCreateInput input)
         {
-            var dto = Service.Create(input);
-            return CreatedAtAction(nameof(Get), new {id = dto.Id}, dto);
+            var dto = await Service.CreateAsync(input);
+            return CreatedAtAction(nameof(Get), new { id = dto.Id }, dto);
         }
 
         /// <summary>
@@ -76,10 +77,10 @@ namespace Netcool.Core.AspNetCore.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public IActionResult Update(TPrimaryKey id, [FromBody] TUpdateInput input)
+        public async Task<IActionResult> Update(TPrimaryKey id, [FromBody] TUpdateInput input)
         {
             input.Id = id;
-            Service.Update(input);
+            await Service.UpdateAsync(input);
             return Ok();
         }
 
@@ -89,9 +90,9 @@ namespace Netcool.Core.AspNetCore.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public IActionResult Delete(TPrimaryKey id)
+        public async Task<IActionResult> Delete(TPrimaryKey id)
         {
-            Service.Delete(id);
+            await Service.DeleteAsync(id);
             return Ok();
         }
 
@@ -101,9 +102,9 @@ namespace Netcool.Core.AspNetCore.Controllers
         /// <param name="ids"></param>
         /// <returns></returns>
         [HttpPost("delete")]
-        public IActionResult Delete(IList<TPrimaryKey> ids)
+        public async Task<IActionResult> Delete(IList<TPrimaryKey> ids)
         {
-            Service.Delete(ids);
+            await Service.DeleteAsync(ids);
             return Ok();
         }
     }

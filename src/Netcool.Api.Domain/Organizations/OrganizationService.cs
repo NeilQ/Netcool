@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Netcool.Api.Domain.Organizations;
 using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
@@ -20,7 +21,7 @@ namespace Netcool.Core.Organizations
             DeletePermissionName = "organization.delete";
         }
 
-        public override OrganizationDto Create(OrganizationSaveInput input)
+        public override async Task<OrganizationDto> CreateAsync(OrganizationSaveInput input)
         {
             var entity = MapToEntity(input);
             BeforeCreate(entity);
@@ -38,14 +39,16 @@ namespace Netcool.Core.Organizations
                 entity.Depth = 1;
             }
 
-            using var scope = UnitOfWork.BeginTransactionScope();
-            Repository.Insert(entity);
-            UnitOfWork.SaveChanges();
+            using (var scope = UnitOfWork.BeginTransactionScope())
+            {
+                Repository.Insert(entity);
+                await UnitOfWork.SaveChangesAsync();
 
-            entity.Path = parent == null ? $"/{entity.Id}" : $"{parent.Path}/{entity.Id}";
-            Repository.Update(entity);
-            UnitOfWork.SaveChanges();
-            scope.Complete();
+                entity.Path = parent == null ? $"/{entity.Id}" : $"{parent.Path}/{entity.Id}";
+                Repository.Update(entity);
+                await UnitOfWork.SaveChangesAsync();
+                scope.Complete();
+            }
 
             return MapToEntityDto(entity);
         }
@@ -55,12 +58,12 @@ namespace Netcool.Core.Organizations
             input.ParentId = originEntity.ParentId;
         }
 
-        public override void Delete(int id)
+        public override async Task DeleteAsync(int id)
         {
-            Delete(new[] {id});
+            await DeleteAsync(new[] { id });
         }
 
-        public override void Delete(IEnumerable<int> ids)
+        public override async Task DeleteAsync(IEnumerable<int> ids)
         {
             if (ids == null || !ids.Any()) return;
 
@@ -79,7 +82,7 @@ namespace Netcool.Core.Organizations
             }
 
             Repository.Delete(entities);
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
         }
     }
 }

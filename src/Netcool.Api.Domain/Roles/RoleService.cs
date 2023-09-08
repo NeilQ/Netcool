@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Netcool.Api.Domain.Permissions;
@@ -77,7 +78,7 @@ namespace Netcool.Api.Domain.Roles
             return role.RolePermissions?.Select(t => MapToEntityDto<Permission, PermissionDto>(t.Permission)).ToList();
         }
 
-        public void SetRolePermissions(int id, IList<int> permissionIds)
+        public async Task SetRolePermissionsAsync(int id, IList<int> permissionIds)
         {
             CheckPermission("role.set-permissions");
             // validate role 
@@ -89,7 +90,7 @@ namespace Netcool.Api.Domain.Roles
             if (role == null) throw new EntityNotFoundException(typeof(Role), id);
 
             // validate permissionIds 
-            if (permissionIds != null && permissionIds.Count > 0)
+            if (permissionIds is { Count: > 0 })
             {
                 var permissions = _permissionRepository.GetAll().AsNoTracking()
                     .Where(t => permissionIds.Any(p => p == t.Id)).ToList();
@@ -111,7 +112,7 @@ namespace Netcool.Api.Domain.Roles
                 }
             }
 
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
 
             foreach (var userRole in role.UserRoles)
             {

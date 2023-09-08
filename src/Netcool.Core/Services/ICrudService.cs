@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Netcool.Core.Services.Dto;
 
 namespace Netcool.Core.Services
@@ -60,12 +61,12 @@ namespace Netcool.Core.Services
         
         PagedResultDto<TEntityDto> GetAll(TGetAllInput input);
 
-        TEntityDto Create(TCreateInput input);
+        Task<TEntityDto> CreateAsync(TCreateInput input);
 
-        TEntityDto Update(TUpdateInput input);
+        Task<TEntityDto> UpdateAsync(TUpdateInput input);
 
-        void Delete(TPrimaryKey id);
+        Task DeleteAsync(TPrimaryKey id);
 
-        void Delete(IEnumerable<TPrimaryKey> ids);
+        Task DeleteAsync(IEnumerable<TPrimaryKey> ids);
     }
 }

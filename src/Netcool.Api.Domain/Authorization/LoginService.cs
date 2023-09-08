@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -40,7 +41,7 @@ namespace Netcool.Api.Domain.Authorization
             _jwtOptions = jwtOptionsAccessor.Value;
         }
 
-        public LoginResult Login(LoginInput input)
+        public async Task<LoginResult> LoginAsync(LoginInput input)
         {
             if (input == null) throw new ArgumentNullException(nameof(input));
             input.Name = input.Name.SafeString();
@@ -53,7 +54,7 @@ namespace Netcool.Api.Domain.Authorization
                 .FirstOrDefault(t =>
                     (t.Name == input.Name || t.Email == input.Name || t.Phone == input.Name) &&
                     t.Password == Encrypt.Md5By32(input.Password));
-            SaveLoginAttempt(input, user);
+            await SaveLoginAttempt(input, user);
             if (user == null) throw new UserFriendlyException("用户名或密码错误!");
             if (user.IsActive == false) throw new UserFriendlyException("用户未激活!");
 
@@ -61,7 +62,7 @@ namespace Netcool.Api.Domain.Authorization
             return CreateLoginResult(user);
         }
 
-        private void SaveLoginAttempt(LoginInput input, User user)
+        private async Task SaveLoginAttempt(LoginInput input, User user)
         {
             var attempt = new UserLoginAttempt
             {
@@ -73,7 +74,7 @@ namespace Netcool.Api.Domain.Authorization
                 BrowserInfo = _clientInfoProvider.BrowserInfo
             };
             _userLoginAttemptRepository.Insert(attempt);
-            _unitOfWork.SaveChanges();
+            await _unitOfWork.SaveChangesAsync();
         }
 
         private LoginResult CreateLoginResult(User user)

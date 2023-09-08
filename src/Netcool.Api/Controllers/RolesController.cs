@@ -5,31 +5,30 @@ using Netcool.Api.Domain.Permissions;
 using Netcool.Api.Domain.Roles;
 using Netcool.Core.AspNetCore.Controllers;
 
-namespace Netcool.Api.Controllers
+namespace Netcool.Api.Controllers;
+
+[Route("roles")]
+[Authorize]
+public class RolesController : CrudControllerBase<RoleDto, int, RoleRequest, RoleSaveInput>
 {
-    [Route("roles")]
-    [Authorize]
-    public class RolesController : CrudControllerBase<RoleDto, int, RoleRequest, RoleSaveInput>
+    private readonly IRoleService _roleService;
+
+    public RolesController(IRoleService service) : base(service)
     {
-        private readonly IRoleService _roleService;
+        _roleService = service;
+    }
 
-        public RolesController(IRoleService service) : base(service)
-        {
-            _roleService = service;
-        }
+    [HttpGet("{id}/permissions")]
+    public ActionResult<IList<PermissionDto>> GetRolePermissions(int id)
+    {
+        var permissions = _roleService.GetRolePermissions(id);
+        return Ok(permissions);
+    }
 
-        [HttpGet("{id}/permissions")]
-        public ActionResult<IList<PermissionDto>> GetRolePermissions(int id)
-        {
-            var permissions = _roleService.GetRolePermissions(id);
-            return Ok(permissions);
-        }
-
-        [HttpPost("{id}/permissions")]
-        public IActionResult SetRolePermissions(int id, [FromBody] IList<int> permissionIds)
-        {
-            _roleService.SetRolePermissions(id, permissionIds);
-            return Ok();
-        }
+    [HttpPost("{id}/permissions")]
+    public async Task<IActionResult> SetRolePermissionsAsync(int id, [FromBody] IList<int> permissionIds)
+    {
+        await _roleService.SetRolePermissionsAsync(id, permissionIds);
+        return Ok();
     }
 }

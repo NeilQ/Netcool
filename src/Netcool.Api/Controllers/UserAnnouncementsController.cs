@@ -3,25 +3,24 @@ using Microsoft.AspNetCore.Mvc;
 using Netcool.Core.Announcements;
 using Netcool.Core.AspNetCore.Controllers;
 
-namespace Netcool.Api.Controllers
+namespace Netcool.Api.Controllers;
+
+[Route("user-announcements")]
+[Authorize]
+public class UserAnnouncementsController : QueryControllerBase<UserAnnouncementDto, int, UserAnnouncementRequest>
 {
-    [Route("user-announcements")]
-    [Authorize]
-    public class UserAnnouncementsController : QueryControllerBase<UserAnnouncementDto, int, UserAnnouncementRequest>
+    private new readonly IUserAnnouncementService Service;
+
+    public UserAnnouncementsController(IUserAnnouncementService service) : base(service)
     {
-        private new readonly IUserAnnouncementService Service;
+        Service = service;
+    }
 
-        public UserAnnouncementsController(IUserAnnouncementService service) : base(service)
-        {
-            Service = service;
-        }
-
-        [Route("read")]
-        [HttpPost]
-        public IActionResult Read(UserAnnouncementReadInput input)
-        {
-            Service.Read(input);
-            return Ok();
-        }
+    [Route("read")]
+    [HttpPost]
+    public async Task<IActionResult> ReadAsync(UserAnnouncementReadInput input)
+    {
+        await Service.ReadAsync(input);
+        return Ok();
     }
 }

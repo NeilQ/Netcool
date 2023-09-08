@@ -1,9 +1,10 @@
-﻿using Netcool.Core.Services;
+﻿using System.Threading.Tasks;
+using Netcool.Core.Services;
 
 namespace Netcool.Api.Domain.Authorization
 {
     public interface ILoginService : IService
     {
-        public LoginResult Login(LoginInput input);
+        public Task<LoginResult> LoginAsync(LoginInput input);
     }
 }

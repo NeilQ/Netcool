@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Netcool.Api.Domain.Menus;
@@ -160,7 +161,7 @@ namespace Netcool.Api.Domain.Users
             _userRoleRepository.Delete(t => ids.Contains(t.UserId));
         }
 
-        public void ChangePassword(int id, ChangePasswordInput input)
+        public async Task ChangePasswordAsync(int id, ChangePasswordInput input)
         {
             input.Origin = input.Origin.SafeString();
             input.New = input.New.SafeString();
@@ -174,10 +175,10 @@ namespace Netcool.Api.Domain.Users
             }
 
             user.Password = Encrypt.Md5By32(input.New);
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
         }
 
-        public void ResetPassword(int id, ResetPasswordInput input)
+        public async Task ResetPasswordAsync(int id, ResetPasswordInput input)
         {
             CheckUpdatePermission();
             input.New = input.New.SafeString();
@@ -191,7 +192,7 @@ namespace Netcool.Api.Domain.Users
             }
 
             user.Password = Encrypt.Md5By32(input.New);
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
         }
 
         public IList<RoleDto> GetUserRoles(int id)
@@ -205,7 +206,7 @@ namespace Netcool.Api.Domain.Users
             return user.UserRoles?.Select(t => MapToEntityDto<Role, RoleDto>(t.Role)).ToList();
         }
 
-        public void SetUserRoles(int id, IList<int> roleIds)
+        public async Task SetUserRolesAsync(int id, IList<int> roleIds)
         {
             CheckPermission("user.set-roles");
             // validate user
@@ -237,7 +238,7 @@ namespace Netcool.Api.Domain.Users
                 }
             }
 
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
             _userRepository.ClearUserPermissionCache(id);
         }
 
@@ -258,7 +259,7 @@ namespace Netcool.Api.Domain.Users
 
             var dict = new Dictionary<int, MenuTreeNode>
             {
-                {0, rootNode}
+                { 0, rootNode }
             };
             foreach (var menu in menus)
             {

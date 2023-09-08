@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
@@ -7,7 +8,7 @@ namespace Netcool.Core.Announcements
 {
     public interface IUserAnnouncementService : ICrudService<UserAnnouncementDto, int, UserAnnouncementRequest>
     {
-        public void Read(UserAnnouncementReadInput input);
+        public Task ReadAsync(UserAnnouncementReadInput input);
     }
 
     public class UserAnnouncementService :
@@ -43,7 +44,7 @@ namespace Netcool.Core.Announcements
             return query.OrderBy(t => t.Announcement.UpdateTime);
         }
 
-        public void Read(UserAnnouncementReadInput input)
+        public async Task ReadAsync(UserAnnouncementReadInput input)
         {
             if (input.AnnouncementIds == null || input.AnnouncementIds.Count == 0) return;
             var uas = Repository.GetAll()
@@ -56,7 +57,7 @@ namespace Netcool.Core.Announcements
                 ua.IsRead = true;
             }
 
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
         }
     }
 }
