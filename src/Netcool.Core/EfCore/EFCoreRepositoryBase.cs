@@ -106,27 +106,36 @@ namespace Netcool.Core.EfCore
             return updatedEntity;
         }
 
-        public override void Delete(TEntity entity)
+        public override async Task DeleteAsync(TEntity entity, bool autoSave = false)
         {
             Table.Remove(entity);
+            if (autoSave)
+            {
+                await ContextBase.SaveChangesAsync();
+            }
         }
 
-        public override void Delete(TPrimaryKey id)
+        public override async Task DeleteAsync(TPrimaryKey id, bool autoSave = false)
         {
-            var entity = Table.Find(id);
+            var entity = await Table.FindAsync(id);
             if (entity == null) return;
-            Delete(entity);
+            await DeleteAsync(entity, autoSave);
         }
 
-        public override void Delete(IList<TEntity> list)
+        public override async Task DeleteAsync(IList<TEntity> list, bool autoSave = false)
         {
             if (list == null || list.Count == 0) return;
             Table.RemoveRange(list);
+
+            if (autoSave)
+            {
+                await ContextBase.SaveChangesAsync();
+            }
         }
 
-        public override void Delete(Expression<Func<TEntity, bool>> predicate)
+        public override async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false)
         {
-            Delete(GetAll().Where(predicate).ToList());
+            await DeleteAsync(GetAll().Where(predicate).ToList(), autoSave);
         }
     }
 }

@@ -111,7 +111,7 @@ namespace Netcool.Core.Announcements
 
             using var scope = new TransactionScope();
             await _fileService.DeleteAsync(fileIds);
-            Repository.Delete(entity);
+            await Repository.DeleteAsync(entity);
             await UnitOfWork.SaveChangesAsync();
             scope.Complete();
         }
@@ -128,7 +128,7 @@ namespace Netcool.Core.Announcements
                 await _fileService.DeleteAsync(fileIds);
             }
 
-            Repository.Delete(entities);
+            await Repository.DeleteAsync(entities);
             await UnitOfWork.SaveChangesAsync();
             scope.Complete();
         }
@@ -145,7 +145,7 @@ namespace Netcool.Core.Announcements
 
             entity.Status = AnnouncementStatus.Published;
             Repository.Update(entity);
-            _userAnnouncementRepository.Delete(t => t.AnnouncementId == entity.Id);
+            await _userAnnouncementRepository.DeleteAsync(t => t.AnnouncementId == entity.Id);
             var userIds = _userRepository.GetAll()
                 .AsNoTracking()
                 .Select(t => t.Id).ToList();

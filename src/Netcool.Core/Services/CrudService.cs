@@ -162,7 +162,7 @@ namespace Netcool.Core.Services
         public virtual async Task DeleteAsync(TPrimaryKey id)
         {
             BeforeDelete(new[] { id });
-            Repository.Delete(id);
+            await Repository.DeleteAsync(id);
             await UnitOfWork.SaveChangesAsync();
         }
 
@@ -170,7 +170,7 @@ namespace Netcool.Core.Services
         {
             if (ids == null || !ids.Any()) return;
             BeforeDelete(ids);
-            Repository.Delete(t => ids.Contains(t.Id));
+            await Repository.DeleteAsync(t => ids.Contains(t.Id));
             await UnitOfWork.SaveChangesAsync();
         }
 

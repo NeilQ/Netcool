@@ -81,7 +81,7 @@ namespace Netcool.Core.Organizations
                 }
             }
 
-            Repository.Delete(entities);
+            await Repository.DeleteAsync(entities);
             await UnitOfWork.SaveChangesAsync();
         }
     }

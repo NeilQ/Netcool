@@ -114,40 +114,13 @@ namespace Netcool.Core.Repositories
 
         #region delete
 
-        public abstract void Delete(TEntity entity);
+        public abstract Task DeleteAsync(TEntity entity, bool autoSave = false);
 
-        public virtual Task DeleteAsync(TEntity entity)
-        {
-            Delete(entity);
-            return Task.FromResult(0);
-        }
+        public abstract Task DeleteAsync(TPrimaryKey id, bool autoSave = false);
 
-        public abstract void Delete(TPrimaryKey id);
+        public abstract Task DeleteAsync(IList<TEntity> list, bool autoSave = false);
 
-        public virtual Task DeleteAsync(TPrimaryKey id)
-        {
-            Delete(id);
-            return Task.FromResult(0);
-        }
-
-        public abstract void Delete(IList<TEntity> list);
-
-        public virtual Task DeleteAsync(IList<TEntity> list)
-        {
-            Delete(list);
-            return Task.FromResult(0);
-        }
-
-        public virtual void Delete(Expression<Func<TEntity, bool>> predicate)
-        {
-            Delete(GetAll().Where(predicate).ToList());
-        }
-
-        public virtual Task DeleteAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            Delete(predicate);
-            return Task.FromResult(0);
-        }
+        public abstract Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false);
 
         #endregion
 

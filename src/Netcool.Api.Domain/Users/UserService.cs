@@ -155,10 +155,10 @@ namespace Netcool.Api.Domain.Users
             }
         }
 
-        protected override void BeforeDelete(IEnumerable<int> ids)
+        protected override async void BeforeDelete(IEnumerable<int> ids)
         {
             base.BeforeDelete(ids);
-            _userRoleRepository.Delete(t => ids.Contains(t.UserId));
+            await _userRoleRepository.DeleteAsync(t => ids.Contains(t.UserId));
         }
 
         public async Task ChangePasswordAsync(int id, ChangePasswordInput input)

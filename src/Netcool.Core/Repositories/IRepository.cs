@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -82,8 +83,7 @@ namespace Netcool.Core.Repositories
         /// <param name="id">Primary key of the entity to get</param>
         /// <returns>Entity</returns>
         Task<TEntity> GetAsync(TPrimaryKey id);
-        
-        
+
         #endregion
 
         #region Insert
@@ -103,6 +103,7 @@ namespace Netcool.Core.Repositories
         void Insert(IEnumerable<TEntity> entities);
 
         Task InsertAsync(IEnumerable<TEntity> entities);
+
         #endregion
 
         #region Update
@@ -143,47 +144,36 @@ namespace Netcool.Core.Repositories
         /// Deletes an entity.
         /// </summary>
         /// <param name="entity">Entity to be deleted</param>
-        void Delete(TEntity entity);
-
-        /// <summary>
-        /// Deletes an entity.
-        /// </summary>
-        /// <param name="entity">Entity to be deleted</param>
-        Task DeleteAsync(TEntity entity);
-
-        /// <summary>
-        /// Deletes an entity by primary key.
-        /// </summary>
-        /// <param name="id">Primary key of the entity</param>
-        void Delete(TPrimaryKey id);
+        /// <param name="autoSave">
+        /// Set true to automatically save changes to database.
+        /// This is useful for ORMs / database APIs those only save changes with an explicit method call, but you need to immediately save changes to the database.
+        /// </param>
+        Task DeleteAsync([NotNull] TEntity entity, bool autoSave = false);
 
         /// <summary>
         /// Deletes an entity by primary key.
         /// </summary>
         /// <param name="id">Primary key of the entity</param>
-        Task DeleteAsync(TPrimaryKey id);
+        ///    <param name="autoSave">
+        /// Set true to automatically save changes to database.
+        /// This is useful for ORMs / database APIs those only save changes with an explicit method call, but you need to immediately save changes to the database.
+        /// </param>
+        Task DeleteAsync(TPrimaryKey id, bool autoSave = false);
 
-        void Delete(IList<TEntity> list);
-
-        Task DeleteAsync(IList<TEntity> list);
+        Task DeleteAsync([NotNull] IList<TEntity> list, bool autoSave = false);
 
         /// <summary>
-        /// Deletes many entities by function.
+        ///  Deletes many entities by the given <paramref name="predicate"/>.
         /// Notice that: All entities fits to given predicate are retrieved and deleted.
         /// This may cause major performance problems if there are too many entities with
         /// given predicate.
         /// </summary>
         /// <param name="predicate">A condition to filter entities</param>
-        void Delete(Expression<Func<TEntity, bool>> predicate);
-
-        /// <summary>
-        /// Deletes many entities by function.
-        /// Notice that: All entities fits to given predicate are retrieved and deleted.
-        /// This may cause major performance problems if there are too many entities with
-        /// given predicate.
-        /// </summary>
-        /// <param name="predicate">A condition to filter entities</param>
-        Task DeleteAsync(Expression<Func<TEntity, bool>> predicate);
+        /// <param name="autoSave">
+        /// Set true to automatically save changes to database.
+        /// This is useful for ORMs / database APIs those only save changes with an explicit method call, but you need to immediately save changes to the database.
+        /// </param>
+        Task DeleteAsync([NotNull] Expression<Func<TEntity, bool>> predicate, bool autoSave = false);
 
         #endregion
     }

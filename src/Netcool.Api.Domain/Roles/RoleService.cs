@@ -120,7 +120,7 @@ namespace Netcool.Api.Domain.Roles
             }
         }
 
-        protected override void BeforeDelete(IEnumerable<int> ids)
+        protected override async void BeforeDelete(IEnumerable<int> ids)
         {
             base.BeforeDelete(ids);
             var userRoles = _userRoleRepository.GetAll().AsNoTracking().Where(t => ids.Contains(t.RoleId)).ToList();
@@ -129,7 +129,7 @@ namespace Netcool.Api.Domain.Roles
                 _userRepository.ClearUserPermissionCache(userRole.UserId);
             }
 
-            _userRoleRepository.Delete(userRoles);
+            await _userRoleRepository.DeleteAsync(userRoles);
             // keep role permissions for deletion mistake temporarily
             // _rolePermissionRepository.Delete(t => ids.Contains(t.RoleId));
         }
