@@ -45,7 +45,6 @@ namespace Netcool.Core.Organizations
                 await UnitOfWork.SaveChangesAsync();
 
                 entity.Path = parent == null ? $"/{entity.Id}" : $"{parent.Path}/{entity.Id}";
-                Repository.Update(entity);
                 await UnitOfWork.SaveChangesAsync();
                 scope.Complete();
             }

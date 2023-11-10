@@ -56,7 +56,7 @@ namespace Netcool.Api.Domain.Files
             if (file == null) throw new EntityNotFoundException(typeof(File), input.Id);
             file.Description = input.Description;
             file.IsActive = true;
-            Repository.Update(file);
+            await Repository.UpdateAsync(file);
             await UnitOfWork.SaveChangesAsync();
         }
 
@@ -69,7 +69,7 @@ namespace Netcool.Api.Domain.Files
             {
                 file.Description = description;
                 file.IsActive = true;
-                Repository.Update(file);
+                await Repository.UpdateAsync(file);
             }
 
             await UnitOfWork.SaveChangesAsync();

@@ -144,7 +144,7 @@ namespace Netcool.Core.Announcements
             }
 
             entity.Status = AnnouncementStatus.Published;
-            Repository.Update(entity);
+            await Repository.UpdateAsync(entity);
             await _userAnnouncementRepository.DeleteAsync(t => t.AnnouncementId == entity.Id);
             var userIds = _userRepository.GetAll()
                 .AsNoTracking()

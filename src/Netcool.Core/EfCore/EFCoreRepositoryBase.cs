@@ -106,6 +106,18 @@ namespace Netcool.Core.EfCore
             return updatedEntity;
         }
 
+        public override async Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false)
+        {
+            ContextBase.Attach(entity);
+            var updatedEntity = ContextBase.Update(entity).Entity;
+            if (autoSave)
+            {
+                await ContextBase.SaveChangesAsync();
+            }
+
+            return updatedEntity;
+        }
+
         public override async Task DeleteAsync(TEntity entity, bool autoSave = false)
         {
             Table.Remove(entity);

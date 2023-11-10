@@ -109,24 +109,11 @@ namespace Netcool.Core.Repositories
         #region Update
 
         /// <summary>
-        /// Updates an existing entity.
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        TEntity Update(TEntity entity);
-
-        /// <summary>
         /// Updates an existing entity. 
         /// </summary>
         /// <param name="entity">Entity</param>
-        Task<TEntity> UpdateAsync(TEntity entity);
-
-        /// <summary>
-        /// Updates an existing entity.
-        /// </summary>
-        /// <param name="id">Id of the entity</param>
-        /// <param name="updateAction">Action that can be used to change values of the entity</param>
-        /// <returns>Updated entity</returns>
-        TEntity Update(TPrimaryKey id, Action<TEntity> updateAction);
+        /// <param name="autoSave"></param>
+        Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false);
 
         /// <summary>
         /// Updates an existing entity.
