@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Netcool.Core.Entities;
 
 namespace Netcool.Core.Repositories
@@ -45,27 +44,32 @@ namespace Netcool.Core.Repositories
             return queryMethod(GetAll());
         }
 
-        public virtual TEntity Get(TPrimaryKey id)
+        public abstract IQueryable<TEntity> WithDetails(params Expression<Func<TEntity, object>>[] propertySelectors);
+        
+        public abstract IQueryable<TEntity> GetQueryable();
+        
+        public abstract Task<TEntity> GetAsync(TPrimaryKey id, bool includeDetails = true);
+
+        public abstract Task<TEntity> FindAsync(TPrimaryKey id, bool includeDetails = true);
+
+        public abstract Task<TEntity> FindAsync(
+            Expression<Func<TEntity, bool>> predicate,
+            bool includeDetails = true);
+
+        public async Task<TEntity> GetAsync(
+            Expression<Func<TEntity, bool>> predicate,
+            bool includeDetails = true)
         {
-            var entity = GetAll().FirstOrDefault(CreateEqualityExpressionForId(id));
+            var entity = await FindAsync(predicate, includeDetails);
+
             if (entity == null)
             {
-                throw new EntityNotFoundException(typeof(TEntity), id);
+                throw new EntityNotFoundException(typeof(TEntity));
             }
 
             return entity;
         }
 
-        public virtual async Task<TEntity> GetAsync(TPrimaryKey id)
-        {
-            var entity = await GetAll().FirstOrDefaultAsync(CreateEqualityExpressionForId(id));
-            if (entity == null)
-            {
-                throw new EntityNotFoundException(typeof(TEntity), id);
-            }
-
-            return entity;
-        }
 
         #endregion
 
@@ -88,8 +92,6 @@ namespace Netcool.Core.Repositories
         #endregion
 
         #region update
-
-        public abstract TEntity Update(TEntity entity);
 
         public abstract Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false);
 

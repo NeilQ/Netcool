@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
@@ -31,16 +32,16 @@ namespace Netcool.Api.Domain.Configuration
             return query;
         }
 
-        public override void BeforeCreate(AppConfiguration entity)
+        public override async Task BeforeCreate(AppConfiguration entity)
         {
-            base.BeforeCreate(entity);
+            await base.BeforeCreate(entity);
             if (Repository.GetAll().FirstOrDefault(t => t.Name == entity.Name) != null)
                 throw new ApplicationException("配置名称重复");
         }
 
-        public override void BeforeUpdate(AppConfigurationSaveInput input, AppConfiguration originEntity)
+        public override async Task BeforeUpdate(AppConfigurationSaveInput input, AppConfiguration originEntity)
         {
-            base.BeforeUpdate(input, originEntity);
+            await base.BeforeUpdate(input, originEntity);
             if (Repository.GetAll().FirstOrDefault(t => t.Name == input.Name && t.Id != originEntity.Id) != null)
                 throw new ApplicationException("配置名称重复");
         }

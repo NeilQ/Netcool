@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Netcool.Core.Services;
 using Netcool.Core.Services.Dto;
@@ -62,10 +63,9 @@ namespace Netcool.Core.AspNetCore.Controllers
         }
 
         [HttpGet("{id}")]
-        public virtual ActionResult<TEntityDto> Get(TPrimaryKey id)
+        public virtual async Task<ActionResult<TEntityDto>> Get(TPrimaryKey id)
         {
-            var dto = Service.Get(id);
-            if (dto == null) return NotFound();
+            var dto = await Service.GetAsync(id);
             return dto;
         }
 

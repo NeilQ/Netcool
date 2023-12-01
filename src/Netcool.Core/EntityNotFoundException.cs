@@ -19,7 +19,6 @@ namespace Netcool.Core.Entities
         /// </summary>
         public EntityNotFoundException()
         {
-
         }
 
         /// <summary>
@@ -28,14 +27,17 @@ namespace Netcool.Core.Entities
         public EntityNotFoundException(Type entityType, object id)
             : this(entityType, id, null)
         {
-
         }
 
         /// <summary>
         /// Creates a new <see cref="EntityNotFoundException"/> object.
         /// </summary>
-        public EntityNotFoundException(Type entityType, object id, Exception innerException)
-            : base($"There is no such an entity. Entity type: {entityType.FullName}, id: {id}", innerException)
+        public EntityNotFoundException(Type entityType, object id = null, Exception innerException = null)
+            : base(
+                id == null
+                    ? $"There is no such an entity given id. Entity type: {entityType.FullName}"
+                    : $"There is no such an entity. Entity type: {entityType.FullName}, id: {id}",
+                innerException)
         {
             EntityType = entityType;
             Id = id;
@@ -48,7 +50,6 @@ namespace Netcool.Core.Entities
         public EntityNotFoundException(string message)
             : base(message)
         {
-
         }
 
         /// <summary>
@@ -59,7 +60,6 @@ namespace Netcool.Core.Entities
         public EntityNotFoundException(string message, Exception innerException)
             : base(message, innerException)
         {
-
         }
     }
 }

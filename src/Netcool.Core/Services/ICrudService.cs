@@ -57,7 +57,7 @@ namespace Netcool.Core.Services
         where TGetInput : IEntityDto<TPrimaryKey>
         where TDeleteInput : IEntityDto<TPrimaryKey>
     {
-        TEntityDto Get(TPrimaryKey id);
+        Task<TEntityDto> GetAsync(TPrimaryKey id);
         
         PagedResultDto<TEntityDto> GetAll(TGetAllInput input);
 

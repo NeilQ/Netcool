@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
@@ -22,9 +23,9 @@ namespace Netcool.Api.Domain.Menus
             return base.CreateFilteredQuery(input).Include(t => t.Permissions);
         }
 
-        public override void BeforeUpdate(MenuDto input, Menu originEntity)
+        public override async Task BeforeUpdate(MenuDto input, Menu originEntity)
         {
-            base.BeforeUpdate(input, originEntity);
+            await base.BeforeUpdate(input, originEntity);
             if (input.ParentId == originEntity.ParentId) return;
             if (input.Level <= 1)
             {
@@ -32,7 +33,7 @@ namespace Netcool.Api.Domain.Menus
             }
             else
             {
-                var parent = GetEntityById(input.ParentId);
+                var parent = await GetEntityByIdAsync(input.ParentId);
                 if (parent == null) throw new EntityNotFoundException("父节点id不存在");
                 input.Path = $"{parent.Path}/{input.Id}";
             }
@@ -46,7 +47,7 @@ namespace Netcool.Api.Domain.Menus
             var rootNode = new MenuTreeNode();
             var dict = new Dictionary<int, MenuTreeNode>
             {
-                {0, rootNode}
+                { 0, rootNode }
             };
             foreach (var menu in menus)
             {
@@ -64,7 +65,7 @@ namespace Netcool.Api.Domain.Menus
                 }
                 else
                 {
-                    if (rootNode.Children == null) rootNode.Children = new List<MenuTreeNode>();
+                    rootNode.Children ??= new List<MenuTreeNode>();
                     rootNode.Children.Add(treeNode);
                 }
             }

@@ -77,10 +77,10 @@ namespace Netcool.Api.Domain.Users
             return query.Include(t => t.UserRoles).ThenInclude(t => t.Role);
         }
 
-        public override void BeforeCreate(User entity)
+        public override async Task BeforeCreate(User entity)
         {
             // initialize password
-            base.BeforeCreate(entity);
+            await base.BeforeCreate(entity);
             entity.Name = entity.Name.SafeString();
             entity.Phone = entity.Phone.SafeString();
             entity.Email = entity.Email.SafeString();
@@ -88,8 +88,7 @@ namespace Netcool.Api.Domain.Users
 
             if (entity.OrganizationId > 0)
             {
-                var org = _orgRepository.Get(entity.OrganizationId.Value);
-                if (org == null) throw new EntityNotFoundException(typeof(Organization), entity.Id);
+                await _orgRepository.GetAsync(entity.OrganizationId.Value);
             }
             else entity.OrganizationId = null;
 
@@ -117,17 +116,16 @@ namespace Netcool.Api.Domain.Users
             }
         }
 
-        public override void BeforeUpdate(UserSaveInput dto, User originEntity)
+        public override async Task BeforeUpdate(UserSaveInput dto, User originEntity)
         {
-            base.BeforeUpdate(dto, originEntity);
+            await base.BeforeUpdate(dto, originEntity);
             dto.Name = dto.Name.SafeString();
             dto.Phone = dto.Phone.SafeString();
             dto.Email = dto.Email.SafeString();
 
             if (dto.OrganizationId > 0)
             {
-                var org = _orgRepository.Get(dto.OrganizationId.Value);
-                if (org == null) throw new EntityNotFoundException(typeof(Organization), dto.Id);
+                await _orgRepository.GetAsync(dto.OrganizationId.Value);
             }
             else dto.OrganizationId = null;
 
@@ -167,7 +165,7 @@ namespace Netcool.Api.Domain.Users
             input.New = input.New.SafeString();
             input.Confirm = input.Confirm.SafeString();
 
-            var user = GetEntityById(id);
+            var user = await GetEntityByIdAsync(id);
 
             if (Encrypt.Md5By32(input.Origin) != user.Password)
             {
@@ -184,7 +182,7 @@ namespace Netcool.Api.Domain.Users
             input.New = input.New.SafeString();
             input.Confirm = input.Confirm.SafeString();
 
-            var user = GetEntityById(id);
+            var user = await GetEntityByIdAsync(id);
 
             if (input.New != input.Confirm)
             {

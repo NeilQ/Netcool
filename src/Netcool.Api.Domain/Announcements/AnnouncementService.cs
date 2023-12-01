@@ -81,7 +81,7 @@ namespace Netcool.Core.Announcements
         public override async Task<AnnouncementDto> UpdateAsync(AnnouncementSaveInput input)
         {
             CheckUpdatePermission();
-            var entity = GetEntityById(input.Id);
+            var entity = await GetEntityByIdAsync(input.Id);
             if (entity.Status == AnnouncementStatus.Published)
             {
                 throw new UserFriendlyException("该公告已发布，无法更新");
@@ -105,7 +105,7 @@ namespace Netcool.Core.Announcements
 
         public override async Task DeleteAsync(int id)
         {
-            var entity = GetEntityById(id);
+            var entity = await GetEntityByIdAsync(id);
             if (entity == null) return;
             var fileIds = FetchFileIds(entity.Body);
 
@@ -137,7 +137,7 @@ namespace Netcool.Core.Announcements
         {
             CheckPermission(PublishPermissionName);
 
-            var entity = GetEntityById(id);
+            var entity =await GetEntityByIdAsync(id);
             if (entity.Status == AnnouncementStatus.Published)
             {
                 throw new UserFriendlyException("该公告已发布");
