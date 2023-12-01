@@ -24,12 +24,12 @@ namespace Netcool.Core.Organizations
         public override async Task<OrganizationDto> CreateAsync(OrganizationSaveInput input)
         {
             var entity = MapToEntity(input);
-            BeforeCreate(entity);
+            await BeforeCreate(entity);
 
             Organization parent = null;
             if (entity.ParentId > 0)
             {
-                parent = GetEntityById(entity.ParentId.Value);
+                parent = await GetEntityByIdAsync(entity.ParentId.Value);
                 if (parent == null) throw new EntityNotFoundException(typeof(Organization), entity.ParentId);
                 entity.Depth = parent.Depth + 1;
             }
@@ -52,8 +52,9 @@ namespace Netcool.Core.Organizations
             return MapToEntityDto(entity);
         }
 
-        public override void BeforeUpdate(OrganizationSaveInput input, Organization originEntity)
+        public override async Task BeforeUpdate(OrganizationSaveInput input, Organization originEntity)
         {
+            await base.BeforeUpdate(input, originEntity);
             input.ParentId = originEntity.ParentId;
         }
 

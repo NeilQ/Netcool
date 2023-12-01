@@ -84,6 +84,51 @@ namespace Netcool.Core.EfCore
             return await GetAll().Where(predicate).ToListAsync();
         }
 
+        public override async Task<TEntity> GetAsync(TPrimaryKey id, bool includeDetails = true)
+        {
+            var entity = await FindAsync(id, includeDetails);
+
+            if (entity == null)
+            {
+                throw new EntityNotFoundException(typeof(TEntity), id);
+            }
+
+            return entity;
+        }
+
+        public override IQueryable<TEntity> GetQueryable()
+        {
+            return Table.AsQueryable();
+        }
+
+        public override IQueryable<TEntity> WithDetails(
+            params Expression<Func<TEntity, object>>[] propertySelectors)
+        {
+            return IncludeDetails(
+                GetQueryable(),
+                propertySelectors
+            );
+        }
+
+        public override async Task<TEntity> FindAsync(TPrimaryKey id, bool includeDetails = true)
+        {
+            return includeDetails
+                ? await WithDetails().OrderBy(e => e.Id).FirstOrDefaultAsync(e => e.Id!.Equals(id))
+                : await Table.FindAsync(id!);
+        }
+
+        public override async Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate,
+            bool includeDetails = true)
+        {
+            return includeDetails
+                ? await WithDetails()
+                    .Where(predicate)
+                    .SingleOrDefaultAsync()
+                : await GetQueryable()
+                    .Where(predicate)
+                    .SingleOrDefaultAsync();
+        }
+
         public override TEntity Insert(TEntity entity)
         {
             return Table.Add(entity).Entity;
@@ -97,13 +142,6 @@ namespace Netcool.Core.EfCore
         public override Task<TEntity> InsertAsync(TEntity entity)
         {
             return Task.FromResult(Insert(entity));
-        }
-
-        public override TEntity Update(TEntity entity)
-        {
-            ContextBase.Attach(entity);
-            var updatedEntity = ContextBase.Update(entity).Entity;
-            return updatedEntity;
         }
 
         public override async Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false)
@@ -148,6 +186,19 @@ namespace Netcool.Core.EfCore
         public override async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false)
         {
             await DeleteAsync(GetAll().Where(predicate).ToList(), autoSave);
+        }
+
+        private static IQueryable<TEntity> IncludeDetails(
+            IQueryable<TEntity> query,
+            Expression<Func<TEntity, object>>[] propertySelectors)
+        {
+            if (propertySelectors.IsNullOrEmpty()) return query;
+            foreach (var propertySelector in propertySelectors)
+            {
+                query = query.Include(propertySelector);
+            }
+
+            return query;
         }
     }
 }

@@ -96,11 +96,11 @@ namespace Netcool.Core.Services
         {
         }
 
-        public virtual TEntityDto Get(TPrimaryKey id)
+        public virtual async Task<TEntityDto> GetAsync(TPrimaryKey id)
         {
             CheckGetPermission();
 
-            var entity = GetEntityById(id);
+            var entity = await GetEntityByIdAsync(id);
             return MapToEntityDto(entity);
         }
 
@@ -127,15 +127,16 @@ namespace Netcool.Core.Services
             );
         }
 
-        public virtual void BeforeCreate(TEntity entity)
+        public virtual Task BeforeCreate(TEntity entity)
         {
             CheckCreatePermission();
+            return Task.CompletedTask;
         }
 
         public virtual async Task<TEntityDto> CreateAsync(TCreateInput input)
         {
             var entity = MapToEntity(input);
-            BeforeCreate(entity);
+            await BeforeCreate(entity);
 
             Repository.Insert(entity);
             await UnitOfWork.SaveChangesAsync();
@@ -143,16 +144,17 @@ namespace Netcool.Core.Services
             return MapToEntityDto(entity);
         }
 
-        public virtual void BeforeUpdate(TUpdateInput input, TEntity originEntity)
+        public virtual Task BeforeUpdate(TUpdateInput input, TEntity originEntity)
         {
             CheckUpdatePermission();
+            return Task.CompletedTask;
         }
 
         public virtual async Task<TEntityDto> UpdateAsync(TUpdateInput input)
         {
-            var entity = GetEntityById(input.Id);
+            var entity = await GetEntityByIdAsync(input.Id);
 
-            BeforeUpdate(input, entity);
+            await BeforeUpdate(input, entity);
             MapToEntity(input, entity);
             await UnitOfWork.SaveChangesAsync();
 
@@ -174,9 +176,9 @@ namespace Netcool.Core.Services
             await UnitOfWork.SaveChangesAsync();
         }
 
-        protected virtual TEntity GetEntityById(TPrimaryKey id)
+        protected virtual async Task<TEntity> GetEntityByIdAsync(TPrimaryKey id)
         {
-            return Repository.Get(id);
+            return await Repository.GetAsync(id);
         }
 
         protected virtual void BeforeDelete(IEnumerable<TPrimaryKey> ids)

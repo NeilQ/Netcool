@@ -52,7 +52,7 @@ namespace Netcool.Api.Domain.Files
         public async Task ActiveAsync(FileActiveInput input)
         {
             if (input == null) return;
-            var file = Repository.Get(input.Id);
+            var file = await Repository.GetAsync(input.Id);
             if (file == null) throw new EntityNotFoundException(typeof(File), input.Id);
             file.Description = input.Description;
             file.IsActive = true;
@@ -78,7 +78,7 @@ namespace Netcool.Api.Domain.Files
         public override async Task DeleteAsync(int id)
         {
             CheckDeletePermission();
-            var file = Repository.Get(id);
+            var file = await Repository.GetAsync(id);
             if (file == null) return;
             await base.DeleteAsync(id);
 

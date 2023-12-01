@@ -71,18 +71,52 @@ namespace Netcool.Core.Repositories
         T Query<T>(Func<IQueryable<TEntity>, T> queryMethod);
 
         /// <summary>
-        /// Gets an entity with given primary key.
+        /// Get a single entity by the given <paramref name="predicate"/>.
+        /// <para>
+        /// It returns null if there is no entity with the given <paramref name="predicate"/>.
+        /// It throws <see cref="InvalidOperationException"/> if there are multiple entities with the given <paramref name="predicate"/>.
+        /// </para>
         /// </summary>
-        /// <param name="id">Primary key of the entity to get</param>
-        /// <returns>Entity</returns>
-        TEntity Get(TPrimaryKey id);
+        /// <param name="predicate">A condition to find the entity</param>
+        /// <param name="includeDetails">Set true to include all children of this entity</param>
+        Task<TEntity> FindAsync(
+            [NotNull] Expression<Func<TEntity, bool>> predicate,
+            bool includeDetails = true);
 
         /// <summary>
-        /// Gets an entity with given primary key.
+        /// Get a single entity by the given <paramref name="id"/>.
+        /// <para>
+        /// It returns null if there is no entity with the given <paramref name="id"/>.
+        /// It throws <see cref="InvalidOperationException"/> if there are multiple entities with the given <paramref name="id"/>.
+        /// </para>
         /// </summary>
-        /// <param name="id">Primary key of the entity to get</param>
-        /// <returns>Entity</returns>
-        Task<TEntity> GetAsync(TPrimaryKey id);
+        /// <param name="id"></param>
+        /// <param name="includeDetails">Set true to include all children of this entity</param>
+        Task<TEntity> FindAsync(TPrimaryKey id, bool includeDetails = true);
+
+        /// <summary>
+        /// Get a single entity by the given <paramref name="predicate"/>.
+        /// <para>
+        /// It throws <see cref="EntityNotFoundException"/> if there is no entity with the given <paramref name="predicate"/>.
+        /// It throws <see cref="InvalidOperationException"/> if there are multiple entities with the given <paramref name="predicate"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="predicate">A condition to filter entities</param>
+        /// <param name="includeDetails">Set true to include all children of this entity</param>
+        Task<TEntity> GetAsync(
+            [NotNull] Expression<Func<TEntity, bool>> predicate,
+            bool includeDetails = true);
+
+        /// <summary>
+        /// Get a single entity by the given <paramref name="id"/>.
+        /// <para>
+        /// It throws <see cref="EntityNotFoundException"/> if there is no entity with the given <paramref name="id"/>.
+        /// It throws <see cref="InvalidOperationException"/> if there are multiple entities with the given <paramref name="id"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="includeDetails">Set true to include all children of this entity</param>
+        Task<TEntity> GetAsync(TPrimaryKey id, bool includeDetails = true);
 
         #endregion
 

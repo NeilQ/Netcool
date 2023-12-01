@@ -46,9 +46,9 @@ namespace Netcool.Api.Domain.Roles
             return query;
         }
 
-        public override void BeforeCreate(Role entity)
+        public override async Task BeforeCreate(Role entity)
         {
-            base.BeforeCreate(entity);
+            await base.BeforeCreate(entity);
             var nameExist = Repository.GetAll().AsNoTracking().Any(t => t.Name == entity.Name);
             if (nameExist)
             {
@@ -56,9 +56,9 @@ namespace Netcool.Api.Domain.Roles
             }
         }
 
-        public override void BeforeUpdate(RoleSaveInput input, Role originEntity)
+        public override async Task BeforeUpdate(RoleSaveInput input, Role originEntity)
         {
-            base.BeforeUpdate(input, originEntity);
+            await base.BeforeUpdate(input, originEntity);
             var nameExist = Repository.GetAll().AsNoTracking()
                 .Any(t => t.Name == input.Name && t.Id != originEntity.Id);
             if (nameExist)
