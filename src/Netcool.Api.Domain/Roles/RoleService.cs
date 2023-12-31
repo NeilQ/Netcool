@@ -37,11 +37,8 @@ public sealed class RoleService : CrudService<Role, RoleDto, int, RoleRequest, R
 
     protected override IQueryable<Role> CreateFilteredQuery(RoleRequest input)
     {
-        var query = base.CreateFilteredQuery(input);
-        if (input.Name != null)
-        {
-            query = query.Where(t => t.Name == input.Name);
-        }
+        var query = base.CreateFilteredQuery(input)
+            .WhereIf(!string.IsNullOrEmpty(input.Name), t => t.Name == input.Name);
 
         return query;
     }

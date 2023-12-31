@@ -46,33 +46,14 @@ namespace Netcool.Api.Domain.Users
 
         protected override IQueryable<User> CreateFilteredQuery(UserRequest input)
         {
-            var query = base.CreateFilteredQuery(input);
-            if (!string.IsNullOrEmpty(input.Name))
-            {
-                query = query.Where(t => t.Name == input.Name);
-            }
-
-            if (!string.IsNullOrEmpty(input.Email))
-            {
-                query = query.Where(t => t.Email.ToLower() == input.Email.ToLower());
-            }
-
-            if (!string.IsNullOrEmpty(input.Phone))
-            {
-                query = query.Where(t => t.Phone == input.Phone);
-            }
-
-            if (input.Gender != null)
-            {
-                query = query.Where(t => t.Gender == input.Gender);
-            }
-
-            if (input.OrganizationId != null)
-            {
-                query = input.OrganizationId > 0
-                    ? query.Where(t => t.OrganizationId == input.OrganizationId)
-                    : query.Where(t => t.OrganizationId == null);
-            }
+            var query = base.CreateFilteredQuery(input)
+                .WhereIf(!string.IsNullOrEmpty(input.Name), t => t.Name == input.Name)
+                .WhereIf(!string.IsNullOrEmpty(input.Email), t => t.Email.ToLower() == input.Email.ToLower())
+                .WhereIf(!string.IsNullOrEmpty(input.Phone), t => t.Phone == input.Phone)
+                .WhereIf(input.Gender != null, t => t.Gender == input.Gender)
+                .WhereIf(input.OrganizationId is > 0,
+                    t => t.OrganizationId == input.OrganizationId)
+                .WhereIf(input.OrganizationId is <= 0, t => t.OrganizationId == null);
 
             return query.Include(t => t.UserRoles).ThenInclude(t => t.Role);
         }

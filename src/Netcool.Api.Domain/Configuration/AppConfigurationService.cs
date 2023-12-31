@@ -23,11 +23,8 @@ public sealed class AppConfigurationService :
 
     protected override IQueryable<AppConfiguration> CreateFilteredQuery(AppConfigurationRequest input)
     {
-        var query = base.CreateFilteredQuery(input);
-        if (!string.IsNullOrEmpty(input.Name))
-        {
-            query = query.Where(t => t.Name == input.Name);
-        }
+        var query = base.CreateFilteredQuery(input)
+            .WhereIf(!string.IsNullOrEmpty(input.Name), t => t.Name.Contains(input.Name));
 
         return query;
     }

@@ -41,21 +41,10 @@ public sealed class AnnouncementService :
 
     protected override IQueryable<Announcement> CreateFilteredQuery(AnnouncementRequest input)
     {
-        var query = base.CreateFilteredQuery(input);
-        if (!string.IsNullOrEmpty(input.Title))
-        {
-            query = query.Where(t => t.Title.Contains(input.Title));
-        }
-
-        if (input.Status != null)
-        {
-            query = query.Where(t => t.Status == input.Status.Value);
-        }
-
-        if (input.NotifyTargetType != null)
-        {
-            query = query.Where(t => t.NotifyTargetType == input.NotifyTargetType.Value);
-        }
+        var query = base.CreateFilteredQuery(input)
+            .WhereIf(!string.IsNullOrEmpty(input.Title), t => t.Title.Contains(input.Title))
+            .WhereIf(input.Status != null, t => t.Status == input.Status.Value)
+            .WhereIf(input.NotifyTargetType != null, t => t.NotifyTargetType == input.NotifyTargetType.Value);
 
         return query;
     }
