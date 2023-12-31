@@ -25,50 +25,14 @@ namespace Netcool.Core.Repositories
         /// Used to get a IQueryable that is used to retrieve entities from entire table.
         /// </summary>
         /// <returns>IQueryable to be used to select entities from database</returns>
-        IQueryable<TEntity> GetAll();
-
-        /// <summary>
-        /// Used to get a IQueryable that is used to retrieve entities from entire table.
-        /// One or more 
-        /// </summary>
-        /// <param name="propertySelectors">A list of include expressions.</param>
-        /// <returns>IQueryable to be used to select entities from database</returns>
-        IQueryable<TEntity> GetAllIncluding(params Expression<Func<TEntity, object>>[] propertySelectors);
-
-        /// <summary>
-        /// Used to get all entities.
-        /// </summary>
-        /// <returns>List of all entities</returns>
-        List<TEntity> GetAllList();
-
-        /// <summary>
-        /// Used to get all entities.
-        /// </summary>
-        /// <returns>List of all entities</returns>
-        Task<List<TEntity>> GetAllListAsync();
+        IQueryable<TEntity> GetQueryable();
 
         /// <summary>
         /// Used to get all entities based on given <paramref name="predicate"/>.
         /// </summary>
         /// <param name="predicate">A condition to filter entities</param>
         /// <returns>List of all entities</returns>
-        List<TEntity> GetAllList(Expression<Func<TEntity, bool>> predicate);
-
-        /// <summary>
-        /// Used to get all entities based on given <paramref name="predicate"/>.
-        /// </summary>
-        /// <param name="predicate">A condition to filter entities</param>
-        /// <returns>List of all entities</returns>
-        Task<List<TEntity>> GetAllListAsync(Expression<Func<TEntity, bool>> predicate);
-
-        /// <summary>
-        /// Used to run a query over entire entities.
-        /// if <paramref name="queryMethod"/> finishes IQueryable with ToList, FirstOrDefault etc..
-        /// </summary>
-        /// <typeparam name="T">Type of return value of this method</typeparam>
-        /// <param name="queryMethod">This method is used to query over entities</param>
-        /// <returns>Query result</returns>
-        T Query<T>(Func<IQueryable<TEntity>, T> queryMethod);
+        Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate);
 
         /// <summary>
         /// Get a single entity by the given <paramref name="predicate"/>.

@@ -13,41 +13,21 @@ namespace Netcool.Core.Repositories
     {
         #region Query
 
-        public abstract IQueryable<TEntity> GetAll();
-
-        public virtual IQueryable<TEntity> GetAllIncluding(params Expression<Func<TEntity, object>>[] propertySelectors)
-        {
-            return GetAll();
-        }
-
-        public virtual List<TEntity> GetAllList()
-        {
-            return GetAll().ToList();
-        }
-
-        public virtual Task<List<TEntity>> GetAllListAsync()
-        {
-            return Task.FromResult(GetAllList());
-        }
-
-        public virtual List<TEntity> GetAllList(Expression<Func<TEntity, bool>> predicate)
-        {
-            return GetAll().Where(predicate).ToList();
-        }
-
-        public virtual Task<List<TEntity>> GetAllListAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return Task.FromResult(GetAllList(predicate));
-        }
-
-        public virtual T Query<T>(Func<IQueryable<TEntity>, T> queryMethod)
-        {
-            return queryMethod(GetAll());
-        }
-
-        public abstract IQueryable<TEntity> WithDetails(params Expression<Func<TEntity, object>>[] propertySelectors);
-
         public abstract IQueryable<TEntity> GetQueryable();
+
+        public abstract Task<List<TEntity>> GetListAsync();
+
+        public abstract Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate);
+
+        public virtual IQueryable<TEntity> WithDetails()
+        {
+            return GetQueryable();
+        }
+
+        public virtual IQueryable<TEntity> WithDetails(params Expression<Func<TEntity, object>>[] propertySelectors)
+        {
+            return GetQueryable();
+        }
 
         public abstract Task<TEntity> GetAsync(TPrimaryKey id, bool includeDetails = true);
 

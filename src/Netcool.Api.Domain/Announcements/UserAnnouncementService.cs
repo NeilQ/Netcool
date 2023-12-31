@@ -22,7 +22,7 @@ namespace Netcool.Core.Announcements
 
         protected override IQueryable<UserAnnouncement> CreateFilteredQuery(UserAnnouncementRequest input)
         {
-            var query = Repository.GetAll()
+            var query = Repository.GetQueryable()
                 .Include(t => t.Announcement)
                 .Where(t => t.Announcement.Status == AnnouncementStatus.Published);
             if (input.UserId != null)
@@ -47,7 +47,7 @@ namespace Netcool.Core.Announcements
         public async Task ReadAsync(UserAnnouncementReadInput input)
         {
             if (input.AnnouncementIds == null || input.AnnouncementIds.Count == 0) return;
-            var uas = Repository.GetAll()
+            var uas = Repository.GetQueryable()
                 .Include(t => t.Announcement)
                 .Where(t => input.AnnouncementIds.Contains(t.Announcement.Id) &&
                             t.Announcement.Status == AnnouncementStatus.Published)
