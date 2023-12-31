@@ -72,7 +72,7 @@ namespace Netcool.Core.Announcements
                 await _fileService.ActiveAsync(fileIds, $"公告[{input.Title}]插图");
             }
 
-            Repository.Insert(entity);
+            await Repository.InsertAsync(entity);
             await UnitOfWork.SaveChangesAsync();
 
             return MapToEntityDto(entity);
@@ -137,7 +137,7 @@ namespace Netcool.Core.Announcements
         {
             CheckPermission(PublishPermissionName);
 
-            var entity =await GetEntityByIdAsync(id);
+            var entity = await GetEntityByIdAsync(id);
             if (entity.Status == AnnouncementStatus.Published)
             {
                 throw new UserFriendlyException("该公告已发布");
@@ -161,7 +161,7 @@ namespace Netcool.Core.Announcements
                     });
                 }
 
-                _userAnnouncementRepository.Insert(userAnnouncements);
+                await _userAnnouncementRepository.InsertAsync(userAnnouncements);
             }
 
             await UnitOfWork.SaveChangesAsync();

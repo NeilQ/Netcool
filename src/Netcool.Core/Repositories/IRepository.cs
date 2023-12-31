@@ -126,17 +126,10 @@ namespace Netcool.Core.Repositories
         /// Inserts a new entity.
         /// </summary>
         /// <param name="entity">Inserted entity</param>
-        TEntity Insert(TEntity entity);
+        /// <param name="autoSave"></param>
+        Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false);
 
-        /// <summary>
-        /// Inserts a new entity.
-        /// </summary>
-        /// <param name="entity">Inserted entity</param>
-        Task<TEntity> InsertAsync(TEntity entity);
-
-        void Insert(IEnumerable<TEntity> entities);
-
-        Task InsertAsync(IEnumerable<TEntity> entities);
+        Task InsertAsync(IEnumerable<TEntity> entities, bool autoSave = false);
 
         #endregion
 

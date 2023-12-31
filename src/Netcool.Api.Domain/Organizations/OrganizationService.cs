@@ -41,7 +41,7 @@ namespace Netcool.Core.Organizations
 
             using (var scope = UnitOfWork.BeginTransactionScope())
             {
-                Repository.Insert(entity);
+                await Repository.InsertAsync(entity);
                 await UnitOfWork.SaveChangesAsync();
 
                 entity.Path = parent == null ? $"/{entity.Id}" : $"{parent.Path}/{entity.Id}";

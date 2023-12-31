@@ -45,9 +45,9 @@ namespace Netcool.Core.Repositories
         }
 
         public abstract IQueryable<TEntity> WithDetails(params Expression<Func<TEntity, object>>[] propertySelectors);
-        
+
         public abstract IQueryable<TEntity> GetQueryable();
-        
+
         public abstract Task<TEntity> GetAsync(TPrimaryKey id, bool includeDetails = true);
 
         public abstract Task<TEntity> FindAsync(TPrimaryKey id, bool includeDetails = true);
@@ -70,25 +70,14 @@ namespace Netcool.Core.Repositories
             return entity;
         }
 
-
         #endregion
 
         #region insert
 
-        public abstract TEntity Insert(TEntity entity);
+        public abstract Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false);
 
-        public virtual Task<TEntity> InsertAsync(TEntity entity)
-        {
-            return Task.FromResult(Insert(entity));
-        }
+        public abstract Task InsertAsync(IEnumerable<TEntity> entities, bool autoSave = false);
 
-        public abstract void Insert(IEnumerable<TEntity> entities);
-
-        public virtual Task InsertAsync(IEnumerable<TEntity> entities)
-        {
-            Insert(entities);
-            return Task.FromResult(0);
-        }
         #endregion
 
         #region update

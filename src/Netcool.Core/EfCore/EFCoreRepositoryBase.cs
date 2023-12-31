@@ -129,19 +129,25 @@ namespace Netcool.Core.EfCore
                     .SingleOrDefaultAsync();
         }
 
-        public override TEntity Insert(TEntity entity)
+        public override async Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false)
         {
-            return Table.Add(entity).Entity;
+            var savedEntity = Table.Add(entity).Entity;
+            if (autoSave)
+            {
+                await ContextBase.SaveChangesAsync();
+            }
+
+            return savedEntity;
         }
 
-        public override void Insert(IEnumerable<TEntity> entities)
+        public override async Task InsertAsync(IEnumerable<TEntity> entities, bool autoSave = false)
         {
+            if (!entities.Any()) return;
             Table.AddRange(entities);
-        }
-
-        public override Task<TEntity> InsertAsync(TEntity entity)
-        {
-            return Task.FromResult(Insert(entity));
+            if (autoSave)
+            {
+                await ContextBase.SaveChangesAsync();
+            }
         }
 
         public override async Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false)

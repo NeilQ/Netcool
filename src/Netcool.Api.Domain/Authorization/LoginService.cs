@@ -73,7 +73,7 @@ namespace Netcool.Api.Domain.Authorization
                 ClientName = _clientInfoProvider.ClientName,
                 BrowserInfo = _clientInfoProvider.BrowserInfo
             };
-            _userLoginAttemptRepository.Insert(attempt);
+            await _userLoginAttemptRepository.InsertAsync(attempt);
             await _unitOfWork.SaveChangesAsync();
         }
 
