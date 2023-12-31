@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -192,6 +193,11 @@ namespace Netcool.Core.EfCore
         public override async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false)
         {
             await DeleteAsync(GetAll().Where(predicate).ToList(), autoSave);
+        }
+
+        public override async Task DeleteDirectAsync([NotNull] Expression<Func<TEntity, bool>> predicate)
+        {
+            await Table.Where(predicate).ExecuteDeleteAsync();
         }
 
         private static IQueryable<TEntity> IncludeDetails(

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -102,6 +103,15 @@ namespace Netcool.Core.Repositories
         public abstract Task DeleteAsync(IList<TEntity> list, bool autoSave = false);
 
         public abstract Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false);
+
+        /// <summary>
+        /// Deletes all entities those fit to the given predicate.
+        /// It directly deletes entities from database, without fetching them.
+        /// Some features (like soft-delete, multi-tenancy and audit logging) won't work, so use this method carefully when you need it.
+        /// Use the DeleteAsync method if you need to these features.
+        /// </summary>
+        /// <param name="predicate">A condition to filter entities</param>
+        public abstract Task DeleteDirectAsync([NotNull] Expression<Func<TEntity, bool>> predicate);
 
         #endregion
 
