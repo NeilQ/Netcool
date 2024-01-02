@@ -2,9 +2,9 @@
 
     <Import Project="../../build/version.core.utility.props" />
     <PropertyGroup>
-        <LangVersion>10.0</LangVersion>
+        <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
-        <TargetFrameworks>net5.0;net6.0;net7.0;netcoreapp3.1</TargetFrameworks>
+        <TargetFrameworks>net5.0;net6.0;net7.0;net8;netcoreapp3.1</TargetFrameworks>
     </PropertyGroup>
 
 </Project>
