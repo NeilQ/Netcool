@@ -5,9 +5,8 @@
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <AssemblyName>Netcool.Core</AssemblyName>
     <RootNamespace>Netcool.Core</RootNamespace>
-    <PackageVersion>8.0</PackageVersion>
-    <Description />
     <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
