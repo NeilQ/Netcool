@@ -35,7 +35,7 @@ namespace Netcool.Core.EfCore
         /// </summary>
         public DbSet<TEntity> Table => ContextBase.Set<TEntity>();
 
-        public Func<IQueryable<TEntity>, IQueryable<TEntity>>? DefaultWithDetailsFunc { get; set; }
+        public Func<IQueryable<TEntity>, IQueryable<TEntity>> DefaultWithDetailsFunc { get; set; }
 
         public DbConnection Connection
         {
