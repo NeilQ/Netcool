@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -12,42 +13,22 @@ namespace Netcool.Core.Repositories
     {
         #region Query
 
-        public abstract IQueryable<TEntity> GetAll();
-
-        public virtual IQueryable<TEntity> GetAllIncluding(params Expression<Func<TEntity, object>>[] propertySelectors)
-        {
-            return GetAll();
-        }
-
-        public virtual List<TEntity> GetAllList()
-        {
-            return GetAll().ToList();
-        }
-
-        public virtual Task<List<TEntity>> GetAllListAsync()
-        {
-            return Task.FromResult(GetAllList());
-        }
-
-        public virtual List<TEntity> GetAllList(Expression<Func<TEntity, bool>> predicate)
-        {
-            return GetAll().Where(predicate).ToList();
-        }
-
-        public virtual Task<List<TEntity>> GetAllListAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return Task.FromResult(GetAllList(predicate));
-        }
-
-        public virtual T Query<T>(Func<IQueryable<TEntity>, T> queryMethod)
-        {
-            return queryMethod(GetAll());
-        }
-
-        public abstract IQueryable<TEntity> WithDetails(params Expression<Func<TEntity, object>>[] propertySelectors);
-        
         public abstract IQueryable<TEntity> GetQueryable();
-        
+
+        public abstract Task<List<TEntity>> GetListAsync();
+
+        public abstract Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate);
+
+        public virtual IQueryable<TEntity> WithDetails()
+        {
+            return GetQueryable();
+        }
+
+        public virtual IQueryable<TEntity> WithDetails(params Expression<Func<TEntity, object>>[] propertySelectors)
+        {
+            return GetQueryable();
+        }
+
         public abstract Task<TEntity> GetAsync(TPrimaryKey id, bool includeDetails = true);
 
         public abstract Task<TEntity> FindAsync(TPrimaryKey id, bool includeDetails = true);
@@ -70,25 +51,14 @@ namespace Netcool.Core.Repositories
             return entity;
         }
 
-
         #endregion
 
         #region insert
 
-        public abstract TEntity Insert(TEntity entity);
+        public abstract Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false);
 
-        public virtual Task<TEntity> InsertAsync(TEntity entity)
-        {
-            return Task.FromResult(Insert(entity));
-        }
+        public abstract Task InsertAsync(IEnumerable<TEntity> entities, bool autoSave = false);
 
-        public abstract void Insert(IEnumerable<TEntity> entities);
-
-        public virtual Task InsertAsync(IEnumerable<TEntity> entities)
-        {
-            Insert(entities);
-            return Task.FromResult(0);
-        }
         #endregion
 
         #region update
@@ -113,6 +83,15 @@ namespace Netcool.Core.Repositories
         public abstract Task DeleteAsync(IList<TEntity> list, bool autoSave = false);
 
         public abstract Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false);
+
+        /// <summary>
+        /// Deletes all entities those fit to the given predicate.
+        /// It directly deletes entities from database, without fetching them.
+        /// Some features (like soft-delete, multi-tenancy and audit logging) won't work, so use this method carefully when you need it.
+        /// Use the DeleteAsync method if you need to these features.
+        /// </summary>
+        /// <param name="predicate">A condition to filter entities</param>
+        public abstract Task DeleteDirectAsync([NotNull] Expression<Func<TEntity, bool>> predicate);
 
         #endregion
 

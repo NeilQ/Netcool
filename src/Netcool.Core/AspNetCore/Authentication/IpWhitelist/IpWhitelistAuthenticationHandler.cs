@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -12,9 +11,8 @@ namespace Netcool.Core.AspNetCore.Authentication.IpWhitelist
     {
         public IpWhitelistAuthenticationHandler(IOptionsMonitor<IpWhitelistAuthenticationOptions> options,
             ILoggerFactory logger,
-            UrlEncoder encoder,
-            ISystemClock clock)
-            : base(options, logger, encoder, clock)
+            UrlEncoder encoder)
+            : base(options, logger, encoder)
         {
         }
 
@@ -22,7 +20,7 @@ namespace Netcool.Core.AspNetCore.Authentication.IpWhitelist
         {
             // build the claims and put them in "Context"; you need to import the Microsoft.AspNetCore.Authentication package
 
-            if (Options.Enable && Options.Ips is { Count: > 0 })
+            if (Options is { Enable: true, Ips.Count: > 0 })
             {
                 if (Request.Host.HasValue &&
                     Options.Ips.Contains(Context.Connection.RemoteIpAddress?.ToString()))

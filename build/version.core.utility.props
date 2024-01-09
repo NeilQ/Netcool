@@ -1,6 +1,6 @@
 <Project>
 	<PropertyGroup>
-        <Version>0.1.0</Version>
+        <Version>8.0.1</Version>
         <Authors>邱尘</Authors>
         <Description>Netcool utilities</Description>
         <PackageTags>dotnetcore</PackageTags>

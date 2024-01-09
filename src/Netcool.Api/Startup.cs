@@ -21,6 +21,7 @@ using Netcool.Core.AspNetCore.Authentication.IpWhitelist;
 using Netcool.Core.AspNetCore.Filters;
 using Netcool.Core.AspNetCore.Json;
 using Netcool.Core.AspNetCore.Middlewares;
+using Netcool.Core.AspNetCore.ModelBinders;
 using Netcool.Core.AspNetCore.ValueProviders;
 using Netcool.Core.EfCore;
 using Netcool.Core.Repositories;
@@ -49,11 +50,13 @@ public class Startup
         services.AddControllers(opt =>
             {
                 opt.Filters.Add(new ValidateAttribute());
+                opt.ModelBinderProviders.Insert(0, new LocalDateTimeModelBinderProvider());
                 opt.ValueProviderFactories.Insert(0, new SnakeCaseQueryValueProviderFactory());
                 opt.ModelBinderProviders.RemoveType<DateTimeModelBinderProvider>(); // keeps use local datetime
             })
             .AddJsonOptions(o =>
             {
+                o.JsonSerializerOptions.Converters.Add(new Int32Converter());
                 o.JsonSerializerOptions.Converters.Add(new LocalDateTimeConverter()); //parse utc datetime to local;
                 o.JsonSerializerOptions.Converters.Add(new TimeSpanConverter());
                 o.JsonSerializerOptions.Converters.Add(new StringTrimConverter());

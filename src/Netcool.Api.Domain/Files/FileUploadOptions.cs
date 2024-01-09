@@ -1,5 +1,4 @@
-﻿
-namespace Netcool.Api.Domain.Files
+﻿namespace Netcool.Api.Domain.Files
 {
     public class FileUploadOptions
     {
@@ -7,7 +6,7 @@ namespace Netcool.Api.Domain.Files
 
         public static FileUploadOptions Instance { get; } = new FileUploadOptions();
 
-        public string HostSchema { get; set; }
+        public bool UseHttps { get; set; }
 
         /// <summary>
         /// http host, 如 www.domain.com

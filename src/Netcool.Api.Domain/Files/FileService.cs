@@ -10,121 +10,120 @@ using Netcool.Core.Entities;
 using Netcool.Core.Repositories;
 using Netcool.Core.Services;
 
-namespace Netcool.Api.Domain.Files
+namespace Netcool.Api.Domain.Files;
+
+public class FileService : CrudService<File, FileDto, int, FileQuery, FileSaveInput>, IFileService
 {
-    public class FileService : CrudService<File, FileDto, int, FileQuery, FileSaveInput>, IFileService
+    private readonly FileUploadOptions _fileUploadOptions;
+    private readonly ILogger _logger;
+
+    public FileService(IRepository<File> repository,
+        IServiceAggregator serviceAggregator,
+        IOptions<FileUploadOptions> pictureOptionsAccessor,
+        ILogger<FileService> logger) :
+        base(repository, serviceAggregator)
     {
-        private readonly FileUploadOptions _fileUploadOptions;
-        private readonly ILogger _logger;
+        _logger = logger;
+        _fileUploadOptions = pictureOptionsAccessor.Value;
+    }
 
-        public FileService(IRepository<File> repository,
-            IServiceAggregator serviceAggregator,
-            IOptions<FileUploadOptions> pictureOptionsAccessor,
-            ILogger<FileService> logger) :
-            base(repository, serviceAggregator)
+    protected override IQueryable<File> CreateFilteredQuery(FileQuery input)
+    {
+        var query = base.CreateFilteredQuery(input);
+
+        if (input.IsActive != null)
         {
-            _logger = logger;
-            _fileUploadOptions = pictureOptionsAccessor.Value;
+            query = query.Where(t => t.IsActive == input.IsActive);
         }
 
-        protected override IQueryable<File> CreateFilteredQuery(FileQuery input)
+        return query;
+    }
+
+    protected override FileDto MapToEntityDto(File entity)
+    {
+        var dto = base.MapToEntityDto(entity);
+        return dto;
+    }
+
+    /// <summary>
+    /// 将文件标记为有效
+    /// </summary>
+    /// <returns></returns>
+    public async Task ActiveAsync(FileActiveInput input)
+    {
+        if (input == null) return;
+        var file = await Repository.GetAsync(input.Id);
+        if (file == null) throw new EntityNotFoundException(typeof(File), input.Id);
+        file.Description = input.Description;
+        file.IsActive = true;
+        await Repository.UpdateAsync(file);
+        await UnitOfWork.SaveChangesAsync();
+    }
+
+    public async Task ActiveAsync(List<int> ids, string description)
+    {
+        if (ids == null || ids.Count == 0) return;
+        var files =await Repository.GetListAsync(t => ids.Contains(t.Id));
+        if (files == null || files.Count == 0) return;
+        foreach (var file in files)
         {
-            var query = base.CreateFilteredQuery(input);
-
-            if (input.IsActive != null)
-            {
-                query = query.Where(t => t.IsActive == input.IsActive);
-            }
-
-            return query;
-        }
-
-        protected override FileDto MapToEntityDto(File entity)
-        {
-            var dto = base.MapToEntityDto(entity);
-            return dto;
-        }
-
-        /// <summary>
-        /// 将文件标记为有效
-        /// </summary>
-        /// <returns></returns>
-        public async Task ActiveAsync(FileActiveInput input)
-        {
-            if (input == null) return;
-            var file = await Repository.GetAsync(input.Id);
-            if (file == null) throw new EntityNotFoundException(typeof(File), input.Id);
-            file.Description = input.Description;
+            file.Description = description;
             file.IsActive = true;
             await Repository.UpdateAsync(file);
-            await UnitOfWork.SaveChangesAsync();
         }
 
-        public async Task ActiveAsync(List<int> ids, string description)
+        await UnitOfWork.SaveChangesAsync();
+    }
+
+    public override async Task DeleteAsync(int id)
+    {
+        CheckDeletePermission();
+        var file = await Repository.GetAsync(id);
+        if (file == null) return;
+        await base.DeleteAsync(id);
+
+        // 物理文件删除
+        var picturePath = _fileUploadOptions.PhysicalPath + "/" + file.Filename;
+        try
         {
-            if (ids == null || ids.Count == 0) return;
-            var files = Repository.GetAllList(t => ids.Contains(t.Id));
-            if (files == null || files.Count == 0) return;
-            foreach (var file in files)
+            if (System.IO.File.Exists(picturePath))
             {
-                file.Description = description;
-                file.IsActive = true;
-                await Repository.UpdateAsync(file);
+                System.IO.File.Delete(picturePath);
             }
-
-            await UnitOfWork.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            var message = $"物理文件删除失败:[{file.Id}:{file.Filename}]";
+            _logger.LogError(message, e);
+            throw new UserFriendlyException(message);
         }
 
-        public override async Task DeleteAsync(int id)
-        {
-            CheckDeletePermission();
-            var file = await Repository.GetAsync(id);
-            if (file == null) return;
-            await base.DeleteAsync(id);
+        await UnitOfWork.SaveChangesAsync();
+    }
 
-            // 物理文件删除
-            var picturePath = _fileUploadOptions.PhysicalPath + "/" + file.Filename;
+    public override async Task DeleteAsync(IEnumerable<int> ids)
+    {
+        CheckDeletePermission();
+        if (ids == null || !ids.Any()) return;
+        var pictures = Repository.GetQueryable().AsNoTracking().Where(t => ids.Contains(t.Id)).ToList();
+        if (pictures.Count == 0) return;
+        await base.DeleteAsync(ids);
+
+        foreach (var picture in pictures)
+        {
+            var picturePath = _fileUploadOptions.PhysicalPath + "/" + picture.Filename;
             try
             {
-                if (System.IO.File.Exists(picturePath))
-                {
-                    System.IO.File.Delete(picturePath);
-                }
+                if (System.IO.File.Exists(picturePath)) System.IO.File.Delete(picturePath);
             }
             catch (Exception e)
             {
-                var message = $"物理文件删除失败:[{file.Id}:{file.Filename}]";
+                var message = $"物理文件删除失败:[{picture.Id}:{picture.Filename}]";
                 _logger.LogError(message, e);
                 throw new UserFriendlyException(message);
             }
-
-            await UnitOfWork.SaveChangesAsync();
         }
 
-        public override async Task DeleteAsync(IEnumerable<int> ids)
-        {
-            CheckDeletePermission();
-            if (ids == null || !ids.Any()) return;
-            var pictures = Repository.GetAll().AsNoTracking().Where(t => ids.Contains(t.Id)).ToList();
-            if (pictures.Count == 0) return;
-            await base.DeleteAsync(ids);
-
-            foreach (var picture in pictures)
-            {
-                var picturePath = _fileUploadOptions.PhysicalPath + "/" + picture.Filename;
-                try
-                {
-                    if (System.IO.File.Exists(picturePath)) System.IO.File.Delete(picturePath);
-                }
-                catch (Exception e)
-                {
-                    var message = $"物理文件删除失败:[{picture.Id}:{picture.Filename}]";
-                    _logger.LogError(message, e);
-                    throw new UserFriendlyException(message);
-                }
-            }
-
-            await UnitOfWork.SaveChangesAsync();
-        }
+        await UnitOfWork.SaveChangesAsync();
     }
 }

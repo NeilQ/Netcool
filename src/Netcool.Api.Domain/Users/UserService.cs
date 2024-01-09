@@ -46,33 +46,14 @@ namespace Netcool.Api.Domain.Users
 
         protected override IQueryable<User> CreateFilteredQuery(UserRequest input)
         {
-            var query = base.CreateFilteredQuery(input);
-            if (!string.IsNullOrEmpty(input.Name))
-            {
-                query = query.Where(t => t.Name == input.Name);
-            }
-
-            if (!string.IsNullOrEmpty(input.Email))
-            {
-                query = query.Where(t => t.Email.ToLower() == input.Email.ToLower());
-            }
-
-            if (!string.IsNullOrEmpty(input.Phone))
-            {
-                query = query.Where(t => t.Phone == input.Phone);
-            }
-
-            if (input.Gender != null)
-            {
-                query = query.Where(t => t.Gender == input.Gender);
-            }
-
-            if (input.OrganizationId != null)
-            {
-                query = input.OrganizationId > 0
-                    ? query.Where(t => t.OrganizationId == input.OrganizationId)
-                    : query.Where(t => t.OrganizationId == null);
-            }
+            var query = base.CreateFilteredQuery(input)
+                .WhereIf(!string.IsNullOrEmpty(input.Name), t => t.Name == input.Name)
+                .WhereIf(!string.IsNullOrEmpty(input.Email), t => t.Email.ToLower() == input.Email.ToLower())
+                .WhereIf(!string.IsNullOrEmpty(input.Phone), t => t.Phone == input.Phone)
+                .WhereIf(input.Gender != null, t => t.Gender == input.Gender)
+                .WhereIf(input.OrganizationId is > 0,
+                    t => t.OrganizationId == input.OrganizationId)
+                .WhereIf(input.OrganizationId is <= 0, t => t.OrganizationId == null);
 
             return query.Include(t => t.UserRoles).ThenInclude(t => t.Role);
         }
@@ -94,7 +75,7 @@ namespace Netcool.Api.Domain.Users
 
 
             // check email and phone
-            var duplicateUser = Repository.GetAll().AsNoTracking()
+            var duplicateUser = Repository.GetQueryable().AsNoTracking()
                 .FirstOrDefault(t =>
                     t.Name == entity.Name ||
                     !string.IsNullOrEmpty(t.Phone) && t.Phone == entity.Phone ||
@@ -130,7 +111,7 @@ namespace Netcool.Api.Domain.Users
             else dto.OrganizationId = null;
 
             // check email and phone
-            var duplicateUser = Repository.GetAll().AsNoTracking()
+            var duplicateUser = Repository.GetQueryable().AsNoTracking()
                 .FirstOrDefault(t =>
                     t.Id != originEntity.Id &&
                     (t.Name == dto.Name ||
@@ -196,7 +177,7 @@ namespace Netcool.Api.Domain.Users
         public IList<RoleDto> GetUserRoles(int id)
         {
             if (id <= 0) throw new EntityNotFoundException(typeof(User), id);
-            var user = Repository.GetAll().AsNoTracking()
+            var user = Repository.GetQueryable().AsNoTracking()
                 .Include(t => t.UserRoles)
                 .ThenInclude(t => t.Role)
                 .FirstOrDefault(t => t.Id == id);
@@ -209,7 +190,7 @@ namespace Netcool.Api.Domain.Users
             CheckPermission("user.set-roles");
             // validate user
             if (id <= 0) throw new EntityNotFoundException(typeof(User), id);
-            var user = Repository.GetAll()
+            var user = Repository.GetQueryable()
                 .Include(t => t.UserRoles)
                 .FirstOrDefault(t => t.Id == id);
             if (user == null) throw new EntityNotFoundException(typeof(User), id);
@@ -217,7 +198,7 @@ namespace Netcool.Api.Domain.Users
             // validate roleIds
             if (roleIds != null && roleIds.Count > 0)
             {
-                var roles = _roleRepository.GetAll().AsNoTracking()
+                var roles = _roleRepository.GetQueryable().AsNoTracking()
                     .Where(t => roleIds.Any(r => r == t.Id)).ToList();
                 var invalidIds = roleIds.Where(t => roles.All(r => r.Id != t)).ToList();
                 if (invalidIds.Count > 0)
@@ -243,7 +224,7 @@ namespace Netcool.Api.Domain.Users
         public MenuTreeNode GetUserMenuTree(int id)
         {
             if (id <= 0) throw new EntityNotFoundException(typeof(User), id);
-            var user = Repository.GetAll().AsNoTracking()
+            var user = Repository.GetQueryable().AsNoTracking()
                 .Include(t => t.UserRoles)
                 .ThenInclude(t => t.Role)
                 .ThenInclude(t => t.RolePermissions)

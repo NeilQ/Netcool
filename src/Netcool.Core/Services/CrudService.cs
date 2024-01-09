@@ -67,7 +67,7 @@ namespace Netcool.Core.Services
     }
 
     public abstract class CrudService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput,
-            TGetInput>
+        TGetInput>
         : CrudService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput, TGetInput,
             EntityDto<TPrimaryKey>>
         where TEntity : class, IEntity<TPrimaryKey>
@@ -82,7 +82,7 @@ namespace Netcool.Core.Services
     }
 
     public abstract class CrudService<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput,
-            TGetInput, TDeleteInput>
+        TGetInput, TDeleteInput>
         : CrudServiceBase<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput>,
             ICrudService<TEntityDto, TPrimaryKey, TGetAllInput, TCreateInput, TUpdateInput, TGetInput, TDeleteInput>
         where TEntity : class, IEntity<TPrimaryKey>
@@ -138,7 +138,7 @@ namespace Netcool.Core.Services
             var entity = MapToEntity(input);
             await BeforeCreate(entity);
 
-            Repository.Insert(entity);
+            await Repository.InsertAsync(entity);
             await UnitOfWork.SaveChangesAsync();
 
             return MapToEntityDto(entity);

@@ -1,13 +1,13 @@
 <Project>
 	<PropertyGroup>
         <PackageId>Netcool.Caching</PackageId>
-        <Version>1.0.3</Version>
+        <Version>8.0.0</Version>
         <Authors>邱尘</Authors>
         <Description>Distribute cache extensions</Description>
         <PackageTags>.net,cache,redis,distributeCache</PackageTags>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/NeilQ/Netcool/tree/master/src/extensions/Netcool.Caching</RepositoryUrl>
-        <PackageReleaseNotes>Update locker for NetcoolMemoryDistributedCache.</PackageReleaseNotes>
+        <PackageReleaseNotes>Update nuget packages.</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 </Project>
