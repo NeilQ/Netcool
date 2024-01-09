@@ -124,14 +124,14 @@ Netcool将会检索运行目录下的conf文件夹，将所有.json文件添加�
 ```json
 {
   "File": {
-    "HttpSchema": "",
+    "UseHttps": false,
     "HttpHost": "",
     "SubWebPath": "file",
     "PhysicalPath": "D:\\netcool-resources"
   }
 }
 ```
-- HttpSchema: http或者https。当该值为空时将会从`HttpContext.Request.Schema`中读取。
+- UseHttps: 资源schema是否使用`https`。
 - Host: 访问文件资源时使用的域名。当该值为空时将会从`HttpContext.Request.Host`中读取，
 如果使用了多层代理，需要注意配置`X-Forwarded-Host`请求头。为了方便，可以直接为该值配置域名
 - SubWebPath: 访问文件资源跟在域名后的二级路径，注意不能与`ApiController`中定于的路由相同。

@@ -22,9 +22,7 @@ public class FileUrlResolver
         var host = !string.IsNullOrWhiteSpace(_fileOptions.Value.Host)
             ? _fileOptions.Value.Host
             : _httpContextAccessor.HttpContext?.Request.Host.Value;
-        var schema = !string.IsNullOrWhiteSpace(_fileOptions.Value.HostSchema)
-            ? _fileOptions.Value.HostSchema
-            : _httpContextAccessor.HttpContext?.Request.Scheme;
+        var schema = _fileOptions.Value.UseHttps ? "https" : "http";
         var url = AppendUrlHost(schema, host, _fileOptions.Value.SubWebPath, source.Filename) + "?id=" +
                   source.Id;
         return url;
