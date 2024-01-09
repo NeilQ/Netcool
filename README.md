@@ -122,12 +122,14 @@ Netcool将会检索运行目录下的conf文件夹，将所有.json文件添加�
 ### 文件上传
 启用文件上传需要在`appsettings.json`中加入配置
 ```json
-"File" : {
-    "HttpSchema":"",    
+{
+  "File": {
+    "HttpSchema": "",
     "HttpHost": "",
     "SubWebPath": "file",
     "PhysicalPath": "D:\\netcool-resources"
   }
+}
 ```
 - HttpSchema: http或者https。当该值为空时将会从`HttpContext.Request.Schema`中读取。
 - Host: 访问文件资源时使用的域名。当该值为空时将会从`HttpContext.Request.Host`中读取，
@@ -274,35 +276,32 @@ public sealed class UserService : CrudService<User, UserDto, int, UserRequest, U
 
     protected override IQueryable<User> CreateFilteredQuery(UserRequest input)
     {
-        var query = base.CreateFilteredQuery(input);
-        if (!string.IsNullOrEmpty(input.Name))
-        {
-            query = query.Where(t => t.Name == input.Name);
-        }
+        var query = base.CreateFilteredQuery(input)
+          .WhereIf(!string.IsNullOrEmpty(input.Name), t => t.Name == input.Name);
 
         return query;
     }
 
-    public override void BeforeCreate(User entity)
+    public override async Task BeforeCreate(User entity)
     {
         base.BeforeCreate(entity);
         entity.Name = entity.Name.SafeString();
 
         if (entity.OrganizationId > 0)
         {
-            var org = _orgRepository.Get(entity.OrganizationId.Value);
+            var org = await _orgRepository.GetAsync(entity.OrganizationId.Value);
             if (org == null) throw new EntityNotFoundException(typeof(Organization), entity.Id);
         }
         else entity.OrganizationId = null;
     }
 
-    public override void BeforeUpdate(UserSaveInput dto, User originEntity)
+    public override async Task BeforeUpdate(UserSaveInput dto, User originEntity)
     {
         base.BeforeUpdate(dto, originEntity);
         dto.Name = dto.Name.SafeString();
         if (dto.OrganizationId > 0)
         {
-            var org = _orgRepository.Get(dto.OrganizationId.Value);
+            var org = await _orgRepository.GetAsync(dto.OrganizationId.Value);
             if (org == null) throw new EntityNotFoundException(typeof(Organization), dto.Id);
         }
         else dto.OrganizationId = null;
@@ -345,8 +344,12 @@ Netcool可以将所有同一个Assembly下，名字以`Repository`或`Service`�
 ```
 docker build -t netcool-api .
 
-docker run -dit --restart always --log-opt max-size=50m -p 8000:80 -v /mnt/logs:/logs -v /mnt/conf:/conf  --name netcool-api netcool-api 
+docker run -dit --restart always --log-opt max-size=50m -p 8000:8080 \
+-v /mnt/logs:/logs -v /mnt/conf:/conf  \
+--name netcool-api netcool-api 
 ```
+
+注意：.net8容器默认开放端口号为`8080`, .net8以前的容器默认端口号为`80`
 
 # 前端开发
 TODO
