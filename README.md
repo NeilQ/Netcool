@@ -1,6 +1,6 @@
 # Netcool
 # 介绍
-`Netcool`是一个基于.Net 6的Web应用脚手架，可以用于快速搭建后台管理系统，或者一个简单Web Api。
+`Netcool`是一个基于.net core的Web应用脚手架，可以用于快速搭建后台管理系统，或者一个简单Web Api。
 
 `Netcool`采用前后端分离的方式，包含Netcool.Api，[Netcool.Admin](https://github.com/NeilQ/Netcool.Admin)两个主要项目，
 包含用户、菜单、权限等基础功能。
