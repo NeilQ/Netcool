@@ -1,0 +1,22 @@
+<page-header></page-header>
+<nz-card>
+  <sf mode="search" #sf [schema]="searchSchema" (formSubmit)="search($event)" (formReset)="sf.reset()"></sf>
+
+  <div class="mb-2">
+    <!--
+    <button nz-button (click)="search()" [nzType]="'primary'">
+      <i nz-icon nzType="search"></i>
+      <span>查询</span>
+    </button>
+    -->
+    <button nz-button (click)="add()" [nzType]="'primary'" [acl]="this.permissions.configCreate">
+      <i nz-icon nzType="plus"></i>
+    </button>
+
+    <button class="float-right" nz-button (click)="delete()" nzType="primary" nzDanger [acl]="permissions.configDelete">
+      <i nz-icon nzType="delete"></i>
+    </button>
+  </div>
+  <st [data]="data" [loading]="loading" [columns]="columns" [total]="total" [page]="page"
+      (change)="onStChange($event)"></st>
+</nz-card>

@@ -1,0 +1,57 @@
+<page-header [action]="phActionTpl">
+  <ng-template #phActionTpl>
+    <!--
+    <button (click)="add()" nz-button nzType="primary">新建</button>
+    -->
+  </ng-template>
+</page-header>
+
+<div nz-row>
+  <div nz-col [nzSpan]="6">
+    <nz-card class="card-menu" nzTitle="菜单">
+      <div nz-row class="mb-2">
+        <button nz-button nzType="primary" class="tree-button" (click)="loadTree()" [nzLoading]="isLoading">
+          <i nz-icon nzType="reload"></i>
+        </button>
+      </div>
+      <nz-tree #tree nzShowLine
+               [nzData]="nodes"
+               (nzClick)="activeNode($event)"
+               (nzDblClick)="expendNode($event)"
+               [nzTreeTemplate]="nzTreeTemplate"
+               [nzSelectedKeys]="nzSelectedKeys"
+               [nzExpandedIcon]="iconTpl"></nz-tree>
+      <ng-template #iconTpl let-node let-origin="origin">
+        <i *ngIf="node.key=='root'" nz-icon nzType="folder"></i>
+        <i *ngIf="node.key!='root'" nz-icon [nzType]="origin.data.icon"></i>
+      </ng-template>
+      <ng-template #nzTreeTemplate let-node>
+      <span class="node-custom">
+        <!--
+          <i nz-icon *ngIf="node.key!='root'" [nzType]="node.origin.data.icon" (click)="expendNode(node)"  ></i>
+          -->
+          <span class="node-title">{{ node.title }}</span>
+      </span>
+      </ng-template>
+    </nz-card>
+  </div>
+
+  <div nz-col [nzSpan]="18">
+    <nz-card class="card-menu-info" nzTitle="详情">
+      <sv-container *ngIf="this.currentMenu" labelWidth="150">
+        <sv label="名称">{{this.currentMenu.name}}</sv>
+        <sv label="显示名称">{{this.currentMenu.displayName}}</sv>
+        <sv label="类型">{{this.currentMenu.typeDescription}}</sv>
+        <sv label="路由">{{this.currentMenu.route}} </sv>
+        <sv label="图标">{{this.currentMenu.icon}}</sv>
+        <sv label="排序">{{this.currentMenu.order}}</sv>
+        <sv label="备注">{{this.currentMenu.notes}}</sv>
+      </sv-container>
+
+      <st class="mt-5" *ngIf="this.currentMenu" #st [data]="this.currentMenu.permissions" [columns]="columns"
+          [page]="{show:false}"></st>
+
+    </nz-card>
+  </div>
+</div>
+
