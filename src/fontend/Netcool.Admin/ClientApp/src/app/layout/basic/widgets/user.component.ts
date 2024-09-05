@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { SettingsService, User } from '@delon/theme';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
@@ -34,7 +34,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NzDropDownModule, NzMenuModule, NzIconModule, NzAvatarModule]
+  imports: [RouterLink ,NzDropDownModule, NzMenuModule, NzIconModule, NzAvatarModule]
 })
 export class HeaderUserComponent {
   get user(): User {
@@ -48,6 +48,7 @@ export class HeaderUserComponent {
 
   logout(): void {
     this.tokenService.clear();
+    this.settings.setUser(null);
     this.router.navigateByUrl(this.tokenService.login_url!);
   }
 }
