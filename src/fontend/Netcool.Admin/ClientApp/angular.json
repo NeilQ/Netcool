@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Netcool.Admin": {
+    "netcool-admin": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -94,23 +94,23 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "Netcool.Admin:build",
+            "buildTarget": "netcool-admin:build",
             "port": 4210,
             "proxyConfig": "proxy.conf.json"
           },
           "configurations": {
             "production": {
-              "buildTarget": "Netcool.Admin:build:production"
+              "buildTarget": "netcool-admin:build:production"
             },
             "development": {
-              "buildTarget": "ng-alain:build:development"
+              "buildTarget": "netcool-admin:build:development"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "Netcool.Admin:build"
+            "buildTarget": "netcool-admin:build"
           }
         },
         "test": {
@@ -169,7 +169,8 @@
     "schematicCollections": [
       "@schematics/angular",
       "ng-alain"
-    ]
+    ],
+    "analytics": false
   },
   "schematics": {
     "@angular-eslint/schematics:application": {
