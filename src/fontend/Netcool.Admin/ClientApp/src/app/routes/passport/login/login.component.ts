@@ -100,7 +100,7 @@ export class UserLoginComponent {
       }))
       .subscribe((res) => {
         // 清空路由复用信息
-        this.reuseTabService.clear();
+        this.reuseTabService?.clear();
         // 设置用户Token信息
         this.tokenService.set({token: res.accessToken});
         this.settingsService.setUser({
