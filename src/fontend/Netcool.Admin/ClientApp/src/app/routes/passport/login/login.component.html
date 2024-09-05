@@ -1,0 +1,36 @@
+<form nz-form [formGroup]="form" (ngSubmit)="submit()" role="form">
+  <nz-tabset [nzAnimated]="false" class="tabs">
+    <nz-tab [nzTitle]="'账户密码登录'">
+      @if(error){
+        <nz-alert [nzType]="'error'" [nzMessage]="error" [nzShowIcon]="true" class="mb-lg"></nz-alert>
+      }
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please enter username!">
+          <nz-input-group nzSize="large" nzPrefixIcon="user">
+            <input nz-input formControlName="userName" placeholder="username, mobile or email"/>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please enter password!">
+          <nz-input-group nzSize="large" nzPrefixIcon="lock">
+            <input nz-input type="password" formControlName="password" placeholder="password"/>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-tab>
+  </nz-tabset>
+  <nz-form-item>
+    <nz-col [nzSpan]="12">
+      <label nz-checkbox formControlName="remember">自动登录</label>
+    </nz-col>
+    <nz-col [nzSpan]="12" class="text-right">
+      <a class="forgot" (click)="msg.error('请联系管理员')">忘记密码</a>
+    </nz-col>
+  </nz-form-item>
+  <nz-form-item>
+    <button nz-button [nzLoading]="loading" type="submit" nzType="primary" nzSize="large" nzBlock>
+      登录
+    </button>
+  </nz-form-item>
+</form>
