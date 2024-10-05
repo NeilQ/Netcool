@@ -114,12 +114,10 @@ import { HeaderUserComponent } from './widgets/user.component';
       </ng-template>
     </layout-default>
 
-    <!--
     @if (showSettingDrawer) {
       <setting-drawer></setting-drawer>
     }
     <theme-btn></theme-btn>
-    -->
   `,
   standalone: true,
   imports: [
