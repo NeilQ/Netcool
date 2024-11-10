@@ -7,7 +7,8 @@ import {
   withComponentInputBinding,
   withInMemoryScrolling,
   withHashLocation,
-  RouterFeatures
+  RouterFeatures,
+  withViewTransitions
 } from '@angular/router';
 import { I18NService, defaultInterceptor, provideStartup } from '@core';
 import { provideCellWidgets } from '@delon/abc/cell';
@@ -37,14 +38,14 @@ const defaultLang: AlainProvideLang = {
 };
 
 const alainConfig: AlainConfig = {
-  st: {modal: {size: 'lg'}},
+  st: { modal: { size: 'lg' } },
   sf: {
     ui: {
       spanLabelFixed: 100,
-      grid: {span: 12},
+      grid: { span: 12 },
     } as SFUISchemaItem
   },
-  pageHeader: {home: ''},
+  pageHeader: { home: '' },
   auth: {
     login_url: '/passport/login',
     token_exp_offset: 60
@@ -53,22 +54,26 @@ const alainConfig: AlainConfig = {
     preCan: (roleOrAbility: ACLCanType) => {
       if (roleOrAbility != null) {
         const str = roleOrAbility.toString();
-        return {ability: [str]}
-      } else return {ability: [""]};
+        return { ability: [str] }
+      } else return { ability: [""] };
     }
   }
 };
 
 const ngZorroConfig: NzConfig = {};
 
-const routerFeatures: RouterFeatures[] = [withComponentInputBinding(), withInMemoryScrolling({scrollPositionRestoration: 'top'})];
+const routerFeatures: RouterFeatures[] = [
+  withComponentInputBinding(),
+  withViewTransitions(),
+  withInMemoryScrolling({ scrollPositionRestoration: 'top' })
+];
 if (environment.useHash) routerFeatures.push(withHashLocation());
 
 const providers: Array<Provider | EnvironmentProviders> = [
   provideHttpClient(withInterceptors([...(environment.interceptorFns ?? []), authJWTInterceptor, defaultInterceptor])),
   provideAnimations(),
   provideRouter(routes, ...routerFeatures),
-  provideAlain({config: alainConfig, defaultLang, i18nClass: I18NService, icons: [...ICONS_AUTO, ...ICONS]}),
+  provideAlain({ config: alainConfig, defaultLang, i18nClass: I18NService, icons: [...ICONS_AUTO, ...ICONS] }),
   provideNzConfig(ngZorroConfig),
   provideAuth(),
   provideCellWidgets(...CELL_WIDGETS),
