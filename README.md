@@ -352,6 +352,6 @@ docker run -dit --restart always --log-opt max-size=50m -p 8000:8080 \
 注意：.net8容器默认开放端口号为`8080`, .net8以前的容器默认端口号为`80`
 
 # 前端开发
-TODO
+采用 Angular + ng-alain框架开发，位于`/src/fontend`目录下，使用.net web项目做为host，`ClientApp`下的前端项目文件可独立运行。
 
 
