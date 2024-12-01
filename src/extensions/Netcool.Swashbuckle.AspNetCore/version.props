@@ -1,14 +1,14 @@
 <Project>
     <PropertyGroup>
         <PackageId>Netcool.Swashbuckle.AspNetCore</PackageId>
-        <Version>8.0.0</Version>
+        <Version>9.0.0</Version>
         <Authors>邱尘</Authors>
         <Description>Extensions for Swashbuckle.AspNetCore</Description>
         <PackageTags>.net,Swashbuckle.AspNetCore,Swagger</PackageTags>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/NeilQ/Netcool/tree/master/src/extensions/Netcool.Swashbuckle.AspNetCore</RepositoryUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageReleaseNotes>Support net8.0</PackageReleaseNotes>
+        <PackageReleaseNotes>Support net9.0</PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
         <None Include="./README.md" Pack="true" PackagePath="\"/>

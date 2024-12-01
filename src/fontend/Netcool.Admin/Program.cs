@@ -45,7 +45,7 @@ else
     app.UseExceptionHandler("/Error");
 }
 
-app.UseStaticFiles();
+app.MapStaticAssets();
 app.UseSpaStaticFiles();
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions

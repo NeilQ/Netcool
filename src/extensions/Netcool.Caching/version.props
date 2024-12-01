@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
         <PackageId>Netcool.Caching</PackageId>
-        <Version>8.0.0</Version>
+        <Version>9.0.0</Version>
         <Authors>邱尘</Authors>
         <Description>Distribute cache extensions</Description>
         <PackageTags>.net,cache,redis,distributeCache</PackageTags>
