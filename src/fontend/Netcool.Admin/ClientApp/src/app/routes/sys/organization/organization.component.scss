@@ -1,0 +1,31 @@
+﻿.card-organization {
+  height: calc(100vh - 234px);
+
+  .ant-tree {
+    margin: 0 -24px;
+    padding: 0 24px;
+
+    li {
+      padding: 4px 0 0 0;
+    }
+
+    .ant-tree-child-tree {
+      overflow: initial;
+    }
+  }
+
+  .ant-card-body {
+    // height: calc(100vh - 190px);
+    overflow: auto;
+  }
+}
+
+.card-organization-info {
+  min-height: calc(100vh - 234px);
+  min-width: 300px;
+
+  > .ant-card-body {
+    //height: calc(100vh - 190px);
+    overflow: auto;
+  }
+}

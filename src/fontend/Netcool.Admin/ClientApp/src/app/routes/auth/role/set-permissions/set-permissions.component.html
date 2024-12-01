@@ -1,0 +1,32 @@
+<div class="modal-header">
+  <div class="modal-title">设置权限</div>
+</div>
+<nz-spin *ngIf="loading" class="modal-spin"></nz-spin>
+
+<nz-tree [hidden]="loading"  #tree [nzData]="source" nzCheckable [nzExpandAll]="true"
+         (nzCheckBoxChange)="nodeCheckChange($event)" nzShowExpand>
+  <ng-template #nzTreeTemplate let-node>
+    <i nz-icon [nzType]="node.origin.data.icon" class="mr-2"></i>
+    <span>{{node.title}}</span>
+    <div
+      *ngIf="node.origin.data.functionPermissions&&node.origin.data.functionPermissions.length>0"
+      class="d-inline ml-3">
+      <div class="ml-3 d-inline">
+        <label nz-checkbox name="all-{{node.origin.data.id}}"
+               [(ngModel)]="node.origin.data.functionAllChecked"
+               [nzDisabled]="!node.isChecked"
+               (ngModelChange)="updateAllChecked(node.origin.data)"
+               [nzIndeterminate]="node.origin.data.functionIndeterminate">全选</label>
+      </div>
+      <nz-checkbox-group [(ngModel)]="node.origin.data.functionPermissions"
+                         (ngModelChange)="updateSingleChecked(node.origin.data)"
+                         [nzDisabled]="!node.isChecked"></nz-checkbox-group>
+    </div>
+  </ng-template>
+</nz-tree>
+
+<div class="modal-footer">
+  <button nz-button type="button" (click)="close()">关闭</button>
+  <button nz-button type="button" (click)="loadMenuTreeNode()">重置</button>
+  <button nz-button type="submit" nzType="primary" (click)="save()" [nzLoading]="submitting">保存</button>
+</div>

@@ -14,7 +14,7 @@ namespace Netcool.Api.Domain.EfCore
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             var optionsBuilder = new DbContextOptionsBuilder<NetcoolDbContext>();
             optionsBuilder.UseNpgsql(
-                    "Server=127.0.0.1;Port=5413;Database=Netcool;User Id=postgres;Password=postgres;Enlist=true;")
+                    "Server=127.0.0.1;Port=6432;Database=Netcool;User Id=postgres;Password=P@ssw0rd;Enlist=true;")
                 .UseSnakeCaseNamingConvention();
 
             return new NetcoolDbContext(optionsBuilder.Options, new NullCurrentUser());
