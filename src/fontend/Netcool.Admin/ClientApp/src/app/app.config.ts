@@ -13,7 +13,7 @@ import {
 import { I18NService, defaultInterceptor, provideStartup } from '@core';
 import { provideCellWidgets } from '@delon/abc/cell';
 import { provideSTWidgets } from '@delon/abc/st';
-import { authJWTInterceptor, authSimpleInterceptor, provideAuth } from '@delon/auth';
+import { authJWTInterceptor, provideAuth } from '@delon/auth';
 import { provideSFConfig, SFUISchemaItem } from '@delon/form';
 import { AlainProvideLang, provideAlain, zh_CN as delonLang } from '@delon/theme';
 import { AlainConfig } from '@delon/util/config';

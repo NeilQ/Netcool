@@ -14,8 +14,8 @@ export const routes: Routes = [
       {path: 'dashboard', component: DashboardComponent},
       {path: 'exception', loadChildren: () => import('./exception/routes').then(m => m.routes)},
       // 业务子模块
-      {path: 'system', loadChildren: () => import('./sys/sys.module').then(m => m.SysModule)},
-      {path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)},
+      {path: 'system', loadChildren: () => import('./sys/routes').then(m => m.routes)},
+      {path: 'auth', loadChildren: () => import('./auth/routes').then(m => m.routes)},
     ]
   },
   // passport
