@@ -19,43 +19,49 @@
           <i nz-icon nzType="edit"></i>
         </button>
         <button nz-button nzDanger nzType="primary" class="tree-button"
-                nz-popconfirm
-                nzPopconfirmTitle="删除该组织的同时将删除其下所有子组织，确定删除吗？"
-                nzPopconfirmPlacement="bottom"
-                (nzOnConfirm)="delete()"
-                [nzLoading]="isDeleting">
+          nz-popconfirm
+          nzPopconfirmTitle="删除该组织的同时将删除其下所有子组织，确定删除吗？"
+          nzPopconfirmPlacement="bottom"
+          (nzOnConfirm)="delete()"
+          [nzLoading]="isDeleting">
           <i nz-icon nzType="delete"></i>
         </button>
       </div>
       <nz-tree #tree nzShowLine
-               [nzData]="nodes"
-               (nzClick)="activeNode($event)"
-               (nzDblClick)="expendNode($event)"
-               [nzTreeTemplate]="nzTreeTemplate"
-               [nzSelectedKeys]="nzSelectedKeys"
-               [nzExpandedIcon]="iconTpl"></nz-tree>
+        [nzData]="nodes"
+        (nzClick)="activeNode($event)"
+        (nzDblClick)="expendNode($event)"
+        [nzTreeTemplate]="nzTreeTemplate"
+        [nzSelectedKeys]="nzSelectedKeys"
+      [nzExpandedIcon]="iconTpl"></nz-tree>
       <ng-template #iconTpl let-node let-origin="origin">
-        <i *ngIf="node.key=='root'" nz-icon nzType="apartment"></i>
-        <i *ngIf="node.key!='root'" nz-icon nzType="folder"></i>
+        @if (node.key=='root') {
+          <i nz-icon nzType="apartment"></i>
+        }
+        @if (node.key!='root') {
+          <i nz-icon nzType="folder"></i>
+        }
       </ng-template>
       <ng-template #nzTreeTemplate let-node>
-      <span class="node-custom">
-        <!--
+        <span class="node-custom">
+          <!--
           <i nz-icon *ngIf="node.key!='root'" [nzType]="node.origin.data.icon" (click)="expendNode(node)"  ></i>
           -->
           <span class="node-title">{{ node.title }}</span>
-      </span>
+        </span>
       </ng-template>
     </nz-card>
   </div>
 
   <div nz-col [nzSpan]="18">
     <nz-card class="card-organization-info" nzTitle="详情">
-      <sv-container *ngIf="this.currentOrganization" labelWidth="150">
-        <sv label="名称">{{this.currentOrganization.name}}</sv>
-        <sv label="描述">{{this.currentOrganization.description}}</sv>
-        <sv label="深度">{{this.currentOrganization.depth}}</sv>
-      </sv-container>
+      @if (this.currentOrganization) {
+        <sv-container labelWidth="150">
+          <sv label="名称">{{this.currentOrganization.name}}</sv>
+          <sv label="描述">{{this.currentOrganization.description}}</sv>
+          <sv label="深度">{{this.currentOrganization.depth}}</sv>
+        </sv-container>
+      }
     </nz-card>
   </div>
 </div>

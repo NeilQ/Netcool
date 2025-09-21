@@ -1,15 +1,21 @@
 <nz-list [nzLoading]="loading">
-  <nz-list-item *ngFor="let item of ds">
-    {{item.announcement.updateTime | date:'yyyy-MM-dd HH:mm:ss'}}
-    <nz-list-item-meta>
-      <nz-list-item-meta-title>
-        <nz-badge *ngIf="!item.isRead" nzColor="red"></nz-badge>
-        <a (click)="select(item.announcement.id)"> {{item.announcement.title}}</a>
-      </nz-list-item-meta-title>
-    </nz-list-item-meta>
-  </nz-list-item>
+  @for (item of ds; track item) {
+    <nz-list-item>
+      {{item.announcement.updateTime | date:'yyyy-MM-dd HH:mm:ss'}}
+      <nz-list-item-meta>
+        <nz-list-item-meta-title>
+          @if (!item.isRead) {
+            <nz-badge nzColor="red"></nz-badge>
+          }
+          <a (click)="select(item.announcement.id)"> {{item.announcement.title}}</a>
+        </nz-list-item-meta-title>
+      </nz-list-item-meta>
+    </nz-list-item>
+  }
 
   <div style="text-align: center" nz-list-load-more>
-    <button nz-button *ngIf="!loading && ds.length<total" (click)="loadMore()">加载更多</button>
+    @if (!loading && ds.length<total) {
+      <button nz-button (click)="loadMore()">加载更多</button>
+    }
   </div>
 </nz-list>

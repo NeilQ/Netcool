@@ -1,8 +1,10 @@
 <div class="modal-header">
   <div class="modal-title">公告</div>
 </div>
-<nz-spin *ngIf="!i" class="modal-spin"></nz-spin>
-<ng-container *ngIf="i">
+@if (!i) {
+  <nz-spin class="modal-spin"></nz-spin>
+}
+@if (i) {
   <div nz-row nzJustify="center">
     <h1>{{i.title}}</h1>
   </div>
@@ -12,8 +14,7 @@
   <div nz-row>
     <div [innerHTML]="i.body" class="ano-content"></div>
   </div>
-
-</ng-container>
+}
 
 <div class="modal-footer">
   <button nz-button type="button" (click)="close()">关闭</button>
