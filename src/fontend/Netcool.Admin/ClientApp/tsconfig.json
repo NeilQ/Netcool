@@ -4,9 +4,10 @@
     "baseUrl": "./",
     "module": "es2020",
     "outDir": "./dist/out-tsc",
+    "esModuleInterop": true,
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "experimentalDecorators": true,
     "target": "ES2022",
     "typeRoots": [
@@ -39,7 +40,6 @@
         "src/app/models/index"
       ]
     },
-    "allowSyntheticDefaultImports": true,
     "useDefineForClassFields": false
   }
 }
