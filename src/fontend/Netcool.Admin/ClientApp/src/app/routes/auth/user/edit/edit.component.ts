@@ -6,10 +6,12 @@ import { EnumService, OrganizationService, UserService } from "@services";
 import { NotificationService } from "@services";
 import { User } from "@models";
 import { finalize } from "rxjs/operators";
+import { SHARED_IMPORTS } from '@shared/shared-imports';
 
 @Component({
   selector: 'auth-user-edit',
   templateUrl: './edit.component.html',
+  imports: [...SHARED_IMPORTS]
 })
 export class AuthUserEditComponent implements OnInit {
   title = '用户';

@@ -4,13 +4,14 @@ import { AnnouncementService, NotificationService, UserAnnouncementService } fro
 import { switchMap } from "rxjs/operators";
 import { SettingsService } from "@delon/theme";
 import { of } from "rxjs";
-import { debuglog } from "util";
+import { SHARED_IMPORTS } from '@shared/shared-imports';
 
 @Component({
   selector: 'sys-announcement-view',
   templateUrl: './view.component.html',
   styleUrls:['./view.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  imports: [...SHARED_IMPORTS]
 })
 export class SysAnnouncementViewComponent implements OnInit {
   id: any = {};

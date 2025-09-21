@@ -4,10 +4,12 @@ import { NzModalRef } from 'ng-zorro-antd/modal';
 import { NotificationService, OrganizationService } from "@services";
 import { Organization } from "@models";
 import { finalize } from "rxjs/operators";
+import { SHARED_IMPORTS } from '@shared/shared-imports';
 
 @Component({
   selector: 'sys-organization-edit',
   templateUrl: './edit.component.html',
+  imports: [...SHARED_IMPORTS]
 })
 export class SysOrganizationEditComponent implements OnInit {
   title = '组织';

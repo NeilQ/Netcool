@@ -3,10 +3,12 @@ import {NzModalRef} from 'ng-zorro-antd/modal';
 import {SFSchema} from '@delon/form';
 import {NotificationService, UserService} from "@services";
 import {finalize} from "rxjs/operators";
+import { SHARED_IMPORTS } from '@shared/shared-imports';
 
 @Component({
   selector: 'app-auth-user-reset-password',
   templateUrl: './reset-password.component.html',
+  imports: [...SHARED_IMPORTS]
 })
 export class AuthUserResetPasswordComponent implements OnInit {
   record: any = {};

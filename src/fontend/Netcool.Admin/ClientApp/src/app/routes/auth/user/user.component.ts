@@ -8,10 +8,12 @@ import { AuthUserRoleEditComponent } from "./edit-role/edit-role.component";
 import { AuthUserResetPasswordComponent } from "./reset-password/reset-password.component";
 import { SFSchema } from "@delon/form";
 import type { SFTreeSelectWidgetSchema } from '@delon/form/widgets/tree-select';
+import { SHARED_IMPORTS } from '@shared/shared-imports';
 
 @Component({
   selector: 'auth-user',
   templateUrl: './user.component.html',
+  imports: [...SHARED_IMPORTS]
 })
 export class AuthUserComponent extends CrudTableComponentBase<User> {
 

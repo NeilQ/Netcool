@@ -5,10 +5,12 @@ import { RoleService } from "@services";
 import { NotificationService } from "@services";
 import { Role } from "@models";
 import { finalize } from "rxjs/operators";
+import { SHARED_IMPORTS } from '@shared/shared-imports';
 
 @Component({
   selector: 'auth-role-edit',
   templateUrl: './edit.component.html',
+  imports: [...SHARED_IMPORTS]
 })
 export class AuthRoleEditComponent implements OnInit {
   title = '角色';

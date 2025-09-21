@@ -6,21 +6,25 @@
 <nz-tree [hidden]="loading"  #tree [nzData]="source" nzCheckable [nzExpandAll]="true"
          (nzCheckBoxChange)="nodeCheckChange($event)" nzShowExpand>
   <ng-template #nzTreeTemplate let-node>
-    <i nz-icon [nzType]="node.origin.data.icon" class="mr-2"></i>
+    <i nz-icon [nzType]="node.origin.data.icon" class="me-2"></i>
     <span>{{node.title}}</span>
     <div
-      *ngIf="node.origin.data.functionPermissions&&node.origin.data.functionPermissions.length>0"
-      class="d-inline ml-3">
-      <div class="ml-3 d-inline">
+      *ngIf="node.origin.data.functionPermissionOptions&&node.origin.data.functionPermissionOptions.length>0"
+      class="d-inline ms-3">
+      <div class="ms-3 d-inline">
         <label nz-checkbox name="all-{{node.origin.data.id}}"
                [(ngModel)]="node.origin.data.functionAllChecked"
                [nzDisabled]="!node.isChecked"
                (ngModelChange)="updateAllChecked(node.origin.data)"
                [nzIndeterminate]="node.origin.data.functionIndeterminate">全选</label>
       </div>
-      <nz-checkbox-group [(ngModel)]="node.origin.data.functionPermissions"
+      <nz-checkbox-group 
+      [nzOptions]="node.origin.data.functionPermissionOptions"
+      [(ngModel)]="node.origin.data.functionPermissions"
                          (ngModelChange)="updateSingleChecked(node.origin.data)"
-                         [nzDisabled]="!node.isChecked"></nz-checkbox-group>
+                         [nzDisabled]="!node.isChecked">
+       
+      </nz-checkbox-group>
     </div>
   </ng-template>
 </nz-tree>

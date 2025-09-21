@@ -5,10 +5,12 @@ import { AppConfigService } from "@services";
 import { NotificationService } from "@services";
 import { AppConfig } from "@models";
 import { finalize } from "rxjs/operators";
+import { SHARED_IMPORTS } from '@shared/shared-imports';
 
 @Component({
   selector: 'sys-config-edit',
   templateUrl: './edit.component.html',
+  imports: [...SHARED_IMPORTS]
 })
 export class SysAppConfigEditComponent implements OnInit {
   title = '应用设置';

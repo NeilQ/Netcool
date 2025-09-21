@@ -4,11 +4,13 @@ import { NzFormatEmitEvent, NzTreeNode, NzTreeNodeOptions } from "ng-zorro-antd/
 import { MenuService } from "@services";
 import { Menu } from "@models";
 import { finalize } from "rxjs/operators";
+import { SHARED_IMPORTS } from '@shared';
 
 @Component({
   selector: 'auth-menu',
   styleUrls: ['./menu.component.scss'],
   templateUrl: './menu.component.html',
+  imports: [...SHARED_IMPORTS]
 })
 export class AuthMenuComponent implements OnInit {
 
@@ -18,12 +20,12 @@ export class AuthMenuComponent implements OnInit {
 
   isLoading = false;
 
-  @ViewChild('st', {static: false}) st: STComponent;
+  @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
-    {title: '权限名称', index: 'name'},
-    {title: '权限代码', index: 'code'},
-    {title: '类型', index: 'typeDescription'},
-    {title: '描述', index: 'notes'}
+    { title: '权限名称', index: 'name' },
+    { title: '权限代码', index: 'code' },
+    { title: '类型', index: 'typeDescription' },
+    { title: '描述', index: 'notes' }
   ];
 
   constructor(private menuService: MenuService) {
@@ -35,7 +37,7 @@ export class AuthMenuComponent implements OnInit {
 
   loadTree() {
     this.isLoading = true;
-    this.menuService.list({sort: "level,order"})
+    this.menuService.list({ sort: "level,order" })
       .pipe(finalize(() => this.isLoading = false))
       .subscribe(data => {
         let root = {

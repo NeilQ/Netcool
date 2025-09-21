@@ -8,11 +8,13 @@ import { NzModalService } from "ng-zorro-antd/modal";
 import { SysOrganizationEditComponent } from "./edit/edit.component";
 import { ModalHelper } from "@delon/theme";
 import { finalize } from "rxjs/operators";
+import { SHARED_IMPORTS } from '@shared/shared-imports';
 
 @Component({
   selector: 'sys-organization',
   styleUrls: ['./organization.component.scss'],
   templateUrl: './organization.component.html',
+  imports: [...SHARED_IMPORTS]
 })
 export class SysOrganizationComponent implements OnInit {
 

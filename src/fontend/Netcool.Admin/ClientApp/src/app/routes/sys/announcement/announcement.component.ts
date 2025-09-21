@@ -5,10 +5,12 @@ import { Announcement, CrudTableComponentBase } from "@models";
 import { AnnouncementService, EnumService, NotificationService } from "@services";
 import { SysAnnouncementEditComponent } from "./edit/edit.component";
 import { SysAnnouncementViewComponent } from "./view/view.component";
+import { SHARED_IMPORTS } from '@shared/shared-imports';
 
 @Component({
   selector: 'sys-announcement',
   templateUrl: './announcement.component.html',
+  imports: [...SHARED_IMPORTS]
 })
 export class SysAnnouncementComponent extends CrudTableComponentBase<Announcement> implements OnInit {
 

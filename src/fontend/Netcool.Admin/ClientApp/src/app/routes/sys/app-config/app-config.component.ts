@@ -5,6 +5,7 @@ import { SysAppConfigEditComponent } from "./edit/edit.component";
 import { ModalHelper } from "@delon/theme";
 import { STColumnTag } from "@delon/abc/st";
 import { SFSchema } from "@delon/form";
+import { SHARED_IMPORTS } from '@shared/shared-imports';
 
 const TAG: STColumnTag = {
   true: {text: '系统初始化', color: 'green'},
@@ -14,6 +15,7 @@ const TAG: STColumnTag = {
 @Component({
   selector: 'sys-app-config',
   templateUrl: './app-config.component.html',
+  imports: [...SHARED_IMPORTS]
 })
 export class SysAppConfigComponent extends CrudTableComponentBase<AppConfig> {
 

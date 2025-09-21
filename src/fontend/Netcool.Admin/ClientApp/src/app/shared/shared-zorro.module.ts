@@ -15,7 +15,6 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzListModule } from 'ng-zorro-antd/list';
-import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
@@ -31,12 +30,10 @@ import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzTreeModule } from "ng-zorro-antd/tree";
-import { NzNotificationModule } from "ng-zorro-antd/notification";
 import { NzTypographyModule } from "ng-zorro-antd/typography";
 
 export const SHARED_ZORRO_MODULES = [
   NzButtonModule,
-  NzMessageModule,
   NzDropDownModule,
   NzGridModule,
   NzTreeModule,
@@ -45,7 +42,6 @@ export const SHARED_ZORRO_MODULES = [
   NzPopoverModule,
   NzSelectModule,
   NzIconModule,
-  NzNotificationModule,
   NzBadgeModule,
   NzAlertModule,
   NzModalModule,

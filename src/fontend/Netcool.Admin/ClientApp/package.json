@@ -21,6 +21,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "19.2.15",
+    "@angular/cdk": "^19.2.19",
     "@angular/common": "19.2.15",
     "@angular/compiler": "19.2.15",
     "@angular/core": "19.2.15",
@@ -64,6 +65,8 @@
     "@types/jasminewd2": "~2.0.8",
     "@typescript-eslint/eslint-plugin": "^8.29.1",
     "@typescript-eslint/parser": "^8.29.1",
+    "@typescript-eslint/utils": "^8.29.1",
+    "angular-eslint": "^19.3.0",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-deprecation": "^3.0.0",
@@ -71,6 +74,7 @@
     "eslint-plugin-jsdoc": "~50.6.9",
     "eslint-plugin-prefer-arrow": "~1.2.3",
     "eslint-plugin-prettier": "~5.2.6",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "husky": "^9.1.7",
     "jasmine-core": "~3.8.0",
     "jasmine-spec-reporter": "~5.0.0",
@@ -85,9 +89,6 @@
     "prettier": "^3.5.3",
     "source-map-explorer": "^2.5.3",
     "typescript": "~5.5.4",
-    "angular-eslint": "^19.3.0",
-    "@typescript-eslint/utils": "^8.29.1",
-    "eslint-plugin-unused-imports": "^4.1.4",
     "typescript-eslint": "^8.29.1"
   },
   "optionalDependencies": {

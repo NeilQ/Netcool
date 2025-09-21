@@ -4,11 +4,13 @@ import { NzModalRef } from 'ng-zorro-antd/modal';
 import { AnnouncementService, NotificationService } from "@services";
 import { Announcement } from "@models";
 import { finalize } from "rxjs/operators";
+import { SHARED_IMPORTS } from '@shared/shared-imports';
 
 @Component({
   selector: 'sys-announcement-edit',
   templateUrl: './edit.component.html',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  imports: [...SHARED_IMPORTS]
 })
 export class SysAnnouncementEditComponent implements OnInit {
   title = '公告';

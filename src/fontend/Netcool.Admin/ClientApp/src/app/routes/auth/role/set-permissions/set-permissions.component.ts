@@ -4,10 +4,12 @@ import { NzTreeComponent, NzTreeNode, NzTreeNodeOptions } from "ng-zorro-antd/tr
 import { MenuService, NotificationService, RoleService } from "@services";
 import { PermissionType } from "@models";
 import { finalize } from "rxjs/operators";
+import { SHARED_IMPORTS } from '@shared/shared-imports';
 
 @Component({
   selector: 'app-auth-role-set-permissions',
   templateUrl: './set-permissions.component.html',
+  imports: [...SHARED_IMPORTS]
 })
 export class AuthRoleSetPermissionsComponent implements OnInit {
   record: any = {};
@@ -40,55 +42,59 @@ export class AuthRoleSetPermissionsComponent implements OnInit {
 
   loadMenuTreeNode() {
     this.loading = true;
-    this.menuService.list({sort: 'level,order asc'})
-      .subscribe((menus) => {
-        if (menus == null || menus.length === 0) {
-          return Promise.resolve();
-        }
+    this.menuService.list({ sort: 'level,order asc' })
+      .pipe(finalize(() => this.loading = false))
+      .subscribe({
+        next: (menus) => {
+          if (menus == null || menus.length === 0) {
+            return Promise.resolve();
+          }
 
-        let tempSource = [];
-        menus.forEach(menu => {
-          let menuPermissionId = 0;
-          if (menu.permissions) {
-            menu.functionPermissions = menu.permissions.filter((permission) => {
-              return permission.type == PermissionType.Function;
-            }).map((permission => {
-              permission.label = permission.name;
-              permission.value = permission.id;
-              return permission;
-            }));
-            let menuPermission = menu.permissions.find(permission => {
-              return permission.type == PermissionType.Menu;
-            })
-            if (menuPermission) {
-              menuPermissionId = menuPermission.id;
+          let tempSource = [];
+          menus.forEach(menu => {
+            let menuPermissionId = 0;
+            if (menu.permissions) {
+              // 为v19创建选项数组和值数组
+              menu.functionPermissionOptions = menu.permissions.filter((permission) => {
+                return permission.type == PermissionType.Function;
+              }).map((permission => ({
+                label: permission.name,
+                value: permission.id
+              })));
+              
+              // 初始化为空的值数组，稍后会根据角色权限填充
+              menu.functionPermissions = [];
+              let menuPermission = menu.permissions.find(permission => {
+                return permission.type == PermissionType.Menu;
+              })
+              if (menuPermission) {
+                menuPermissionId = menuPermission.id;
+              }
             }
-          }
-          const tempNode: NzTreeNodeOptions = {
-            title: menu.displayName,
-            key: menuPermissionId.toString(),
-            children: [],
-            selectable: false,
-            expanded: true,
-            data: menu,
-            origin: {data: menu}
-          };
+            const tempNode: NzTreeNodeOptions = {
+              title: menu.displayName,
+              key: menuPermissionId.toString(),
+              children: [],
+              selectable: false,
+              expanded: true,
+              data: menu,
+              origin: { data: menu }
+            };
 
-          if (menu.parentId > 0 && this.treeNodeMap.has(menu.parentId)) {
-            const parent = this.treeNodeMap.get(menu.parentId);
-            parent.children.push(tempNode);
-            tempNode.parentNode = parent;
-            tempNode.level = menu.level;
-            tempNode.isLeaf = true;
-          } else {
-            tempSource.push(tempNode);
-          }
-          this.treeNodeMap.set(menu.id, tempNode);
-        });
-        this.source = [...tempSource];
-        this.loadSelectedNode();
-      }, error => {
-        this.loading = false;
+            if (menu.parentId > 0 && this.treeNodeMap.has(menu.parentId)) {
+              const parent = this.treeNodeMap.get(menu.parentId);
+              parent.children.push(tempNode);
+              tempNode.parentNode = parent;
+              tempNode.level = menu.level;
+              tempNode.isLeaf = true;
+            } else {
+              tempSource.push(tempNode);
+            }
+            this.treeNodeMap.set(menu.id, tempNode);
+          });
+          this.source = [...tempSource];
+          this.loadSelectedNode();
+        }
       })
   }
 
@@ -105,7 +111,7 @@ export class AuthRoleSetPermissionsComponent implements OnInit {
         permissions.forEach((per) => {
           authIdsMap.add(per.id);
         });
-
+      
         this.tree.getTreeNodes().forEach((node) => {
           this.selectRecursive(node, authIdsMap);
         });
@@ -130,10 +136,9 @@ export class AuthRoleSetPermissionsComponent implements OnInit {
       if (node.isChecked || node.isHalfChecked) {
         permissionIds.push(Number(node.key));
         if (node.origin.data && node.origin.data.functionPermissions) {
-          node.origin.data.functionPermissions.forEach(v => {
-            if (v.checked) {
-              permissionIds.push(v.id);
-            }
+          // functionPermissions 现在是值的数组，直接添加到 permissionIds 中
+          node.origin.data.functionPermissions.forEach(permissionId => {
+            permissionIds.push(permissionId);
           });
         }
         if (node.children) {
@@ -158,20 +163,26 @@ export class AuthRoleSetPermissionsComponent implements OnInit {
   updateAllChecked(menu): void {
     menu.functionIndeterminate = false;
     if (menu.functionAllChecked) {
-      menu.functionPermissions.forEach(item => item.checked = true);
+      // 选中所有功能权限
+      menu.functionPermissions = menu.functionPermissionOptions.map(option => option.value);
     } else {
-      menu.functionPermissions.forEach(item => item.checked = false);
+      // 取消选中所有功能权限
+      menu.functionPermissions = [];
     }
   }
 
   updateSingleChecked(menu): void {
-    if (menu.functionPermissions.every(item => item.checked === false)) {
+    const totalCount = menu.functionPermissionOptions ? menu.functionPermissionOptions.length : 0;
+    const selectedCount = menu.functionPermissions ? menu.functionPermissions.length : 0;
+    
+    if (selectedCount === 0) {
       menu.functionAllChecked = false;
       menu.functionIndeterminate = false;
-    } else if (menu.functionPermissions.every(item => item.checked === true)) {
+    } else if (selectedCount === totalCount) {
       menu.functionAllChecked = true;
       menu.functionIndeterminate = false;
     } else {
+      menu.functionAllChecked = false;
       menu.functionIndeterminate = true;
     }
   }
@@ -186,24 +197,20 @@ export class AuthRoleSetPermissionsComponent implements OnInit {
   private clearFunctionPermissions(menu) {
     if (menu.functionPermissions) {
       menu.functionAllChecked = false;
-      menu.functionPermissions.forEach(v => {
-        v.checked = false;
-      });
+      menu.functionIndeterminate = false;
+      menu.functionPermissions = [];
     }
   }
 
   private selectRecursive(node: NzTreeNode, permissionIds: Set<number>) {
-    if (node.origin.data.functionPermissions) {
-      let tempCount = 0;
-      node.origin.data.functionPermissions.forEach(v => {
-        if (permissionIds.has(v.id)) {
-          v.checked = true;
-          tempCount++;
-        } else {
-          v.checked = false;
-        }
-      });
-      node.origin.data.functionAllChecked = tempCount === node.origin.data.functionPermissions.length;
+    if (node.origin.data.functionPermissionOptions) {
+      // 根据权限ID设置选中的功能权限
+      node.origin.data.functionPermissions = node.origin.data.functionPermissionOptions
+        .filter(option => permissionIds.has(option.value))
+        .map(option => option.value);
+      
+      // 更新全选状态
+      this.updateSingleChecked(node.origin.data);
     }
     if (node.children) {
       node.children.forEach(childNode => {

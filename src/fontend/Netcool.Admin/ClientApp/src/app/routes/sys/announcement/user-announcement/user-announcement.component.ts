@@ -6,11 +6,13 @@ import { PagedResult, UserAnnouncement } from "@models";
 import { tap } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { SysAnnouncementViewComponent } from "../view/view.component";
+import { SHARED_IMPORTS } from "@shared/shared-imports";
 
 @Component({
   selector: 'sys-user-announcement',
   templateUrl: './user-announcement.component.html',
   encapsulation: ViewEncapsulation.None,
+  imports: [...SHARED_IMPORTS]
 })
 export class SysUserAnnouncementComponent implements OnInit, OnDestroy {
 

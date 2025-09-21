@@ -6,10 +6,12 @@ import { EnumService, RoleService, UserService } from "@services";
 import { NotificationService } from "@services";
 import { Role } from "@models";
 import { finalize, map } from "rxjs/operators";
+import { SHARED_IMPORTS } from '@shared/shared-imports';
 
 @Component({
   selector: 'auth-user-role-edit',
   templateUrl: './edit-role.component.html',
+  imports: [...SHARED_IMPORTS]
 })
 export class AuthUserRoleEditComponent implements OnInit {
   loading = true;
