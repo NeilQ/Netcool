@@ -1,13 +1,14 @@
-<result type="success" [title]="title" description="{{ 'app.register-result.activation-email' | i18n }}">
-  <ng-template #title>
-    <div class="title" style="font-size: 20px">
-      {{ 'app.register-result.msg' | i18n: { email } }}
-    </div>
-  </ng-template>
-  <button (click)="msg.success('email')" nz-button nzSize="large" [nzType]="'primary'">
+<div class="register-result">
+  <div class="title" style="font-size: 20px; margin-bottom: 16px;">
+    {{ 'app.register-result.msg' | i18n: { email } }}
+  </div>
+  <div class="description" style="margin-bottom: 24px;">
+    {{ 'app.register-result.activation-email' | i18n }}
+  </div>
+  <button (click)="msg.success('email')" nz-button nzSize="large" [nzType]="'primary'" style="margin-right: 8px;">
     {{ 'app.register-result.view-mailbox' | i18n }}
   </button>
   <button routerLink="/" nz-button nzSize="large">
     {{ 'app.register-result.back-home' | i18n }}
   </button>
-</result>
+</div>
