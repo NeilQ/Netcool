@@ -18,7 +18,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 
 @Component({
   selector: 'passport-login',
@@ -34,7 +34,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     NzFormModule,
     NzInputModule,
     NzButtonModule,
-    NzToolTipModule,
+    NzTooltipModule,
     NzIconModule
   ]
 })

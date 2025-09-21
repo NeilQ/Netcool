@@ -1,5 +1,5 @@
 <form nz-form [formGroup]="form" (ngSubmit)="submit()" role="form">
-  <nz-tabset [nzAnimated]="false" class="tabs">
+  <nz-tabs [nzAnimated]="false" class="tabs">
     <nz-tab [nzTitle]="'账户密码登录'">
       @if(error){
         <nz-alert [nzType]="'error'" [nzMessage]="error" [nzShowIcon]="true" class="mb-lg"></nz-alert>
@@ -19,7 +19,7 @@
         </nz-form-control>
       </nz-form-item>
     </nz-tab>
-  </nz-tabset>
+  </nz-tabs>
   <nz-form-item>
     <nz-col [nzSpan]="12">
       <label nz-checkbox formControlName="remember">自动登录</label>

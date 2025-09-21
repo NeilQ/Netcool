@@ -4,7 +4,7 @@
 <nz-spin *ngIf="loading" class="modal-spin"></nz-spin>
 
 <nz-tree [hidden]="loading"  #tree [nzData]="source" nzCheckable [nzExpandAll]="true"
-         (nzCheckBoxChange)="nodeCheckChange($event)" nzShowExpand>
+         (nzCheckboxChange)="nodeCheckChange($event)" nzShowExpand>
   <ng-template #nzTreeTemplate let-node>
     <i nz-icon [nzType]="node.origin.data.icon" class="me-2"></i>
     <span>{{node.title}}</span>
