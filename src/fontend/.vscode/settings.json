@@ -1,0 +1,18 @@
+{
+    "workbench.colorCustomizations": {
+        "[Catppuccin Latte]": {
+            "editor.background": "#ffffff",
+            "panel.background": "#ffffff",
+            "sideBar.background": "#ffffff",
+            "input.border": "#000000",
+            "activityBar.background": "#ffffff",
+            "activityBar.border": "#000000",
+            "editorGutter.background": "#ffffff",
+            "tab.activeBorder": "#52c41a",
+            "tab.inactiveBackground": "#ffffff"
+        },
+        "activityBar.background": "#48165A",
+        "titleBar.activeBackground": "#651F7E",
+        "titleBar.activeForeground": "#FDFAFE"
+    }
+}
