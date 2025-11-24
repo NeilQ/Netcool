@@ -134,7 +134,7 @@ export abstract class CrudTableComponentBase<TEntity = any> extends TableCompone
 
   add() {
     this.modal
-      .createStatic(this.editComponent)
+      .createStatic(this.editComponent, {})
       .subscribe(() => {
         this.onSaveSuccess();
       });
